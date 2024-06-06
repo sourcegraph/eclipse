@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webview</title>
+    <script>
+      // This is actually implemented by the agent
+      function postMessage(message) {
+        console.log('post', message)
+        receiveMessage({ kind: "reply", reply: `Hello: ${message.message}` });
+      }
+      function receiveMessage(message) {
+        console.log('receive', message)
+        if (message?.kind === "reply") {
+          const reply = document.createElement("p");
+          reply.innerHTML = message.reply;
+          document.body.appendChild(reply);
+        }
+      }
+      function handleSubmit(event) {
+        event.preventDefault();
+        const input = document.getElementById("userInput").value;
+        postMessage({ kind: "message", message: input });
+        console.log("User input:", input);
+      }
+    </script>
+  </head>
+  <body>
+    <form onsubmit="handleSubmit(event)">
+      <label for="userInput">Enter something:</label>
+      <input type="text" id="userInput" name="userInput" required />
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
