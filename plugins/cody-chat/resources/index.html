@@ -10,6 +10,18 @@
 	    reply.innerHTML = message;
 	    document.body.appendChild(reply);
       }
+      console.log = function(message) {
+        postMessage(JSON.stringify({kind: 'log', message}))
+      };
+      console.warn = function(message) {
+        postMessage(JSON.stringify({kind: 'warn', message}))
+      };
+      console.error = function(message) {
+        postMessage(JSON.stringify({kind: 'error', message}))
+      };
+      window.onerror = function(message, source, lineno, colno, error) {
+        postMessage(JSON.stringify({kind: 'onerror', message, source, lineno, colno, error}))
+      };
 	  
       function handleSubmit(event) {
         event.preventDefault();
