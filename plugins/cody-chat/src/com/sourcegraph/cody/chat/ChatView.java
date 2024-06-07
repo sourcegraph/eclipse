@@ -22,7 +22,7 @@ public class ChatView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		var browser = new Browser(parent, SWT.WEBKIT);
+		var browser = new Browser(parent, SWT.EDGE);
 		browser.setText(loadIndex());
 		
 		new BrowserFunction(browser, "postMessage") {
