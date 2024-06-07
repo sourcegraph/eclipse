@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eux
+git submodule update --init --recursive
 pushd cody
 pnpm dlx pnpm@8.6.7 install
 pnpm dlx pnpm@8.6.7 build
