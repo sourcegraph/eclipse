@@ -28,14 +28,6 @@
                ratio="0.5">
          </view>
       </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               id="codychat.views.BrowserView"
-               relationship="stack"
-               relative="org.eclipse.ui.views.ProblemView">
-         </view>
-      </perspectiveExtension>
    </extension>
 
 </plugin>
