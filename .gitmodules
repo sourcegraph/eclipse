@@ -1,0 +1,3 @@
+[submodule "cody"]
+	path = cody
+	url = https://github.com/sourcegraph/cody
