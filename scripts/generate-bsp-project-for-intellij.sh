@@ -23,6 +23,12 @@ append_to_build_scala() {
 
 DIR=$(realpath ${ECLIPSE_PLUGINS:-/Applications/Eclipse.app/Contents/Eclipse/plugins/})
 
+if [ ! -d "$DIR" ]; then
+  echo "Error: Directory $DIR does not exist" >&2
+  exit 1
+fi
+
+
 for file in $DIR/*; do
   if [[ $file == *.source_* ]]; then
     without_source="${file/.source/}"
@@ -33,14 +39,6 @@ for file in $DIR/*; do
   else
     append_to_build_scala "$file"
   fi
-done
-
-for file in $(cs fetch org.eclipse.lsp4j:org.eclipse.lsp4j:0.23.1 --classifier sources); do
-  append_to_build_scala "$file"
-done
-
-for file in $(cs fetch org.eclipse.lsp4j:org.eclipse.lsp4j:0.23.1); do
-  append_to_build_scala "$file"
 done
 
 scala-cli setup-ide build.scala
