@@ -1,2 +1,5 @@
 *.jar
 plugins/cody-chat/resources/cody-webviews/
+build.scala
+.bsp/
+.scala-build/

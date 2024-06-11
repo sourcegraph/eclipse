@@ -24,7 +24,7 @@ public class ChatView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		var browser = new Browser(parent, SWT.EDGE);
 		browser.setText(loadIndex());
-		
+
 		new BrowserFunction(browser, "postMessage") {
 			@Override
 			public Object function(Object[] arguments) {
