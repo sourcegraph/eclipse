@@ -20,12 +20,13 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
+            targetID="org.eclipse.ui.resourcePerspective">
          <view
                id="com.sourcegraph.cody.chat.ChatView"
-               relative="org.eclipse.ui.views.ProblemView"
+               ratio="0.5"
                relationship="right"
-               ratio="0.5">
+               relative="org.eclipse.ui.views.TaskList"
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>
