@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- This file is only intended to be used for local development -->
+  <head>
+    <script type="module" crossorigin src="./injected-script.js"></script>
+
+    <link rel="stylesheet" crossorigin href="./injected-styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- This content security policy also implicitly disables inline scripts and styles. -->
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src 'self' https://*.sourcegraphstatic.com https: data:; script-src 'self' https://*.sourcegraphstatic.com; style-src 'self' https://*.sourcegraphstatic.com; font-src data: 'self' https://*.sourcegraphstatic.com;"
+    /> -->
+    <!-- DO NOT REMOVE: THIS FILE IS THE ENTRY FILE FOR CODY WEBVIEW -->
+    <title>Cody</title>
+    <script type="module" crossorigin src="./cody-webviews/index.js"></script>
+    <link
+      rel="modulepreload"
+      crossorigin
+      href="./cody-webviews/index-DfFaxyLD.js"
+    />
+    <link
+      rel="stylesheet"
+      crossorigin
+      href="./cody-webviews/index-A7g4xsS0.css"
+    />
+    <link
+      rel="stylesheet"
+      crossorigin
+      href="./cody-webviews/index-69SBtHHp.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

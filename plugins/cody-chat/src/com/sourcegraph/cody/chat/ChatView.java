@@ -39,19 +39,19 @@ public class ChatView extends ViewPart {
   }
 
   private void createCallbacks(Browser browser) {
-    new BrowserFunction(browser, "postMessage") {
+    new BrowserFunction(browser, "eclipse_postMessage") {
       @Override
       public Object function(Object[] arguments) {
         display.asyncExec(
             () -> {
-              browser.execute("receiveMessage(\"received: " + arguments[0] + "\");");
+              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] + "\");");
             });
         return null;
       }
       ;
     };
 
-    new BrowserFunction(browser, "logInEclipse") {
+    new BrowserFunction(browser, "eclipse_log") {
       @Override
       public Object function(Object[] arguments) {
         out.println("From webview: " + arguments[0]);
@@ -60,7 +60,7 @@ public class ChatView extends ViewPart {
       ;
     };
 
-    new BrowserFunction(browser, "getToken") {
+    new BrowserFunction(browser, "eclipse_getToken") {
       @Override
       public Object function(Object[] arguments) {
         try {

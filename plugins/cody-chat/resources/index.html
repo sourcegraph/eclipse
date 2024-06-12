@@ -5,28 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Webview</title>
     <script>
-      function receiveMessage(message) {
-	    const reply = document.createElement("p");
-	    reply.innerHTML = `${message} (token: ${getToken()})`;
-	    document.body.appendChild(reply);
+      function eclipse_receiveMessage(message) {
+        const reply = document.createElement("p");
+        reply.innerHTML = `${message} (token: ${eclipse_getToken()})`;
+        document.body.appendChild(reply);
       }
-      console.log = function(message) {
-		logInEclipse(JSON.stringify({kind: 'log', message}))
+      console.log = function (message) {
+        eclipse_log(JSON.stringify({ kind: "log", message }));
       };
-      console.warn = function(message) {
-		logInEclipse(JSON.stringify({kind: 'warn', message}))
+      console.warn = function (message) {
+        eclipse_log(JSON.stringify({ kind: "warn", message }));
       };
-      console.error = function(message) {
-		logInEclipse(JSON.stringify({kind: 'error', message}))
+      console.error = function (message) {
+        eclipse_log(JSON.stringify({ kind: "error", message }));
       };
-      window.onerror = function(message, source, lineno, colno, error) {
-		logInEclipse(JSON.stringify({kind: 'onerror', message, source, lineno, colno, error}))
+      window.onerror = function (message, source, lineno, colno, error) {
+        eclipse_log(
+          JSON.stringify({
+            kind: "onerror",
+            message,
+            source,
+            lineno,
+            colno,
+            error,
+          })
+        );
       };
-	  
+
       function handleSubmit(event) {
         event.preventDefault();
         const input = document.getElementById("userInput").value;
-        postMessage(input);
+        eclipse_postMessage(input);
         console.log("User input: " + input);
       }
     </script>

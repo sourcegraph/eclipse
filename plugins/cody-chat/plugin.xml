@@ -3,6 +3,13 @@
 <plugin>
 
    <extension
+           point="org.eclipse.ui.startup">
+      <startup
+              class="com.sourcegraph.cody.CodyStartup">
+      </startup>
+   </extension>
+
+   <extension
          point="org.eclipse.ui.views">
       <category
             name="Cody"
@@ -17,6 +24,7 @@
             inject="true">
       </view>
    </extension>
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
