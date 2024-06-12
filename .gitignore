@@ -4,3 +4,4 @@ build.scala
 .bsp/
 .scala-build/
 .idea/
+eclipse-plugins-directory.txt
