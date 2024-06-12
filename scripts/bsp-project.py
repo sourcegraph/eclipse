@@ -18,8 +18,8 @@ def main():
         print(
             f"Error: File {eclipse_plugin_config_path} does not exist. "
             + "To fix this problem, create the file and write the absolute file "
-            + "path to your Eclipse installation. On macOS, this path is something like "
-            + "/Applications/Eclipse.app/Contents/plugins",
+            + "path to your Eclipse installation. On macOS, you can try running this command:\n"
+            + "  echo '/Applications/Eclipse.app/Contents/Eclipse/plugins' > '{eclipse_plugin_config_path}'",
             file=sys.stderr,
         )
         sys.exit(1)

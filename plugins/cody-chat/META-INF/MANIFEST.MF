@@ -4,16 +4,19 @@ Bundle-Name: cody-chat
 Bundle-SymbolicName: cody-chat;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.jetty.server,
- org.eclipse.jetty.util,
- org.eclipse.jetty.io,
- org.eclipse.jetty.http,
- org.eclipse.ui.ide.application,
+ org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di,
  org.eclipse.e4.core.di.annotations,
- org.eclipse.e4.core.contexts,
- org.eclipse.equinox.security
+ org.eclipse.equinox.security,
+ org.eclipse.jetty.http,
+ org.eclipse.jetty.io,
+ org.eclipse.jetty.server,
+ org.eclipse.jetty.util,
+ org.eclipse.lsp4j,
+ org.eclipse.ui,
+ org.eclipse.ui.ide.application,
+ com.google.gson,
+ org.eclipse.lsp4j.jsonrpc
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)"
 Automatic-Module-Name: cody.chat
