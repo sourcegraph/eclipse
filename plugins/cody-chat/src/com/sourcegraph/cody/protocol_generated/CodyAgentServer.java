@@ -5,7 +5,7 @@ import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 @SuppressWarnings("unused")
-interface CodyAgentServer {
+public interface CodyAgentServer {
   // ========
   // Requests
   // ========
@@ -17,6 +17,12 @@ interface CodyAgentServer {
 
   @JsonRequest("chat/new")
   CompletableFuture<String> chat_new(Void params);
+
+  @JsonRequest("grosshacks/chat/new")
+  CompletableFuture<Void> grosshacks_chat_new(Void params);
+
+  @JsonRequest("grosshacks/webview/postMessageClientToServer")
+  CompletableFuture<Void> grosshacks_webview_postMessageClientToServer(WebviewMessage params);
 
   @JsonRequest("chat/restore")
   CompletableFuture<String> chat_restore(Chat_RestoreParams params);

@@ -2,7 +2,7 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface ExtensionMessage {
+public interface ExtensionMessage {
   static JsonDeserializer<ExtensionMessage> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {

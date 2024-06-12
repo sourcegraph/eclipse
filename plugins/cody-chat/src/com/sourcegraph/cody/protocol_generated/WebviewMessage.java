@@ -2,7 +2,7 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface WebviewMessage {
+public interface WebviewMessage {
   static JsonDeserializer<WebviewMessage> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("command").getAsString()) {
