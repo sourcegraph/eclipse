@@ -31,7 +31,7 @@ public class ChatView extends ViewPart {
 		
 		var browser = new Browser(parent, SWT.EDGE);
 		browser.setText(loadIndex());
-		
+
 		new BrowserFunction(browser, "postMessage") {
 			@Override
 			public Object function(Object[] arguments) {
