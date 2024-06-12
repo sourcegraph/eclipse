@@ -6,17 +6,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -49,37 +43,10 @@ public class ChatView extends ViewPart {
 			};
 		};
 	}
-//	
-//	class Xwindow extends Window {
-//
-//		protected Xwindow(Shell parentShell) {
-//			super(parentShell);
-//			setShellStyle(SWT.APPLICATION_MODAL);
-//			
-//		}
-//		@Override
-//		protected Control createContents(Composite parent) {
-//			var content = super.createContents(parent);
-//			// TODO Auto-generated method stu
-//			var label = new Label(parent, 0);
-//			label.setText("X");
-//			var button = new Button(parent, SWT.PUSH);
-//			button.setText("Cancel");
-//			button.addListener(SWT.MouseDown, (e) -> out.println(e));
-//			var progress = new ProgressBar(parent, SWT.INDETERMINATE);
-//			return content;
-//		}
-//		
-//	}
 
 	private void addLogInAction() {
 		var action = new Action() {
 			@Override public void run() {
-//				display.asyncExec(() -> {
-//					var window = new Xwindow(display.getActiveShell());
-//					window.create();
-//					window.open();
-//				});
 				new LogInJob().schedule();
 			}
 		};
