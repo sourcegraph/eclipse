@@ -7,27 +7,27 @@
     <script>
       function receiveMessage(message) {
 	    const reply = document.createElement("p");
-	    reply.innerHTML = message;
+	    reply.innerHTML = `${message} (token: ${getToken()})`;
 	    document.body.appendChild(reply);
       }
       console.log = function(message) {
-        postMessage(JSON.stringify({kind: 'log', message}))
+		logInEclipse(JSON.stringify({kind: 'log', message}))
       };
       console.warn = function(message) {
-        postMessage(JSON.stringify({kind: 'warn', message}))
+		logInEclipse(JSON.stringify({kind: 'warn', message}))
       };
       console.error = function(message) {
-        postMessage(JSON.stringify({kind: 'error', message}))
+		logInEclipse(JSON.stringify({kind: 'error', message}))
       };
       window.onerror = function(message, source, lineno, colno, error) {
-        postMessage(JSON.stringify({kind: 'onerror', message, source, lineno, colno, error}))
+		logInEclipse(JSON.stringify({kind: 'onerror', message, source, lineno, colno, error}))
       };
 	  
       function handleSubmit(event) {
         event.preventDefault();
         const input = document.getElementById("userInput").value;
         postMessage(input);
-        console.log("User input:", input);
+        console.log("User input: " + input);
       }
     </script>
   </head>

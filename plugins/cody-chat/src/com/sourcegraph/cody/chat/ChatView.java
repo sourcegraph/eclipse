@@ -5,6 +5,8 @@ import static java.lang.System.out;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -16,6 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.sourcegraph.cody.chat.access.LogInJob;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 
 import jakarta.inject.Inject;
 
@@ -24,6 +27,12 @@ public class ChatView extends ViewPart {
 	
 	@Inject
 	private Display display;
+	
+	@Inject
+	private IEclipseContext context;
+	
+	@Inject
+	private TokenStorage tokenStorage;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -32,14 +41,37 @@ public class ChatView extends ViewPart {
 		var browser = new Browser(parent, SWT.EDGE);
 		browser.setText(loadIndex());
 
+		createCallbacks(browser);
+	}
+
+	private void createCallbacks(Browser browser) {
 		new BrowserFunction(browser, "postMessage") {
 			@Override
 			public Object function(Object[] arguments) {
-				out.println("From eclipse: " + arguments[0]);
-				display.asyncExec(() -> 
-					browser.execute("receiveMessage(\"received: " + arguments[0] + "\");")
-				);
+				display.asyncExec(() -> {
+					browser.execute("receiveMessage(\"received: " + arguments[0] + "\");");
+				});
 				return null;
+			};
+		};
+		
+		new BrowserFunction(browser, "logInEclipse") {
+			@Override
+			public Object function(Object[] arguments) {
+				out.println("From webview: " + arguments[0]);
+				return null;
+			};
+		};
+		
+		new BrowserFunction(browser, "getToken") {
+			@Override
+			public Object function(Object[] arguments) {
+				try {
+					return tokenStorage.get();
+				} catch (StorageException e) {
+					e.printStackTrace();
+					return null;
+				}
 			};
 		};
 	}
@@ -47,7 +79,8 @@ public class ChatView extends ViewPart {
 	private void addLogInAction() {
 		var action = new Action() {
 			@Override public void run() {
-				new LogInJob().schedule();
+				var job = new LogInJob(context);
+				job.schedule();
 			}
 		};
 		
