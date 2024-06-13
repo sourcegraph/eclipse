@@ -4,4 +4,3 @@ public final class AttributionParams {
   public java.util.List<String> repositoryNames;
   public Boolean limitHit;
 }
-

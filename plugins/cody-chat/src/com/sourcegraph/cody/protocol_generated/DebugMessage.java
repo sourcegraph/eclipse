@@ -4,4 +4,3 @@ public final class DebugMessage {
   public String channel;
   public String message;
 }
-
