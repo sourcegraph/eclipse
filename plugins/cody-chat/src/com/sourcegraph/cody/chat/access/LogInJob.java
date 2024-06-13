@@ -1,7 +1,5 @@
 package com.sourcegraph.cody.chat.access;
 
-import static java.lang.System.out;
-
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -11,6 +9,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
@@ -20,15 +20,28 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.Callback;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
+import jakarta.inject.Inject;
 
 public class LogInJob extends Job {
 
 	private static final String LOG_IN_URL = "https://sourcegraph.com/user/settings/tokens/new/callback?requestFrom=JETBRAINS-";
 
 	private WaitingForLoginWindow window = null;
+	
+	@Inject
+	private TokenStorage tokenStorage;
+	
+	@Inject
+	private Display display;
 
-	public LogInJob() {
+	@Inject
+	private Shell shell;
+
+	public LogInJob(IEclipseContext context) {
 		super("Loging in...");
+		ContextInjectionFactory.inject(this, context);
 	}
 
 	@Override
@@ -63,13 +76,13 @@ public class LogInJob extends Job {
 			// open login page
 
 			var url = LOG_IN_URL + port;
-			Display.getDefault().asyncExec(() -> {
+			display.asyncExec(() -> {
 				Program.launch(url);
 			});
 
 			// wait for response
 			var response = tokenSignal.get();
-			out.println("!!! " + response);
+			tokenStorage.put(response);
 
 			return Status.OK_STATUS;
 		} catch (CancellationException e) {
@@ -88,9 +101,9 @@ public class LogInJob extends Job {
 	}
 
 	private void showWindow(CompletableFuture<String> tokenSignal) {
-		Display.getDefault().asyncExec(() -> {
+		display.asyncExec(() -> {
 			window = new WaitingForLoginWindow(
-					Display.getDefault().getActiveShell(),
+					shell,
 					() -> { tokenSignal.cancel(true); }
 			);
 			window.open();
@@ -98,7 +111,7 @@ public class LogInJob extends Job {
 	}
 
 	private void closeWindow() {
-		Display.getDefault().asyncExec(() -> {
+		display.asyncExec(() -> {
 			if (window != null) {
 				window.close();
 			}
