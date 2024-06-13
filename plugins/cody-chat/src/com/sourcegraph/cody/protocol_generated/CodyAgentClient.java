@@ -5,7 +5,7 @@ import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 @SuppressWarnings("unused")
-interface CodyAgentClient {
+public interface CodyAgentClient {
   // ========
   // Requests
   // ========
