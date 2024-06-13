@@ -1,9 +1,5 @@
 package com.sourcegraph.cody;
 
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.lsp4j.jsonrpc.Launcher;
-import org.eclipse.ui.services.IDisposable;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -13,6 +9,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.lsp4j.jsonrpc.Launcher;
+import org.eclipse.ui.services.IDisposable;
 
 public class CodyAgent implements IDisposable {
 
@@ -29,8 +28,7 @@ public class CodyAgent implements IDisposable {
     this.process = process;
   }
 
-
-@Nullable public static volatile CodyAgent AGENT = null;
+  @Nullable public static volatile CodyAgent AGENT = null;
 
   private static ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -51,7 +49,7 @@ public class CodyAgent implements IDisposable {
       return;
     }
     try {
-//      client
+      //      client
       listening.cancel(true);
     } catch (Exception e) {
       System.out.println("CodyAgent.stop():");
