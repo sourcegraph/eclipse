@@ -8,4 +8,3 @@ public final class ProtocolDiagnostic {
   public String source;
   public java.util.List<ProtocolRelatedInformationDiagnostic> relatedInformation;
 }
-

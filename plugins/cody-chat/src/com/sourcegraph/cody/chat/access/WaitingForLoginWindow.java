@@ -16,41 +16,41 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 public class WaitingForLoginWindow extends Window {
-	
-	private Runnable cancelCallback;
 
-	public WaitingForLoginWindow(Shell parentShell, Runnable cancellCallback) {
-		super(parentShell);
-		this.cancelCallback = cancellCallback;
-		setShellStyle(SWT.APPLICATION_MODAL | SWT.BORDER);
-	}
+  private Runnable cancelCallback;
 
-	@Override
-	protected Control createContents(Composite parent) {
-		var composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout());
-		
-		var label = new Label(composite, SWT.NONE);
-		label.setText("Loging in...");
-		new ProgressBar(composite, SWT.INDETERMINATE);
-		
-		addCancelButton(composite);
-		
-		return composite;
-	}
+  public WaitingForLoginWindow(Shell parentShell, Runnable cancellCallback) {
+    super(parentShell);
+    this.cancelCallback = cancellCallback;
+    setShellStyle(SWT.APPLICATION_MODAL | SWT.BORDER);
+  }
 
-	private void addCancelButton(Composite parent) {
-		var cancelButton = new Button(parent, SWT.PUSH);
-		cancelButton.setText("Cancel");
-		cancelButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
-				ISharedImages.IMG_ELCL_STOP));
-		cancelButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				cancelCallback.run();
-			}
-		});
-		cancelButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-	}
+  @Override
+  protected Control createContents(Composite parent) {
+    var composite = new Composite(parent, SWT.NONE);
+    composite.setLayout(new GridLayout());
 
+    var label = new Label(composite, SWT.NONE);
+    label.setText("Loging in...");
+    new ProgressBar(composite, SWT.INDETERMINATE);
+
+    addCancelButton(composite);
+
+    return composite;
+  }
+
+  private void addCancelButton(Composite parent) {
+    var cancelButton = new Button(parent, SWT.PUSH);
+    cancelButton.setText("Cancel");
+    cancelButton.setImage(
+        PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ELCL_STOP));
+    cancelButton.addSelectionListener(
+        new SelectionAdapter() {
+          @Override
+          public void widgetSelected(SelectionEvent e) {
+            cancelCallback.run();
+          }
+        });
+    cancelButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+  }
 }

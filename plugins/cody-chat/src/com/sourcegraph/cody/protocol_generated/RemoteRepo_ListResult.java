@@ -6,4 +6,3 @@ public final class RemoteRepo_ListResult {
   public java.util.List<ReposParams> repos;
   public RemoteRepoFetchState state;
 }
-

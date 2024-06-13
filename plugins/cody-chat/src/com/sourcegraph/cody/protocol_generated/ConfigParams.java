@@ -5,4 +5,3 @@ public final class ConfigParams {
   public String serverEndpoint;
   public Boolean uiKindIsWeb;
 }
-

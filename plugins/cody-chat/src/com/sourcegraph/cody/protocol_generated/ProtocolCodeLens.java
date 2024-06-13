@@ -5,4 +5,3 @@ public final class ProtocolCodeLens {
   public ProtocolCommand command;
   public Boolean isResolved;
 }
-

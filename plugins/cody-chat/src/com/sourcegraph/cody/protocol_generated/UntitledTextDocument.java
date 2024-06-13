@@ -5,4 +5,3 @@ public final class UntitledTextDocument {
   public String content;
   public String language;
 }
-

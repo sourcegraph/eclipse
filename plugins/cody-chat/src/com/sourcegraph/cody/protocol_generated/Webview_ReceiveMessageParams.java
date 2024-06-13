@@ -4,4 +4,3 @@ public final class Webview_ReceiveMessageParams {
   public String id;
   public WebviewMessage message;
 }
-
