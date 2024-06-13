@@ -1,7 +1,9 @@
 *.jar
+.vscode/
 plugins/cody-chat/resources/cody-webviews/
 build.scala
 .bsp/
 .scala-build/
 .idea/
 eclipse-plugins-directory.txt
+/bin/
