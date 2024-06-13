@@ -7,13 +7,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
+import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
 import org.eclipse.ui.services.IDisposable;
@@ -54,7 +60,7 @@ public class CodyAgent implements IDisposable {
       return;
     }
     try {
-      server.shutdown().get(1, TimeUnit.SECONDS);
+      server.shutdown(null).get(1, TimeUnit.SECONDS);
       server.exit(null);
       listening.cancel(true);
     } catch (Exception e) {
@@ -75,7 +81,16 @@ public class CodyAgent implements IDisposable {
     return start();
   }
 
-  public static CodyAgent start() throws IOException {
+  public static CodyAgent start() {
+    try {
+      return startUnsafe();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static CodyAgent startUnsafe()
+      throws IOException, InterruptedException, ExecutionException, TimeoutException {
     if (AGENT != null && AGENT.isRunning()) {
       return AGENT;
     }
@@ -110,14 +125,36 @@ public class CodyAgent implements IDisposable {
             .create();
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
+    initialize(server);
     return new CodyAgent(listening, client, server, process);
   }
 
-  private static void initialize(CodyAgentServer server) {
-    new ClientInfo();
-    server.initialize(clientInfo);
-    server.initialized();
+  private static void initialize(CodyAgentServer server)
+      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+    ClientInfo clientInfo = new ClientInfo();
+    clientInfo.name = "cody-eclipse";
+    clientInfo.version = "0.1.0-SNAPSHOT";
+    clientInfo.workspaceRootUri =
+        Paths.get(System.getProperty("user.dir"))
+            .resolve("dev")
+            .resolve("sourcegraph")
+            .resolve("scip-typescript")
+            .toUri()
+            .toString();
+    ClientCapabilities capabilities = new ClientCapabilities();
+    capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
+    clientInfo.capabilities = capabilities;
+    ExtensionConfiguration configuration = new ExtensionConfiguration();
+    configuration.accessToken = Files.readString(Paths.get(System.getProperty("user.home")).resolve(".sourcegraph").resolve("access_token.txt"));
+    configuration.serverEndpoint = "https://sourcegraph.com";
+    configuration.customConfiguration = new HashMap<>();
+
+    
+    clientInfo.extensionConfiguration = configuration;
+    server.initialize(clientInfo).get(10, TimeUnit.SECONDS);
+    server.initialized(null);
   }
+
   private static PrintWriter traceWriter() {
     String tracePath = System.getProperty("cody-agent.trace-path", "");
     if (!tracePath.isEmpty()) {
