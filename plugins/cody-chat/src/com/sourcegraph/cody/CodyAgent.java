@@ -34,6 +34,7 @@ public class CodyAgent implements IDisposable {
 
   public static void stop() {
     System.out.println("Cody is stopping");
+//    AGENT.dispose();
     if (AGENT != null) {
       AGENT.dispose();
     }
