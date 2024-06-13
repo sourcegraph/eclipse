@@ -32,7 +32,7 @@ interface ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-                // uri, history
+    // uri, history
     public Integer size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -56,7 +56,7 @@ interface ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-                // uri, history
+    // uri, history
     public Integer size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -81,7 +81,7 @@ interface ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-                // uri, history
+    // uri, history
     public Integer size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -107,7 +107,7 @@ interface ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-                // uri, history
+    // uri, history
     public Integer size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -133,7 +133,7 @@ interface ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-                // uri, history
+    // uri, history
     public Integer size;
     public Boolean isIgnored;
     public Boolean isTooLarge;

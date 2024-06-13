@@ -4,7 +4,7 @@ public final class EditTask {
   public String id;
   public CodyTaskState
       state; // Oneof: Idle, Working, Inserting, Applying, Formatting, Applied, Finished, Error,
-             // Pending
+  // Pending
   public CodyError error;
   public Range selectionRange;
   public String instruction;
