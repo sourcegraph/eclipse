@@ -7,3 +7,5 @@ build.scala
 .idea/
 eclipse-plugins-directory.txt
 /bin/
+.classpath
+.project

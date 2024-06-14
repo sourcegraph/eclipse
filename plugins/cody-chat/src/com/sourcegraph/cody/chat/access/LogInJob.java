@@ -36,7 +36,7 @@ public class LogInJob extends Job {
   @Inject private Shell shell;
 
   public LogInJob(IEclipseContext context) {
-    super("Loging in...");
+    super("Logging in...");
     ContextInjectionFactory.inject(this, context);
   }
 
