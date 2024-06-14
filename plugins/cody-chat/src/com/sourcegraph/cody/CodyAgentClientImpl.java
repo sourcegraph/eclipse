@@ -43,7 +43,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void debug_message(DebugMessage params) {
-    System.out.println(String.format("debug_message(%s)", params));
+    System.out.println(String.format("%s: %s", params.channel, params.message));
   }
 
   @Override

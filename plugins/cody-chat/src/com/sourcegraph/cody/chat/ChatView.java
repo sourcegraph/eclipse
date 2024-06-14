@@ -2,6 +2,7 @@ package com.sourcegraph.cody.chat;
 
 import static java.lang.System.out;
 
+import com.sourcegraph.cody.CodyAgent;
 import com.sourcegraph.cody.chat.access.LogInJob;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import jakarta.inject.Inject;
@@ -31,6 +32,7 @@ public class ChatView extends ViewPart {
   @Override
   public void createPartControl(Composite parent) {
     addLogInAction();
+    addRestartCodyAction();
 
     var browser = new Browser(parent, SWT.EDGE);
     browser.setText(loadIndex());
@@ -90,6 +92,31 @@ public class ChatView extends ViewPart {
         PlatformUI.getWorkbench()
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+
+    var toolBar = getViewSite().getActionBars().getToolBarManager();
+    toolBar.add(action);
+  }
+
+  private void addRestartCodyAction() {
+    var action =
+        new Action() {
+          @Override
+          public void run() {
+            try {
+				CodyAgent.restart();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+          }
+        };
+
+    action.setText("Restart Cody");
+    action.setToolTipText("Restart Cody Agent");
+    action.setImageDescriptor(
+        PlatformUI.getWorkbench()
+            .getSharedImages()
+            .getImageDescriptor(ISharedImages.IMG_ELCL_SYNCED));
 
     var toolBar = getViewSite().getActionBars().getToolBarManager();
     toolBar.add(action);
