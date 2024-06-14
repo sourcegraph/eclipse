@@ -48,6 +48,9 @@ public interface CodyAgentClient {
   @JsonNotification("webview/postMessage")
   void webview_postMessage(WebviewPostMessageParams params);
 
+  @JsonNotification("grosshacks/webview/postMessage")
+  void grosshacks_webview_postMessage(ExtensionMessage params);
+
   @JsonNotification("progress/start")
   void progress_start(ProgressStartParams params);
 

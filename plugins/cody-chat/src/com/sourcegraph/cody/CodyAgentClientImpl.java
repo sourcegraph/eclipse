@@ -1,8 +1,10 @@
 package com.sourcegraph.cody;
 
+import com.google.gson.Gson;
 import com.sourcegraph.cody.protocol_generated.*;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class CodyAgentClientImpl implements CodyAgentClient {
   @Override
@@ -94,5 +96,18 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   @Override
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {
     System.out.println("remoteRepo_didChangeState called with params: " + params);
+  }
+
+  public Consumer<ExtensionMessage> extensionMessageConsumer;
+
+  @Override
+  public void grosshacks_webview_postMessage(ExtensionMessage params) {
+    System.out.println(
+        String.format("grosshacks/webview/postMessage %s", new Gson().toJson(params)));
+    if (extensionMessageConsumer != null) {
+      extensionMessageConsumer.accept(params);
+    }
+    // TODO Auto-generated method stub
+
   }
 }

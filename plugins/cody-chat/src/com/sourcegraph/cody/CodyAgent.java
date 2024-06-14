@@ -27,14 +27,12 @@ import org.eclipse.ui.services.IDisposable;
 public class CodyAgent implements IDisposable {
 
   private final Future<Void> listening;
-  private final CodyAgentClientImpl client;
-  private final CodyAgentServer server;
+  public static final CodyAgentClientImpl CLIENT = new CodyAgentClientImpl();
+  public final CodyAgentServer server;
   private final Process process;
 
-  public CodyAgent(
-      Future<Void> listening, CodyAgentClientImpl client, CodyAgentServer server, Process process) {
+  public CodyAgent(Future<Void> listening, CodyAgentServer server, Process process) {
     this.listening = listening;
-    this.client = client;
     this.server = server;
     this.process = process;
   }
@@ -89,20 +87,18 @@ public class CodyAgent implements IDisposable {
     }
   }
 
-  public static CodyAgent startUnsafe()
+  private static CodyAgent startUnsafe()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     if (AGENT != null && AGENT.isRunning()) {
       return AGENT;
     }
     System.out.println("Cody is starting");
-    CodyAgentClientImpl client = new CodyAgentClientImpl();
     String workingDirectory = System.getProperty("user.dir");
     System.out.println("WORKING DIR " + workingDirectory);
     Path agentPath =
         Paths.get(System.getProperty("user.home"))
             .resolve("dev")
             .resolve("sourcegraph")
-            .resolve("eclipse")
             .resolve("cody")
             .resolve("agent")
             .resolve("dist")
@@ -112,7 +108,10 @@ public class CodyAgent implements IDisposable {
     arguments.add("--enable-source-maps");
     arguments.add(agentPath.toString());
     Process process =
-        new ProcessBuilder(arguments).directory(Paths.get(workingDirectory).toFile()).start();
+        new ProcessBuilder(arguments)
+            .directory(Paths.get(workingDirectory).toFile())
+            .redirectError(ProcessBuilder.Redirect.INHERIT)
+            .start();
 
     Launcher<CodyAgentServer> launcher =
         new Launcher.Builder<CodyAgentServer>()
@@ -121,12 +120,12 @@ public class CodyAgent implements IDisposable {
             .setExecutorService(executorService)
             .setInput(process.getInputStream())
             .setOutput(process.getOutputStream())
-            .setLocalService(client)
+            .setLocalService(CLIENT)
             .create();
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
     initialize(server);
-    return new CodyAgent(listening, client, server, process);
+    return new CodyAgent(listening, server, process);
   }
 
   private static void initialize(CodyAgentServer server)
@@ -145,11 +144,14 @@ public class CodyAgent implements IDisposable {
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     clientInfo.capabilities = capabilities;
     ExtensionConfiguration configuration = new ExtensionConfiguration();
-    configuration.accessToken = Files.readString(Paths.get(System.getProperty("user.home")).resolve(".sourcegraph").resolve("access_token.txt"));
+    configuration.accessToken =
+        Files.readString(
+            Paths.get(System.getProperty("user.home"))
+                .resolve(".sourcegraph")
+                .resolve("access_token.txt"));
     configuration.serverEndpoint = "https://sourcegraph.com";
     configuration.customConfiguration = new HashMap<>();
 
-    
     clientInfo.extensionConfiguration = configuration;
     server.initialize(clientInfo).get(10, TimeUnit.SECONDS);
     server.initialized(null);
@@ -157,6 +159,7 @@ public class CodyAgent implements IDisposable {
 
   private static PrintWriter traceWriter() {
     String tracePath = System.getProperty("cody-agent.trace-path", "");
+    System.out.println("tracepath " + tracePath);
     if (!tracePath.isEmpty()) {
       Path trace = Paths.get(tracePath);
       try {

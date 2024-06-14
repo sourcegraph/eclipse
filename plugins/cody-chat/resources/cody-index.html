@@ -3,7 +3,30 @@
   <!-- This file is only intended to be used for local development -->
   <head>
     <script type="module" crossorigin src="./injected-script.js"></script>
-
+    <script>
+      // if eclipse_postMessage is not defined
+      if (typeof eclipse_postMessage === "undefined") {
+        eclipse_postMessage = (args) => {
+          if (args?.command === "initialized") {
+            console.debug("READY!");
+            const data = JSON.stringify({
+              type: "transcript",
+              messages: [],
+              isMessageInProgress: false,
+              chatID: "Fri, 14 Jun 2024 12:13:50 GMT",
+            });
+            const event = new CustomEvent("message");
+            event.data = data;
+            window.dispatchEvent(event);
+          }
+        };
+      }
+      if (typeof eclipse_log === "undefined") {
+        eclipse_log = (args) => {
+          console.debug({ eclipse_log: args });
+        };
+      }
+    </script>
     <link rel="stylesheet" crossorigin href="./injected-styles.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
