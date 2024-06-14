@@ -1,0 +1,19 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "cody-eclipse",
+    srcs = glob(["plugins/cody-chat/src/**/*.java"]),
+  deps = [
+    "//foo:lib.jar",
+  ],
+
+)
+
+
+java_import(
+    name = "local_jar",
+    jars = ["local.jar"],
+    visibility = ["//visibility:public"],
+)
