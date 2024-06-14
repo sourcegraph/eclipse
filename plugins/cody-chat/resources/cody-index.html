@@ -4,20 +4,61 @@
   <head>
     <script type="module" crossorigin src="./injected-script.js"></script>
     <script>
+      function eclipse_postMessage(message) {
+        console.log(`eclipse_postMessage ${message}`);
+        fire(JSON.parse(message));
+      }
+      function fire(message) {
+        const event = new CustomEvent("message");
+        event.data = message;
+        window.dispatchEvent(event);
+      }
       // if eclipse_postMessage is not defined
-      if (typeof eclipse_postMessage === "undefined") {
-        eclipse_postMessage = (args) => {
+      if (typeof eclipse_receiveMessage === "undefined") {
+        eclipse_receiveMessage = (argsString) => {
+          console.log(`eclipse_receiveMessage ${argsString}`);
+          const args = JSON.stringify(argsString);
           if (args?.command === "initialized") {
-            console.debug("READY!");
-            const data = JSON.stringify({
-              type: "transcript",
-              messages: [],
-              isMessageInProgress: false,
-              chatID: "Fri, 14 Jun 2024 12:13:50 GMT",
+            fire({
+              type: "config",
+              config: {
+                uiKindIsWeb: false,
+                serverEndpoint: "https://sourcegraph.sourcegraph.com/",
+                experimentalNoodle: false,
+              },
+              authStatus: {
+                endpoint: "https://sourcegraph.sourcegraph.com/",
+                isDotCom: false,
+                isLoggedIn: true,
+                showInvalidAccessTokenError: false,
+                authenticated: true,
+                hasVerifiedEmail: false,
+                requiresVerifiedEmail: false,
+                siteHasCodyEnabled: true,
+                siteVersion: "278391_2024-06-14_5.4-8474caf35fe6",
+                userCanUpgrade: false,
+                username: "olafurpg",
+                primaryEmail: "olafurpg@gmail.com",
+                displayName: "Ólafur Páll Geirsson",
+                avatarURL:
+                  "https://avatars.githubusercontent.com/u/1408093?v=4",
+                codyApiVersion: 1,
+                configOverwrites: {
+                  chatModel: "anthropic/claude-3-sonnet-20240229",
+                  chatModelMaxTokens: 12000,
+                  fastChatModel: "anthropic/claude-3-haiku-20240307",
+                  fastChatModelMaxTokens: 12000,
+                  completionModel: "fireworks/starcoder",
+                  completionModelMaxTokens: 9000,
+                  provider: "sourcegraph",
+                  smartContextWindow: true,
+                },
+              },
+              workspaceFolderUris: [
+                "file:///c%3A/Users/olafu/RustroverProjects/sourcegraph",
+              ],
             });
-            const event = new CustomEvent("message");
-            event.data = data;
-            window.dispatchEvent(event);
+            fire({ type: "history", localHistory: { chat: {} } });
           }
         };
       }

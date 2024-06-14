@@ -10,9 +10,9 @@ import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ExtensionMessage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewMessage;
+import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
 import jakarta.inject.Inject;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class ChatView extends ViewPart {
 
   @Inject private TokenStorage tokenStorage;
 
-  private Gson gson = ChatView.createGson();
+  public static Gson gson = ChatView.createGson();
 
   private static Gson createGson() {
     GsonBuilder builder = new GsonBuilder();
@@ -50,7 +50,7 @@ public class ChatView extends ViewPart {
     return builder.create();
   }
 
-  private void doSendExtensionMessage(Browser browser, ExtensionMessage message) {
+  private void doPostMessage(Browser browser, ExtensionMessage message) {
     browser.execute("eclipse_receiveMessage(" + gson.toJson(gson.toJson(message)) + ");");
   }
 
@@ -60,11 +60,12 @@ public class ChatView extends ViewPart {
     addRestartCodyAction();
     AtomicReference<Browser> browser = new AtomicReference<>();
     ArrayList<ExtensionMessage> pendingExtensionMessages = new ArrayList<>();
+    AtomicReference<String> chatId = new AtomicReference<>("");
     CodyAgent.CLIENT.extensionMessageConsumer =
         (message) -> {
-          System.out.println("WEBVIEW/RECEIVE_MESSAGE");
+          System.out.println("WEBVIEW/POST_MESSAGE");
           if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
-            doSendExtensionMessage(browser.get(), message);
+            doPostMessage(browser.get(), message);
           } else {
             // TODO: implement proper queue so we get FIFO ordering
             pendingExtensionMessages.add(message);
@@ -74,43 +75,45 @@ public class ChatView extends ViewPart {
     CodyAgent agent = CodyAgent.start();
     var b = new Browser(parent, SWT.EDGE);
     browser.set(b);
-    createCallbacks(browser.get(), agent);
     try {
       System.out.println("CHAT/NEW");
-      agent.server.grosshacks_chat_new(null).get(5, TimeUnit.SECONDS);
-      System.out.println("DONE - CHAT/NEW");
+      chatId.set(agent.server.chat_new(null).get(5, TimeUnit.SECONDS));
+      System.out.println("DONE - CHAT/NEW " + chatId);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    createCallbacks(browser.get(), agent, chatId.get());
 
     try {
 
       for (var message : pendingExtensionMessages) {
-        doSendExtensionMessage(browser.get(), message);
+        doPostMessage(browser.get(), message);
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     //    browser.setText(loadIndex());
-    var text = loadCodyIndex();
-	// out.println("HTMLTEXT " + text);
-//    browser.get().setText(text);
+    // out.println("HTMLTEXT " + text);
+    //    browser.get().setText(text);
     browser.get().setUrl("http://localhost:8000/cody-index.html");
   }
 
-  private void createCallbacks(Browser browser, CodyAgent agent) {
-    new BrowserFunction(browser, "eclipse_postMessage") {
+  private void createCallbacks(Browser browser, CodyAgent agent, String chatId) {
+    new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
-        System.out.println("SERVER - eclipse_postMessage: " + Arrays.asList(arguments));
+        System.out.println("SERVER - eclipse_receiveMessage: " + Arrays.asList(arguments));
         display.asyncExec(
             () -> {
               WebviewMessage parsedObject =
                   gson.fromJson((String) arguments[0], WebviewMessage.class);
               System.out.println("From webview: " + parsedObject);
-              agent.server.grosshacks_webview_postMessageClientToServer(parsedObject);
+              Webview_ReceiveMessageParams params = new Webview_ReceiveMessageParams();
+              params.id = chatId;
+              params.message = parsedObject;
+              agent.server.webview_receiveMessage(params);
               //              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] +
               // "\");");
             });

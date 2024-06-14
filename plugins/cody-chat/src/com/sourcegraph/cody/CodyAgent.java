@@ -19,6 +19,7 @@ import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
@@ -121,6 +122,9 @@ public class CodyAgent implements IDisposable {
             .setInput(process.getInputStream())
             .setOutput(process.getOutputStream())
             .setLocalService(CLIENT)
+            .configureGson(builder -> 
+            	ProtocolTypeAdapters.register(builder)
+            )
             .create();
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
