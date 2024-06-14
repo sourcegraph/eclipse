@@ -1,6 +1,8 @@
 package com.sourcegraph.cody;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.sourcegraph.cody.chat.ChatView;
 import com.sourcegraph.cody.protocol_generated.*;
 
 import java.util.concurrent.CompletableFuture;
@@ -70,7 +72,10 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_postMessage(WebviewPostMessageParams params) {
-    System.out.println("webview_postMessage called with params: " + params);
+    System.out.println("webview_postMessage called with params: " + ChatView.gson.toJson(params));
+    if (extensionMessageConsumer != null && params.message != null) {
+      extensionMessageConsumer.accept(params.message);
+    }
   }
 
   @Override
@@ -98,15 +103,12 @@ public class CodyAgentClientImpl implements CodyAgentClient {
     System.out.println("remoteRepo_didChangeState called with params: " + params);
   }
 
-  public Consumer<ExtensionMessage> extensionMessageConsumer;
+  public Consumer<JsonElement> extensionMessageConsumer;
 
   @Override
   public void grosshacks_webview_postMessage(ExtensionMessage params) {
     System.out.println(
         String.format("grosshacks/webview/postMessage %s", new Gson().toJson(params)));
-    if (extensionMessageConsumer != null) {
-      extensionMessageConsumer.accept(params);
-    }
     // TODO Auto-generated method stub
 
   }

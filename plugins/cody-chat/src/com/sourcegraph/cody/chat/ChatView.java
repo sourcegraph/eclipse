@@ -4,12 +4,13 @@ import static java.lang.System.out;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.sourcegraph.cody.CodyAgent;
 import com.sourcegraph.cody.chat.access.LogInJob;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ExtensionMessage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-import com.sourcegraph.cody.protocol_generated.WebviewMessage;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -50,8 +51,9 @@ public class ChatView extends ViewPart {
     return builder.create();
   }
 
-  private void doPostMessage(Browser browser, ExtensionMessage message) {
-    browser.execute("eclipse_receiveMessage(" + gson.toJson(gson.toJson(message)) + ");");
+  private void doPostMessage(Browser browser, JsonElement message) {
+    String stringifiedMessage = gson.toJson(message.toString());
+    browser.execute("eclipse_receiveMessage(" + stringifiedMessage + ");");
   }
 
   @Override
@@ -59,17 +61,20 @@ public class ChatView extends ViewPart {
     addLogInAction();
     addRestartCodyAction();
     AtomicReference<Browser> browser = new AtomicReference<>();
-    ArrayList<ExtensionMessage> pendingExtensionMessages = new ArrayList<>();
+    ArrayList<JsonElement> pendingExtensionMessages = new ArrayList<>();
     AtomicReference<String> chatId = new AtomicReference<>("");
     CodyAgent.CLIENT.extensionMessageConsumer =
         (message) -> {
-          System.out.println("WEBVIEW/POST_MESSAGE");
-          if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
-            doPostMessage(browser.get(), message);
-          } else {
-            // TODO: implement proper queue so we get FIFO ordering
-            pendingExtensionMessages.add(message);
-          }
+          display.asyncExec(
+              () -> {
+                System.out.println("WEBVIEW/POST_MESSAGE");
+                if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
+                  doPostMessage(browser.get(), message);
+                } else {
+                  // TODO: implement proper queue so we get FIFO ordering
+                  pendingExtensionMessages.add(message);
+                }
+              });
         };
 
     CodyAgent agent = CodyAgent.start();
@@ -104,15 +109,13 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
-        System.out.println("SERVER - eclipse_receiveMessage: " + Arrays.asList(arguments));
         display.asyncExec(
             () -> {
-              WebviewMessage parsedObject =
-                  gson.fromJson((String) arguments[0], WebviewMessage.class);
-              System.out.println("From webview: " + parsedObject);
+              JsonElement message = JsonParser.parseString((String) arguments[0]);
+              System.out.println("SERVER - eclipse_receiveMessage: " + message);
               Webview_ReceiveMessageParams params = new Webview_ReceiveMessageParams();
               params.id = chatId;
-              params.message = parsedObject;
+              params.message = message;
               agent.server.webview_receiveMessage(params);
               //              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] +
               // "\");");

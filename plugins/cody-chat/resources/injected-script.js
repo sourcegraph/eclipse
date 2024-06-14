@@ -1,34 +1,34 @@
-function eclipse_receiveMessage(message) {
-	console.log("eclipse_receiveMessage", message)
-    const event = new CustomEvent('message');
-    event.data = message;
-    window.dispatchEvent(event)
-  // const reply = document.createElement("p");
-  // reply.innerHTML = `${message} (token: ${eclipse_getToken()})`;
-  // document.body.appendChild(reply);
-}
+// function eclipse_receiveMessage(message) {
+// 	console.log("eclipse_receiveMessage", message)
+//     const event = new CustomEvent('message');
+//     event.data = message;
+//     window.dispatchEvent(event)
+//   // const reply = document.createElement("p");
+//   // reply.innerHTML = `${message} (token: ${eclipse_getToken()})`;
+//   // document.body.appendChild(reply);
+// }
 
-console.log = function (message) {
-  eclipse_log(JSON.stringify({ kind: "log", message }));
-};
-console.warn = function (message) {
-  eclipse_log(JSON.stringify({ kind: "warn", message }));
-};
-console.error = function (message) {
-  eclipse_log(JSON.stringify({ kind: "error", message }));
-};
-window.onerror = function (message, source, lineno, colno, error) {
-  eclipse_log(
-    JSON.stringify({
-      kind: "onerror",
-      message,
-      source,
-      lineno,
-      colno,
-      error,
-    })
-  );
-};
+// console.log = function (message) {
+//   eclipse_log(JSON.stringify({ kind: "log", message }));
+// };
+// console.warn = function (message) {
+//   eclipse_log(JSON.stringify({ kind: "warn", message }));
+// };
+// console.error = function (message) {
+//   eclipse_log(JSON.stringify({ kind: "error", message }));
+// };
+// window.onerror = function (message, source, lineno, colno, error) {
+//   eclipse_log(
+//     JSON.stringify({
+//       kind: "onerror",
+//       message,
+//       source,
+//       lineno,
+//       colno,
+//       error,
+//     })
+//   );
+// };
 globalThis.acquireVsCodeApi = (function() {
     let acquired = false;
     let state = undefined;
