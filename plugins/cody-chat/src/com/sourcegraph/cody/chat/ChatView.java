@@ -53,7 +53,7 @@ public class ChatView extends ViewPart {
 
   private void doPostMessage(Browser browser, JsonElement message) {
     String stringifiedMessage = gson.toJson(message.toString());
-    browser.execute("eclipse_receiveMessage(" + stringifiedMessage + ");");
+    browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
   }
 
   @Override
@@ -67,7 +67,7 @@ public class ChatView extends ViewPart {
         (message) -> {
           display.asyncExec(
               () -> {
-                System.out.println("WEBVIEW/POST_MESSAGE");
+                System.out.println("WEBVIEW/POST_MESSAGE " + message);
                 if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
                   doPostMessage(browser.get(), message);
                 } else {

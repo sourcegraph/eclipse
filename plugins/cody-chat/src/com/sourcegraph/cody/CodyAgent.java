@@ -152,7 +152,7 @@ public class CodyAgent implements IDisposable {
         Files.readString(
             Paths.get(System.getProperty("user.home"))
                 .resolve(".sourcegraph")
-                .resolve("access_token.txt"));
+                .resolve("access_token.txt")).trim();
     configuration.serverEndpoint = "https://sourcegraph.com";
     configuration.customConfiguration = new HashMap<>();
 

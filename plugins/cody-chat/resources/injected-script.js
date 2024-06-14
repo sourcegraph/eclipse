@@ -42,7 +42,7 @@ globalThis.acquireVsCodeApi = (function() {
             postMessage: function(message, transfer) {
               console.assert(!transfer);
               // console.log(`do-post-message: ${JSON.stringify(message)}`);
-              eclipse_postMessage(JSON.stringify(message));
+              eclipse_receiveMessage(JSON.stringify(message));
             //   ${viewToHost.inject("JSON.stringify({what: 'postMessage', value: message})")}
             },
             setState: function(newState) {
