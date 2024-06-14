@@ -16,6 +16,14 @@
             category="cody"
             inject="true">
       </view>
+      <view
+            category="cody"
+            class="com.sourcegraph.cody.chat.access.TokenSelectionView"
+            icon="icons/sample.png"
+            id="com.sourcegraph.cody.chat.access.TokenSelectionView"
+            inject="true"
+            name="Cody token selection">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
