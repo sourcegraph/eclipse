@@ -4,4 +4,3 @@ public final class RangeData {
   public StartParams start;
   public EndParams end;
 }
-

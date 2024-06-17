@@ -4,4 +4,3 @@ public final class Graphql_GetRepoIdsParams {
   public java.util.List<String> names;
   public Integer first;
 }
-

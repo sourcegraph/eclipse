@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.sourcegraph.cody.chat.ChatView;
 import com.sourcegraph.cody.protocol_generated.*;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 

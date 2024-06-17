@@ -4,4 +4,3 @@ public final class Chat_EditMessageParams {
   public String id;
   public WebviewMessage message;
 }
-

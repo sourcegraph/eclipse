@@ -4,4 +4,3 @@ public final class SearchPanelFile {
   public Uri uri;
   public java.util.List<SearchPanelSnippet> snippets;
 }
-

@@ -2,29 +2,23 @@ package com.sourcegraph.cody.chat;
 
 import static java.lang.System.out;
 
-import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.sourcegraph.cody.CodyAgent;
-import com.sourcegraph.cody.chat.access.LogInJob;
+import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
-import com.sourcegraph.cody.protocol_generated.ExtensionMessage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;

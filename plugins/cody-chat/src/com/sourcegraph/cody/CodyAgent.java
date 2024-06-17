@@ -1,5 +1,10 @@
 package com.sourcegraph.cody;
 
+import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
+import com.sourcegraph.cody.protocol_generated.ClientInfo;
+import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
+import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -14,13 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
 import org.eclipse.ui.services.IDisposable;
@@ -122,9 +120,7 @@ public class CodyAgent implements IDisposable {
             .setInput(process.getInputStream())
             .setOutput(process.getOutputStream())
             .setLocalService(CLIENT)
-            .configureGson(builder -> 
-            	ProtocolTypeAdapters.register(builder)
-            )
+            .configureGson(builder -> ProtocolTypeAdapters.register(builder))
             .create();
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
@@ -150,9 +146,10 @@ public class CodyAgent implements IDisposable {
     ExtensionConfiguration configuration = new ExtensionConfiguration();
     configuration.accessToken =
         Files.readString(
-            Paths.get(System.getProperty("user.home"))
-                .resolve(".sourcegraph")
-                .resolve("access_token.txt")).trim();
+                Paths.get(System.getProperty("user.home"))
+                    .resolve(".sourcegraph")
+                    .resolve("access_token.txt"))
+            .trim();
     configuration.serverEndpoint = "https://sourcegraph.com";
     configuration.customConfiguration = new HashMap<>();
 

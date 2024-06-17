@@ -16,67 +16,91 @@ public final class ClientCapabilities {
   public WebviewMessagesEnum webviewMessages; // Oneof: object, string
 
   public enum CompletionsEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
   }
 
   public enum ChatEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("streaming") Streaming,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("streaming")
+    Streaming,
   }
 
   public enum GitEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum ProgressBarsEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum EditEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum EditWorkspaceEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum UntitledDocumentsEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum ShowDocumentEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum CodeLensesEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum ShowWindowMessageEnum {
-    @com.google.gson.annotations.SerializedName("notification") Notification,
-    @com.google.gson.annotations.SerializedName("request") Request,
+    @com.google.gson.annotations.SerializedName("notification")
+    Notification,
+    @com.google.gson.annotations.SerializedName("request")
+    Request,
   }
 
   public enum IgnoreEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum CodeActionsEnum {
-    @com.google.gson.annotations.SerializedName("none") None,
-    @com.google.gson.annotations.SerializedName("enabled") Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
   }
 
   public enum WebviewMessagesEnum {
-    @com.google.gson.annotations.SerializedName("object") Object,
-    @com.google.gson.annotations.SerializedName("string") String,
+    @com.google.gson.annotations.SerializedName("object")
+    Object,
+    @com.google.gson.annotations.SerializedName("string")
+    String,
   }
 }
-

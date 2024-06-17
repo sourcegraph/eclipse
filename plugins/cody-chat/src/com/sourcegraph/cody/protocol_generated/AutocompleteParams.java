@@ -8,8 +8,9 @@ public final class AutocompleteParams {
   public SelectedCompletionInfo selectedCompletionInfo;
 
   public enum TriggerKindEnum {
-    @com.google.gson.annotations.SerializedName("Automatic") Automatic,
-    @com.google.gson.annotations.SerializedName("Invoke") Invoke,
+    @com.google.gson.annotations.SerializedName("Automatic")
+    Automatic,
+    @com.google.gson.annotations.SerializedName("Invoke")
+    Invoke,
   }
 }
-

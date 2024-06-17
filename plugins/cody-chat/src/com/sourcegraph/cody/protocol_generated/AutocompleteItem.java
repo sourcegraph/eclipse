@@ -5,4 +5,3 @@ public final class AutocompleteItem {
   public String insertText;
   public Range range;
 }
-

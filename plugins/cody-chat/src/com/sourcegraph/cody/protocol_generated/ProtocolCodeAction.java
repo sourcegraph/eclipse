@@ -9,4 +9,3 @@ public final class ProtocolCodeAction {
   public Boolean isPreferred;
   public DisabledParams disabled;
 }
-

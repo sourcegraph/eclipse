@@ -5,4 +5,3 @@ public final class MentionParams {
   public Object data;
   public String description;
 }
-

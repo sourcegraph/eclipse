@@ -4,4 +4,3 @@ public final class Webview_PostMessageStringParams {
   public String id;
   public String stringEncodedMessage;
 }
-

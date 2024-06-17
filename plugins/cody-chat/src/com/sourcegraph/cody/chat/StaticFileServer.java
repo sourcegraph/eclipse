@@ -1,10 +1,7 @@
 package com.sourcegraph.cody.chat;
 
-import java.nio.file.Paths;
 
 import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.util.Callback;
 
 public class StaticFileServer {
