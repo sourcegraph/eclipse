@@ -24,8 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class LogInJob extends Job {
 
-  private static final String LOG_IN_URL =
-      "https://sourcegraph.com/user/settings/tokens/new/callback?requestFrom=JETBRAINS-";
+  private static final String ATTRIB = "?requestFrom=JETBRAINS-";
 
   private WaitingForLoginWindow window = null;
 
@@ -35,8 +34,13 @@ public class LogInJob extends Job {
 
   @Inject private Shell shell;
 
-  public LogInJob(IEclipseContext context) {
+  private String name;
+  private String url;
+
+  public LogInJob(IEclipseContext context, String name, String url) {
     super("Loging in...");
+    this.name = name;
+    this.url = url;
     ContextInjectionFactory.inject(this, context);
   }
 
@@ -74,15 +78,17 @@ public class LogInJob extends Job {
 
       // open login page
 
-      var url = LOG_IN_URL + port;
+      var logInUrl = url + ATTRIB + port;
+
       display.asyncExec(
           () -> {
-            Program.launch(url);
+            Program.launch(logInUrl);
           });
 
       // wait for response
       var response = tokenSignal.get();
-      tokenStorage.put(response);
+      tokenStorage.put(name, url, response);
+      tokenStorage.setActiveProfileName(name);
 
       return Status.OK_STATUS;
     } catch (CancellationException e) {
