@@ -7,11 +7,9 @@ public final class ShowWindowMessageParams {
   public java.util.List<String> items;
 
   public enum SeverityEnum {
-    @com.google.gson.annotations.SerializedName("error")
-    Error,
-    @com.google.gson.annotations.SerializedName("warning")
-    Warning,
-    @com.google.gson.annotations.SerializedName("information")
-    Information,
+    @com.google.gson.annotations.SerializedName("error") Error,
+    @com.google.gson.annotations.SerializedName("warning") Warning,
+    @com.google.gson.annotations.SerializedName("information") Information,
   }
 }
+

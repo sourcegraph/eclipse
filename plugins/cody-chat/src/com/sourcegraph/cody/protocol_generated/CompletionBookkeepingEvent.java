@@ -13,3 +13,4 @@ public final class CompletionBookkeepingEvent {
   public java.util.List<CompletionItemInfo> items;
   public Integer loggedPartialAcceptedLength;
 }
+

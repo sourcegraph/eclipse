@@ -15,7 +15,7 @@ public final class ChatError {
   public IsChatErrorGuardEnum isChatErrorGuard; // Oneof: isChatErrorGuard
 
   public enum IsChatErrorGuardEnum {
-    @com.google.gson.annotations.SerializedName("isChatErrorGuard")
-    IsChatErrorGuard,
+    @com.google.gson.annotations.SerializedName("isChatErrorGuard") IsChatErrorGuard,
   }
 }
+

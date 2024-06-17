@@ -4,3 +4,4 @@ public final class SearchPanelSnippet {
   public String contents;
   public RangeData range;
 }
+

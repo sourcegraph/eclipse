@@ -4,3 +4,4 @@ public final class ProtocolLocation {
   public String uri;
   public Range range;
 }
+
