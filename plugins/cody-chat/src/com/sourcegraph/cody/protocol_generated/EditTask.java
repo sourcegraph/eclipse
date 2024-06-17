@@ -9,4 +9,3 @@ public final class EditTask {
   public Range selectionRange;
   public String instruction;
 }
-
