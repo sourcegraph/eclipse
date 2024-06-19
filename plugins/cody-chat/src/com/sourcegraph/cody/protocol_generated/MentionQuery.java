@@ -6,3 +6,4 @@ public final class MentionQuery {
   public RangeData range;
   public Boolean maybeHasRangeSuffix;
 }
+

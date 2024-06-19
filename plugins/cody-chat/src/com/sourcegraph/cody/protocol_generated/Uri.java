@@ -8,3 +8,4 @@ public final class Uri {
   public String fragment;
   public String fsPath;
 }
+

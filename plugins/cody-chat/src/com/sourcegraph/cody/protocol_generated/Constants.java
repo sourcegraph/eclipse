@@ -103,10 +103,8 @@ public final class Constants {
   public static final String openLocalFileWithRange = "openLocalFileWithRange";
   public static final String edit = "edit";
   public static final String context_get_remote_search_repos = "context/get-remote-search-repos";
-  public static final String context_choose_remote_search_repo =
-      "context/choose-remote-search-repo";
-  public static final String context_remove_remote_search_repo =
-      "context/remove-remote-search-repo";
+  public static final String context_choose_remote_search_repo = "context/choose-remote-search-repo";
+  public static final String context_remove_remote_search_repo = "context/remove-remote-search-repo";
   public static final String embeddings_index = "embeddings/index";
   public static final String symf_index = "symf/index";
   public static final String newFile = "newFile";
@@ -141,4 +139,6 @@ public final class Constants {
   public static final String enabled = "enabled";
   public static final String notification = "notification";
   public static final String request = "request";
+  public static final String object_encoded = "object-encoded";
+  public static final String string_encoded = "string-encoded";
 }

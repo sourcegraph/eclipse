@@ -4,3 +4,4 @@ public final class Position {
   public Integer line;
   public Integer character;
 }
+

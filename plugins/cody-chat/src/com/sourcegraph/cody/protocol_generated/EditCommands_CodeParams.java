@@ -6,9 +6,8 @@ public final class EditCommands_CodeParams {
   public ModeEnum mode; // Oneof: edit, insert
 
   public enum ModeEnum {
-    @com.google.gson.annotations.SerializedName("edit")
-    Edit,
-    @com.google.gson.annotations.SerializedName("insert")
-    Insert,
+    @com.google.gson.annotations.SerializedName("edit") Edit,
+    @com.google.gson.annotations.SerializedName("insert") Insert,
   }
 }
+

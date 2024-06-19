@@ -4,6 +4,7 @@ Bundle-Name: cody-chat
 Bundle-SymbolicName: cody-chat;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jdt.annotation,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di,
  org.eclipse.e4.core.di.annotations,

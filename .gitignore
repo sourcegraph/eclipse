@@ -1,5 +1,7 @@
+.metals/
 *.jar
 .vscode/
+plugins/cody-chat/resources/cody-agent/
 plugins/cody-chat/resources/cody-webviews/
 build.scala
 .bsp/

@@ -4,3 +4,4 @@ public final class OptionsParams {
   public Boolean undoStopBefore;
   public Boolean undoStopAfter;
 }
+

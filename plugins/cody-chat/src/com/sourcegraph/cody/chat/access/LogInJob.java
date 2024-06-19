@@ -38,7 +38,7 @@ public class LogInJob extends Job {
   private String url;
 
   public LogInJob(IEclipseContext context, String name, String url) {
-    super("Loging in...");
+    super("Logging in...");
     this.name = name;
     this.url = url;
     ContextInjectionFactory.inject(this, context);

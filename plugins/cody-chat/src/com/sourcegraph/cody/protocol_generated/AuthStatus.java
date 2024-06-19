@@ -19,3 +19,4 @@ public final class AuthStatus {
   public String avatarURL;
   public Boolean userCanUpgrade;
 }
+

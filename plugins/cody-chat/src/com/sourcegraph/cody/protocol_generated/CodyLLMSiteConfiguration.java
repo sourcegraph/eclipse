@@ -10,3 +10,4 @@ public final class CodyLLMSiteConfiguration {
   public String provider;
   public Boolean smartContextWindow;
 }
+
