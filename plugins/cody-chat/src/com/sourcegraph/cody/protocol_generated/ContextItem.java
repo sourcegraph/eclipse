@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface ContextItem {
-  static JsonDeserializer<ContextItem> deserializer() {
+public abstract class ContextItem {
+  public static JsonDeserializer<ContextItem> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {
         case "file":
@@ -22,7 +22,7 @@ interface ContextItem {
     };
   }
 
-  public final class ContextItemFile implements ContextItem {
+  public final class ContextItemFile extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -46,7 +46,7 @@ interface ContextItem {
     }
   }
 
-  public final class ContextItemRepository implements ContextItem {
+  public final class ContextItemRepository extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -71,7 +71,7 @@ interface ContextItem {
     }
   }
 
-  public final class ContextItemTree implements ContextItem {
+  public final class ContextItemTree extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -97,7 +97,7 @@ interface ContextItem {
     }
   }
 
-  public final class ContextItemSymbol implements ContextItem {
+  public final class ContextItemSymbol extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -123,7 +123,7 @@ interface ContextItem {
     }
   }
 
-  public final class ContextItemOpenCtx implements ContextItem {
+  public final class ContextItemOpenCtx extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;

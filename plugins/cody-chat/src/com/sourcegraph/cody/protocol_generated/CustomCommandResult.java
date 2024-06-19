@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface CustomCommandResult {
-  static JsonDeserializer<CustomCommandResult> deserializer() {
+public abstract class CustomCommandResult {
+  public static JsonDeserializer<CustomCommandResult> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {
         case "chat":
@@ -16,7 +16,7 @@ interface CustomCommandResult {
     };
   }
 
-  public final class CustomChatCommandResult implements CustomCommandResult {
+  public final class CustomChatCommandResult extends CustomCommandResult {
     public TypeEnum type; // Oneof: chat
     public String chatResult;
 
@@ -26,7 +26,7 @@ interface CustomCommandResult {
     }
   }
 
-  public final class CustomEditCommandResult implements CustomCommandResult {
+  public final class CustomEditCommandResult extends CustomCommandResult {
     public TypeEnum type; // Oneof: edit
     public EditTask editResult;
 

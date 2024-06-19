@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface WorkspaceEditOperation {
-  static JsonDeserializer<WorkspaceEditOperation> deserializer() {
+public abstract class WorkspaceEditOperation {
+  public static JsonDeserializer<WorkspaceEditOperation> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {
         case "create-file":
@@ -20,7 +20,7 @@ interface WorkspaceEditOperation {
     };
   }
 
-  public final class CreateFileOperation implements WorkspaceEditOperation {
+  public final class CreateFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: create-file
     public String uri;
     public WriteFileOptions options;
@@ -33,7 +33,7 @@ interface WorkspaceEditOperation {
     }
   }
 
-  public final class RenameFileOperation implements WorkspaceEditOperation {
+  public final class RenameFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: rename-file
     public String oldUri;
     public String newUri;
@@ -46,7 +46,7 @@ interface WorkspaceEditOperation {
     }
   }
 
-  public final class DeleteFileOperation implements WorkspaceEditOperation {
+  public final class DeleteFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: delete-file
     public String uri;
     public DeleteOptionsParams deleteOptions;
@@ -58,7 +58,7 @@ interface WorkspaceEditOperation {
     }
   }
 
-  public final class EditFileOperation implements WorkspaceEditOperation {
+  public final class EditFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: edit-file
     public String uri;
     public java.util.List<TextEdit> edits;

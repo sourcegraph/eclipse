@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface TextEdit {
-  static JsonDeserializer<TextEdit> deserializer() {
+public abstract class TextEdit {
+  public static JsonDeserializer<TextEdit> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {
         case "replace":
@@ -18,7 +18,7 @@ interface TextEdit {
     };
   }
 
-  public final class ReplaceTextEdit implements TextEdit {
+  public final class ReplaceTextEdit extends TextEdit {
     public TypeEnum type; // Oneof: replace
     public Range range;
     public String value;
@@ -30,7 +30,7 @@ interface TextEdit {
     }
   }
 
-  public final class InsertTextEdit implements TextEdit {
+  public final class InsertTextEdit extends TextEdit {
     public TypeEnum type; // Oneof: insert
     public Position position;
     public String value;
@@ -42,7 +42,7 @@ interface TextEdit {
     }
   }
 
-  public final class DeleteTextEdit implements TextEdit {
+  public final class DeleteTextEdit extends TextEdit {
     public TypeEnum type; // Oneof: delete
     public Range range;
     public WorkspaceEditEntryMetadata metadata;

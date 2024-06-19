@@ -5,7 +5,7 @@ import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 @SuppressWarnings("unused")
-interface CodyAgentClient {
+public interface CodyAgentClient {
   // ========
   // Requests
   // ========
@@ -47,6 +47,9 @@ interface CodyAgentClient {
 
   @JsonNotification("webview/postMessage")
   void webview_postMessage(WebviewPostMessageParams params);
+
+  @JsonNotification("webview/postMessageStringEncoded")
+  void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params);
 
   @JsonNotification("progress/start")
   void progress_start(ProgressStartParams params);

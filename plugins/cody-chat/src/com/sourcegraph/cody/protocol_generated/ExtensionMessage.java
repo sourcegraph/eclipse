@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface ExtensionMessage {
-  static JsonDeserializer<ExtensionMessage> deserializer() {
+public abstract class ExtensionMessage {
+  public static JsonDeserializer<ExtensionMessage> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("type").getAsString()) {
         case "config":
@@ -50,7 +50,7 @@ interface ExtensionMessage {
     };
   }
 
-  public final class ConfigExtensionMessage implements ExtensionMessage {
+  public final class ConfigExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: config
     public ConfigParams config;
     public AuthStatus authStatus;
@@ -62,7 +62,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Search_configExtensionMessage implements ExtensionMessage {
+  public final class Search_configExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: search:config
     public java.util.List<String> workspaceFolderUris;
 
@@ -72,7 +72,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class HistoryExtensionMessage implements ExtensionMessage {
+  public final class HistoryExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: history
     public UserLocalHistory localHistory;
 
@@ -82,7 +82,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class TranscriptExtensionMessage implements ExtensionMessage {
+  public final class TranscriptExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: transcript
     public java.util.List<SerializedChatMessage> messages;
     public Boolean isMessageInProgress;
@@ -94,7 +94,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class ViewExtensionMessage implements ExtensionMessage {
+  public final class ViewExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: view
     public View view; // Oneof: chat, login
 
@@ -104,7 +104,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class ErrorsExtensionMessage implements ExtensionMessage {
+  public final class ErrorsExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: errors
     public String errors;
 
@@ -114,7 +114,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Transcript_errorsExtensionMessage implements ExtensionMessage {
+  public final class Transcript_errorsExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: transcript-errors
     public Boolean isTranscriptError;
 
@@ -124,7 +124,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class UserContextFilesExtensionMessage implements ExtensionMessage {
+  public final class UserContextFilesExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: userContextFiles
     public java.util.List<ContextItem> userContextFiles;
 
@@ -134,7 +134,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class ClientStateExtensionMessage implements ExtensionMessage {
+  public final class ClientStateExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: clientState
     public ClientStateForWebview value;
 
@@ -144,7 +144,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class ClientActionExtensionMessage implements ExtensionMessage {
+  public final class ClientActionExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: clientAction
     public java.util.List<ContextItem> addContextItemsToLastHumanInput;
 
@@ -154,7 +154,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class ChatModelsExtensionMessage implements ExtensionMessage {
+  public final class ChatModelsExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: chatModels
     public java.util.List<Model> models;
 
@@ -164,7 +164,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Update_search_resultsExtensionMessage implements ExtensionMessage {
+  public final class Update_search_resultsExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: update-search-results
     public java.util.List<SearchPanelFile> results;
     public String query;
@@ -175,7 +175,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Index_updatedExtensionMessage implements ExtensionMessage {
+  public final class Index_updatedExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: index-updated
     public String scopeDir;
 
@@ -185,7 +185,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Enhanced_contextExtensionMessage implements ExtensionMessage {
+  public final class Enhanced_contextExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: enhanced-context
     public EnhancedContextContextT enhancedContextStatus;
 
@@ -195,7 +195,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class AttributionExtensionMessage implements ExtensionMessage {
+  public final class AttributionExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: attribution
     public String snippet;
     public AttributionParams attribution;
@@ -207,7 +207,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class SetChatEnabledConfigFeatureExtensionMessage implements ExtensionMessage {
+  public final class SetChatEnabledConfigFeatureExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: setChatEnabledConfigFeature
     public Boolean data;
 
@@ -217,7 +217,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class Context_remote_reposExtensionMessage implements ExtensionMessage {
+  public final class Context_remote_reposExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: context/remote-repos
     public java.util.List<Repo> repos;
 
@@ -227,7 +227,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class SetConfigFeaturesExtensionMessage implements ExtensionMessage {
+  public final class SetConfigFeaturesExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: setConfigFeatures
     public ConfigFeaturesParams configFeatures;
 
@@ -237,7 +237,7 @@ interface ExtensionMessage {
     }
   }
 
-  public final class AllMentionProvidersMetadataExtensionMessage implements ExtensionMessage {
+  public final class AllMentionProvidersMetadataExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: allMentionProvidersMetadata
     public java.util.List<ContextMentionProviderMetadata> providers;
 

@@ -2,8 +2,8 @@ package com.sourcegraph.cody.protocol_generated;
 
 import com.google.gson.JsonDeserializer;
 
-interface ContextProvider {
-  static JsonDeserializer<ContextProvider> deserializer() {
+public abstract class ContextProvider {
+  public static JsonDeserializer<ContextProvider> deserializer() {
     return (element, _type, context) -> {
       switch (element.getAsJsonObject().get("kind").getAsString()) {
         case "embeddings":
@@ -16,7 +16,7 @@ interface ContextProvider {
     };
   }
 
-  public final class LocalEmbeddingsProvider implements ContextProvider {
+  public final class LocalEmbeddingsProvider extends ContextProvider {
     public KindEnum kind; // Oneof: embeddings
     public StateEnum state; // Oneof: indeterminate, no-match, unconsented, indexing, ready
     public ErrorReasonEnum errorReason; // Oneof: not-a-git-repo, git-repo-has-no-remote
@@ -48,7 +48,7 @@ interface ContextProvider {
     }
   }
 
-  public final class LocalSearchProvider implements ContextProvider {
+  public final class LocalSearchProvider extends ContextProvider {
     public KindEnum kind; // Oneof: search
     public TypeEnum type; // Oneof: local
     public StateEnum state; // Oneof: unindexed, indexing, ready, failed
@@ -75,7 +75,7 @@ interface ContextProvider {
     }
   }
 
-  public final class RemoteSearchProvider implements ContextProvider {
+  public final class RemoteSearchProvider extends ContextProvider {
     public KindEnum kind; // Oneof: search
     public TypeEnum type; // Oneof: remote
     public StateEnum state; // Oneof: ready, no-match
