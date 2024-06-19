@@ -73,7 +73,6 @@ public class ChatView extends ViewPart {
                 if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
                   doPostMessage(browser.get(), message);
                 } else {
-                  // TODO: implement proper queue so we get FIFO ordering
                   pendingExtensionMessages.add(message);
                 }
               });
@@ -87,7 +86,6 @@ public class ChatView extends ViewPart {
       chatId.set(agent.server.chat_new(null).get(5, TimeUnit.SECONDS));
       System.out.println("DONE - CHAT/NEW " + chatId);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     createCallbacks(browser.get(), agent, chatId.get());
@@ -177,7 +175,6 @@ public class ChatView extends ViewPart {
             try {
               CodyAgent.restart();
             } catch (IOException e) {
-              // TODO Auto-generated catch block
               e.printStackTrace();
             }
           }

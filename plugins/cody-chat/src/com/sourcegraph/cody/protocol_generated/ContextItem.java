@@ -20,7 +20,7 @@ public abstract class ContextItem {
       };
   }
 
-public final class ContextItemFile implements ContextItem {
+public final class ContextItemFile extends ContextItem {
   public String uri;
   public RangeData range;
   public String content;
@@ -41,7 +41,7 @@ public final class ContextItemFile implements ContextItem {
   }
 }
 
-public final class ContextItemRepository implements ContextItem {
+public final class ContextItemRepository extends ContextItem {
   public String uri;
   public RangeData range;
   public String content;
@@ -63,7 +63,7 @@ public final class ContextItemRepository implements ContextItem {
   }
 }
 
-public final class ContextItemTree implements ContextItem {
+public final class ContextItemTree extends ContextItem {
   public String uri;
   public RangeData range;
   public String content;
@@ -86,7 +86,7 @@ public final class ContextItemTree implements ContextItem {
   }
 }
 
-public final class ContextItemSymbol implements ContextItem {
+public final class ContextItemSymbol extends ContextItem {
   public String uri;
   public RangeData range;
   public String content;
@@ -109,7 +109,7 @@ public final class ContextItemSymbol implements ContextItem {
   }
 }
 
-public final class ContextItemOpenCtx implements ContextItem {
+public final class ContextItemOpenCtx extends ContextItem {
   public String uri;
   public RangeData range;
   public String content;

@@ -18,6 +18,7 @@ public class CodyActivator extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
+//		context.
 		System.out.println("STOP ACTIVATOR!");
 	}
 

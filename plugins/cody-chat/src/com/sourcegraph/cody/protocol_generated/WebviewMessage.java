@@ -49,7 +49,7 @@ public abstract class WebviewMessage {
       };
   }
 
-public final class ReadyWebviewMessage implements WebviewMessage {
+public final class ReadyWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: ready
 
   public enum CommandEnum {
@@ -57,7 +57,7 @@ public final class ReadyWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class InitializedWebviewMessage implements WebviewMessage {
+public final class InitializedWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: initialized
 
   public enum CommandEnum {
@@ -65,7 +65,7 @@ public final class InitializedWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class EventWebviewMessage implements WebviewMessage {
+public final class EventWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: event
   public String eventName;
   public TelemetryEventProperties properties;
@@ -75,7 +75,7 @@ public final class EventWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class RecordEventWebviewMessage implements WebviewMessage {
+public final class RecordEventWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: recordEvent
   public String feature;
   public String action;
@@ -86,7 +86,7 @@ public final class RecordEventWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class SubmitWebviewMessage implements WebviewMessage {
+public final class SubmitWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: submit
   public Boolean addEnhancedContext;
   public java.util.List<ContextItem> contextFiles;
@@ -99,7 +99,7 @@ public final class SubmitWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class HistoryWebviewMessage implements WebviewMessage {
+public final class HistoryWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: history
   public ActionEnum action; // Oneof: clear, export
 
@@ -113,7 +113,7 @@ public final class HistoryWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class RestoreHistoryWebviewMessage implements WebviewMessage {
+public final class RestoreHistoryWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: restoreHistory
   public String chatID;
 
@@ -122,7 +122,7 @@ public final class RestoreHistoryWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class DeleteHistoryWebviewMessage implements WebviewMessage {
+public final class DeleteHistoryWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: deleteHistory
   public String chatID;
 
@@ -131,7 +131,7 @@ public final class DeleteHistoryWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class LinksWebviewMessage implements WebviewMessage {
+public final class LinksWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: links
   public String value;
 
@@ -140,7 +140,7 @@ public final class LinksWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Show_pageWebviewMessage implements WebviewMessage {
+public final class Show_pageWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: show-page
   public String page;
 
@@ -149,7 +149,7 @@ public final class Show_pageWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class ChatModelWebviewMessage implements WebviewMessage {
+public final class ChatModelWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: chatModel
   public String model;
 
@@ -158,7 +158,7 @@ public final class ChatModelWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Get_chat_modelsWebviewMessage implements WebviewMessage {
+public final class Get_chat_modelsWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: get-chat-models
 
   public enum CommandEnum {
@@ -166,7 +166,7 @@ public final class Get_chat_modelsWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class OpenFileWebviewMessage implements WebviewMessage {
+public final class OpenFileWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: openFile
   public Uri uri;
   public RangeData range;
@@ -176,7 +176,7 @@ public final class OpenFileWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class OpenLocalFileWithRangeWebviewMessage implements WebviewMessage {
+public final class OpenLocalFileWithRangeWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: openLocalFileWithRange
   public String filePath;
   public RangeData range;
@@ -186,7 +186,7 @@ public final class OpenLocalFileWithRangeWebviewMessage implements WebviewMessag
   }
 }
 
-public final class EditWebviewMessage implements WebviewMessage {
+public final class EditWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: edit
   public Boolean addEnhancedContext;
   public java.util.List<ContextItem> contextFiles;
@@ -199,7 +199,7 @@ public final class EditWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Context_get_remote_search_reposWebviewMessage implements WebviewMessage {
+public final class Context_get_remote_search_reposWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: context/get-remote-search-repos
 
   public enum CommandEnum {
@@ -207,7 +207,7 @@ public final class Context_get_remote_search_reposWebviewMessage implements Webv
   }
 }
 
-public final class Context_choose_remote_search_repoWebviewMessage implements WebviewMessage {
+public final class Context_choose_remote_search_repoWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: context/choose-remote-search-repo
   public java.util.List<Repo> explicitRepos;
 
@@ -216,7 +216,7 @@ public final class Context_choose_remote_search_repoWebviewMessage implements We
   }
 }
 
-public final class Context_remove_remote_search_repoWebviewMessage implements WebviewMessage {
+public final class Context_remove_remote_search_repoWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: context/remove-remote-search-repo
   public String repoId;
 
@@ -225,7 +225,7 @@ public final class Context_remove_remote_search_repoWebviewMessage implements We
   }
 }
 
-public final class Embeddings_indexWebviewMessage implements WebviewMessage {
+public final class Embeddings_indexWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: embeddings/index
 
   public enum CommandEnum {
@@ -233,7 +233,7 @@ public final class Embeddings_indexWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Symf_indexWebviewMessage implements WebviewMessage {
+public final class Symf_indexWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: symf/index
 
   public enum CommandEnum {
@@ -241,7 +241,7 @@ public final class Symf_indexWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class InsertWebviewMessage implements WebviewMessage {
+public final class InsertWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: insert
   public String text;
 
@@ -250,7 +250,7 @@ public final class InsertWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class NewFileWebviewMessage implements WebviewMessage {
+public final class NewFileWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: newFile
   public String text;
 
@@ -259,7 +259,7 @@ public final class NewFileWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class CopyWebviewMessage implements WebviewMessage {
+public final class CopyWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: copy
   public EventTypeEnum eventType; // Oneof: Button, Keydown
   public String text;
@@ -274,7 +274,7 @@ public final class CopyWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class AuthWebviewMessage implements WebviewMessage {
+public final class AuthWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: auth
   public AuthKindEnum authKind; // Oneof: signin, signout, support, callback, simplified-onboarding
   public String endpoint;
@@ -294,7 +294,7 @@ public final class AuthWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class AbortWebviewMessage implements WebviewMessage {
+public final class AbortWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: abort
 
   public enum CommandEnum {
@@ -302,7 +302,7 @@ public final class AbortWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Simplified_onboardingWebviewMessage implements WebviewMessage {
+public final class Simplified_onboardingWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: simplified-onboarding
   public OnboardingKindEnum onboardingKind; // Oneof: web-sign-in-token
 
@@ -315,7 +315,7 @@ public final class Simplified_onboardingWebviewMessage implements WebviewMessage
   }
 }
 
-public final class GetUserContextWebviewMessage implements WebviewMessage {
+public final class GetUserContextWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: getUserContext
   public String query;
 
@@ -324,7 +324,7 @@ public final class GetUserContextWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class QueryContextItemsWebviewMessage implements WebviewMessage {
+public final class QueryContextItemsWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: queryContextItems
   public MentionQuery query;
 
@@ -333,7 +333,7 @@ public final class QueryContextItemsWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class SearchWebviewMessage implements WebviewMessage {
+public final class SearchWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: search
   public String query;
 
@@ -342,7 +342,7 @@ public final class SearchWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Show_search_resultWebviewMessage implements WebviewMessage {
+public final class Show_search_resultWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: show-search-result
   public Uri uri;
   public RangeData range;
@@ -352,7 +352,7 @@ public final class Show_search_resultWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class ResetWebviewMessage implements WebviewMessage {
+public final class ResetWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: reset
 
   public enum CommandEnum {
@@ -360,7 +360,7 @@ public final class ResetWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Attribution_searchWebviewMessage implements WebviewMessage {
+public final class Attribution_searchWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: attribution-search
   public String snippet;
 
@@ -369,7 +369,7 @@ public final class Attribution_searchWebviewMessage implements WebviewMessage {
   }
 }
 
-public final class Troubleshoot_reloadAuthWebviewMessage implements WebviewMessage {
+public final class Troubleshoot_reloadAuthWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: troubleshoot/reloadAuth
 
   public enum CommandEnum {
@@ -377,7 +377,7 @@ public final class Troubleshoot_reloadAuthWebviewMessage implements WebviewMessa
   }
 }
 
-public final class GetAllMentionProvidersMetadataWebviewMessage implements WebviewMessage {
+public final class GetAllMentionProvidersMetadataWebviewMessage extends WebviewMessage {
   public CommandEnum command; // Oneof: getAllMentionProvidersMetadata
 
   public enum CommandEnum {

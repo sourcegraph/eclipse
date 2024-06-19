@@ -70,7 +70,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void webview_postMessageString(Webview_PostMessageStringParams params) {
+  public void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params) {
     System.out.println("webview_postMessage called with params: " + ChatView.gson.toJson(params));
     if (extensionMessageConsumer != null && params.stringEncodedMessage != null) {
       extensionMessageConsumer.accept(params.stringEncodedMessage);

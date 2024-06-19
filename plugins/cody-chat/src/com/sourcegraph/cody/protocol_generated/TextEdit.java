@@ -18,7 +18,7 @@ public abstract class TextEdit {
       };
   }
 
-public final class ReplaceTextEdit implements TextEdit {
+public final class ReplaceTextEdit extends TextEdit {
   public TypeEnum type; // Oneof: replace
   public Range range;
   public String value;
@@ -29,7 +29,7 @@ public final class ReplaceTextEdit implements TextEdit {
   }
 }
 
-public final class InsertTextEdit implements TextEdit {
+public final class InsertTextEdit extends TextEdit {
   public TypeEnum type; // Oneof: insert
   public Position position;
   public String value;
@@ -40,7 +40,7 @@ public final class InsertTextEdit implements TextEdit {
   }
 }
 
-public final class DeleteTextEdit implements TextEdit {
+public final class DeleteTextEdit extends TextEdit {
   public TypeEnum type; // Oneof: delete
   public Range range;
   public WorkspaceEditEntryMetadata metadata;

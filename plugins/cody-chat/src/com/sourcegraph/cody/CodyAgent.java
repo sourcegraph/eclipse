@@ -1,33 +1,41 @@
 package com.sourcegraph.cody;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.sourcegraph.cody.chat.ChatView;
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
-import org.eclipse.lsp4j.jsonrpc.json.adapters.EnumTypeAdapter;
 import org.eclipse.ui.services.IDisposable;
 
+import com.google.gson.GsonBuilder;
+import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
+import com.sourcegraph.cody.protocol_generated.ClientInfo;
+import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
+import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
+
+import dev.dirs.ProjectDirectories;
+
+// @Creatable
+// @Singleton
 public class CodyAgent implements IDisposable {
+
+  //	@Inject
+  //	IWorkbench workbench;
 
   private final Future<Void> listening;
   public static final CodyAgentClientImpl CLIENT = new CodyAgentClientImpl();
@@ -90,14 +98,29 @@ public class CodyAgent implements IDisposable {
     }
   }
 
+  private static Path agentScript() throws IOException {
+    ProjectDirectories dirs =
+        dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "Cody Eclipse");
+    System.out.println("DIRS " + dirs);
+    Path out = Paths.get(dirs.dataDir).resolve("index.js");
+    try (InputStream in = CodyAgent.class.getResourceAsStream("/resources/agent/index.js")) {
+      Files.copy(in, out);
+    }
+    return out;
+  }
+
   private static CodyAgent startUnsafe()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+      throws IOException,
+          InterruptedException,
+          ExecutionException,
+          TimeoutException,
+          URISyntaxException {
     if (AGENT != null && AGENT.isRunning()) {
       return AGENT;
     }
-    System.out.println("Cody is starting");
-    String workingDirectory = System.getProperty("user.dir");
-    System.out.println("WORKING DIR " + workingDirectory);
+    System.out.println("Cody is starting22");
+    Path workspaceRoot = Paths.get(Platform.getInstanceLocation().getURL().toURI());
+    // TODO: temp directory
     Path agentPath =
         Paths.get(System.getProperty("user.home"))
             .resolve("dev")
@@ -112,7 +135,7 @@ public class CodyAgent implements IDisposable {
     arguments.add(agentPath.toString());
     ProcessBuilder processBuilder =
         new ProcessBuilder(arguments)
-            .directory(Paths.get(workingDirectory).toFile())
+            .directory(workspaceRoot.toFile())
             .redirectError(ProcessBuilder.Redirect.INHERIT);
     processBuilder
         .environment()
@@ -129,66 +152,66 @@ public class CodyAgent implements IDisposable {
             .setInput(process.getInputStream())
             .setOutput(process.getOutputStream())
             .setLocalService(CLIENT)
-            .configureGson(
-                builder -> {
-                	// LSP4J registers a type adapter that emits numbers for all enums, ignoring
-                	// `@SerializedName` annotations. https://sourcegraph.com/github.com/eclipse-lsp4j/lsp4j/-/blob/org.eclipse.lsp4j.jsonrpc/src/main/java/org/eclipse/lsp4j/jsonrpc/json/adapters/EnumTypeAdapter.java?L30:14-30:29
-                	// See CODY-2427 for follow-up issue to remove this ugly runtime reflection hack.
-                  try {
-                    // HACK: lsp4j adds customizations to the gson builder that break serialization
-                    // of enums. We can work around this issue by removing these customizations.
-                    var factoryField = builder.getClass().getDeclaredField("factories");
-                    factoryField.setAccessible(true);
-                    @SuppressWarnings("unchecked")
-					var factories = (ArrayList<Object>) factoryField.get(builder);
-                    for (Object factory : factories) {
-                    	// Using `getClas().getName()` because `instanceof`
-                    	// didn't work on the first try.
-                      if (factory.getClass().getName().indexOf("EnumTypeAdapter") >= 0) {
-                        factories.remove(factory);
-                      }
-                    }
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-
-                  ProtocolTypeAdapters.register(builder);
-                })
+            .configureGson(CodyAgent::configureGson)
             .create();
+
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
-    initialize(server);
+    initialize(server, workspaceRoot);
     return new CodyAgent(listening, server, process);
   }
 
-  private static void initialize(CodyAgentServer server)
-      throws InterruptedException, ExecutionException, TimeoutException, IOException {
+  public static void configureGson(GsonBuilder builder) {
+    // LSP4J registers a type adapter that emits numbers for all enums, ignoring
+    // `@SerializedName` annotations.
+    // https://sourcegraph.com/github.com/eclipse-lsp4j/lsp4j/-/blob/org.eclipse.lsp4j.jsonrpc/src/main/java/org/eclipse/lsp4j/jsonrpc/json/adapters/EnumTypeAdapter.java?L30:14-30:29
+    // See CODY-2427 for follow-up issue to remove this ugly runtime reflection hack.
+    try {
+      // HACK: lsp4j adds customizations to the gson builder that break serialization
+      // of enums. We can work around this issue by removing these customizations.
+      var factoryField = builder.getClass().getDeclaredField("factories");
+      factoryField.setAccessible(true);
+      @SuppressWarnings("unchecked")
+      var factories = (ArrayList<Object>) factoryField.get(builder);
+      for (Object factory : factories) {
+        // Using `getClas().getName()` because `instanceof`
+        // didn't work on the first try.
+        if (factory.getClass().getName().indexOf("EnumTypeAdapter") >= 0) {
+          factories.remove(factory);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ProtocolTypeAdapters.register(builder);
+  }
+
+  private static ExtensionConfiguration config;
+
+  public static void onConfigChange(ExtensionConfiguration config) {
+    CodyAgent.config = config;
+    if (CodyAgent.AGENT != null && CodyAgent.AGENT.isRunning()) {
+      // TODO: send config change notification
+    }
+  }
+
+  private static void initialize(CodyAgentServer server, Path workspaceRoot)
+      throws InterruptedException,
+          ExecutionException,
+          TimeoutException,
+          IOException,
+          URISyntaxException {
     ClientInfo clientInfo = new ClientInfo();
     clientInfo.name = "cody-eclipse";
-    clientInfo.version = "0.1.0-SNAPSHOT";
-    clientInfo.workspaceRootUri =
-        Paths.get(System.getProperty("user.dir"))
-            .resolve("dev")
-            .resolve("sourcegraph")
-            .resolve("scip-typescript")
-            .toUri()
-            .toString();
+    clientInfo.version = "0.1.0";
+    clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     clientInfo.capabilities = capabilities;
-    ExtensionConfiguration configuration = new ExtensionConfiguration();
-    configuration.accessToken =
-        Files.readString(
-                Paths.get(System.getProperty("user.home"))
-                    .resolve(".sourcegraph")
-                    .resolve("access_token.txt"))
-            .trim();
-    configuration.serverEndpoint = "https://sourcegraph.com";
-    configuration.customConfiguration = new HashMap<>();
-
-    clientInfo.extensionConfiguration = configuration;
+    clientInfo.extensionConfiguration = CodyAgent.config;
     server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     server.initialized(null);
   }
