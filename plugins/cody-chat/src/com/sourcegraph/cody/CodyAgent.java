@@ -1,5 +1,6 @@
 package com.sourcegraph.cody;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -52,6 +53,31 @@ public class CodyAgent implements IDisposable {
 
   private static ExecutorService executorService = Executors.newCachedThreadPool();
 
+  public static Path getNodeJsLocation() throws URISyntaxException {
+    String userProvidedNode = System.getProperty("cody.nodejs-executable");
+    if (userProvidedNode != null) {
+      Path path = Paths.get(userProvidedNode);
+      if (!Files.isExecutable(path)) {
+        throw new IllegalArgumentException(
+            "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
+      }
+
+      return path;
+    }
+    // Get the Node.js installation directory
+    Path nodeJsDir = Paths.get(Platform.getInstallLocation().getURL().toURI()).resolve("node");
+    for (File subdir : nodeJsDir.toFile().listFiles()) {
+      String nodeExecutable = Platform.getOS().equals(Platform.OS_WIN32) ? "node.exe" : "node";
+      Path nodejsBinary = subdir.toPath().resolve(nodeExecutable);
+      if (Files.isRegularFile(nodejsBinary)) {
+        return nodejsBinary;
+      }
+    }
+    throw new IllegalStateException(
+        "Unable to infer the location of a Node.js installation. "
+            + "To fix this problem, set the VM argument -Dcody.nodejs-executable and restart Eclipse.");
+  }
+
   public static void stop() {
     System.out.println("Cody is stopping");
     if (AGENT != null) {
@@ -99,6 +125,10 @@ public class CodyAgent implements IDisposable {
   }
 
   private static Path agentScript() throws IOException {
+    String userProvidedAgentScript = System.getProperty("cody.agent-script-path");
+    if (userProvidedAgentScript != null) {
+      return Paths.get(userProvidedAgentScript);
+    }
     ProjectDirectories dirs =
         dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "Cody Eclipse");
     System.out.println("DIRS " + dirs);
@@ -120,28 +150,21 @@ public class CodyAgent implements IDisposable {
     }
     System.out.println("Cody is starting22");
     Path workspaceRoot = Paths.get(Platform.getInstanceLocation().getURL().toURI());
-    // TODO: temp directory
-    Path agentPath =
-        Paths.get(System.getProperty("user.home"))
-            .resolve("dev")
-            .resolve("sourcegraph")
-            .resolve("cody")
-            .resolve("agent")
-            .resolve("dist")
-            .resolve("index.js");
+    Path nodeExecutable = getNodeJsLocation();
     ArrayList<String> arguments = new ArrayList<>();
-    arguments.add("node");
+    arguments.add(nodeExecutable.toString());
     arguments.add("--enable-source-maps");
-    arguments.add(agentPath.toString());
+    arguments.add(agentScript().toString());
     ProcessBuilder processBuilder =
         new ProcessBuilder(arguments)
             .directory(workspaceRoot.toFile())
             .redirectError(ProcessBuilder.Redirect.INHERIT);
-    processBuilder
-        .environment()
-        .put(
-            "CODY_AGENT_TRACE_PATH",
-            "C:\\Users\\olafu\\dev\\sourcegraph\\cody\\agent\\dist\\trace.json");
+    String agentTracePath = System.getProperty("cody.debug-trace-path");
+
+    if (agentTracePath != null) {
+      processBuilder.environment().put("CODY_AGENT_TRACE_PATH", agentTracePath);
+    }
+
     Process process = processBuilder.start();
 
     Launcher<CodyAgentServer> launcher =
