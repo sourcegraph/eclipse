@@ -176,7 +176,7 @@ public class CodyAgent implements IDisposable {
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
-    capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String;
+    capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     clientInfo.capabilities = capabilities;
     ExtensionConfiguration configuration = new ExtensionConfiguration();
     configuration.accessToken =

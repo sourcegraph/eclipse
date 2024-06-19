@@ -11,7 +11,7 @@ import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
-import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringParams;
+import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
 
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -115,10 +115,10 @@ public class ChatView extends ViewPart {
             () -> {
               String message = (String) arguments[0];
               System.out.println("SERVER - eclipse_receiveMessage: " + message);
-              Webview_ReceiveMessageStringParams params = new Webview_ReceiveMessageStringParams();
+              Webview_ReceiveMessageStringEncodedParams params = new Webview_ReceiveMessageStringEncodedParams();
               params.id = chatId;
               params.messageStringEncoded = message;
-              agent.server.webview_receiveMessageString(params);
+              agent.server.webview_receiveMessageStringEncoded(params);
               //              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] +
               // "\");");
             });
