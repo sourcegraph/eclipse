@@ -11,6 +11,8 @@ import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
+import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringParams;
+
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,12 +45,16 @@ public class ChatView extends ViewPart {
 
   private static Gson createGson() {
     GsonBuilder builder = new GsonBuilder();
-    ProtocolTypeAdapters.register(builder);
+    configureGson(builder);
     return builder.create();
   }
+  
+  private static void configureGson(GsonBuilder builder) {
+	  ProtocolTypeAdapters.register(builder);
+  }
 
-  private void doPostMessage(Browser browser, JsonElement message) {
-    String stringifiedMessage = gson.toJson(message.toString());
+  private void doPostMessage(Browser browser, String message) {
+    String stringifiedMessage = gson.toJson(message);
     browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
   }
 
@@ -57,7 +63,7 @@ public class ChatView extends ViewPart {
     addLogInAction();
     addRestartCodyAction();
     AtomicReference<Browser> browser = new AtomicReference<>();
-    ArrayList<JsonElement> pendingExtensionMessages = new ArrayList<>();
+    ArrayList<String> pendingExtensionMessages = new ArrayList<>();
     AtomicReference<String> chatId = new AtomicReference<>("");
     CodyAgent.CLIENT.extensionMessageConsumer =
         (message) -> {
@@ -107,12 +113,12 @@ public class ChatView extends ViewPart {
       public Object function(Object[] arguments) {
         display.asyncExec(
             () -> {
-              JsonElement message = JsonParser.parseString((String) arguments[0]);
+              String message = (String) arguments[0];
               System.out.println("SERVER - eclipse_receiveMessage: " + message);
-              Webview_ReceiveMessageParams params = new Webview_ReceiveMessageParams();
+              Webview_ReceiveMessageStringParams params = new Webview_ReceiveMessageStringParams();
               params.id = chatId;
-              params.message = message;
-              agent.server.webview_receiveMessage(params);
+              params.messageStringEncoded = message;
+              agent.server.webview_receiveMessageString(params);
               //              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] +
               // "\");");
             });

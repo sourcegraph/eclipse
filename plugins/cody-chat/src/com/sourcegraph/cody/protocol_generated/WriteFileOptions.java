@@ -4,3 +4,4 @@ public final class WriteFileOptions {
   public Boolean overwrite;
   public Boolean ignoreIfExists;
 }
+

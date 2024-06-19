@@ -9,3 +9,4 @@ public final class ProtocolTextDocument {
   public Range visibleRange;
   public TestingParams testing;
 }
+

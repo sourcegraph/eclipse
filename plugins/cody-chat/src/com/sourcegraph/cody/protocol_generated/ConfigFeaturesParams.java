@@ -4,3 +4,4 @@ public final class ConfigFeaturesParams {
   public Boolean chat;
   public Boolean attribution;
 }
+

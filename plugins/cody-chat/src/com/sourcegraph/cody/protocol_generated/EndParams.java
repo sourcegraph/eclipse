@@ -4,3 +4,4 @@ public final class EndParams {
   public Integer line;
   public Integer character;
 }
+

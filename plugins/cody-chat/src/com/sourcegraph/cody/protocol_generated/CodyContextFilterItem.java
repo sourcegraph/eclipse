@@ -4,3 +4,4 @@ public final class CodyContextFilterItem {
   public String repoNamePattern;
   public java.util.List<String> filePathPatterns;
 }
+

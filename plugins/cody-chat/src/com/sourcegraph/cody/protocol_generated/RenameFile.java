@@ -4,3 +4,4 @@ public final class RenameFile {
   public String oldUri;
   public String newUri;
 }
+

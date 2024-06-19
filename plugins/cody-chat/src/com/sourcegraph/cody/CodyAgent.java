@@ -1,5 +1,8 @@
 package com.sourcegraph.cody;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sourcegraph.cody.chat.ChatView;
 import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
@@ -21,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
+import org.eclipse.lsp4j.jsonrpc.json.adapters.EnumTypeAdapter;
 import org.eclipse.ui.services.IDisposable;
 
 public class CodyAgent implements IDisposable {
@@ -106,11 +110,16 @@ public class CodyAgent implements IDisposable {
     arguments.add("node");
     arguments.add("--enable-source-maps");
     arguments.add(agentPath.toString());
-    Process process =
+    ProcessBuilder processBuilder =
         new ProcessBuilder(arguments)
             .directory(Paths.get(workingDirectory).toFile())
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start();
+            .redirectError(ProcessBuilder.Redirect.INHERIT);
+    processBuilder
+        .environment()
+        .put(
+            "CODY_AGENT_TRACE_PATH",
+            "C:\\Users\\olafu\\dev\\sourcegraph\\cody\\agent\\dist\\trace.json");
+    Process process = processBuilder.start();
 
     Launcher<CodyAgentServer> launcher =
         new Launcher.Builder<CodyAgentServer>()
@@ -120,7 +129,31 @@ public class CodyAgent implements IDisposable {
             .setInput(process.getInputStream())
             .setOutput(process.getOutputStream())
             .setLocalService(CLIENT)
-            .configureGson(builder -> ProtocolTypeAdapters.register(builder))
+            .configureGson(
+                builder -> {
+                	// LSP4J registers a type adapter that emits numbers for all enums, ignoring
+                	// `@SerializedName` annotations. https://sourcegraph.com/github.com/eclipse-lsp4j/lsp4j/-/blob/org.eclipse.lsp4j.jsonrpc/src/main/java/org/eclipse/lsp4j/jsonrpc/json/adapters/EnumTypeAdapter.java?L30:14-30:29
+                	// See CODY-2427 for follow-up issue to remove this ugly runtime reflection hack.
+                  try {
+                    // HACK: lsp4j adds customizations to the gson builder that break serialization
+                    // of enums. We can work around this issue by removing these customizations.
+                    var factoryField = builder.getClass().getDeclaredField("factories");
+                    factoryField.setAccessible(true);
+                    @SuppressWarnings("unchecked")
+					var factories = (ArrayList<Object>) factoryField.get(builder);
+                    for (Object factory : factories) {
+                    	// Using `getClas().getName()` because `instanceof`
+                    	// didn't work on the first try.
+                      if (factory.getClass().getName().indexOf("EnumTypeAdapter") >= 0) {
+                        factories.remove(factory);
+                      }
+                    }
+                  } catch (Exception e) {
+                    e.printStackTrace();
+                  }
+
+                  ProtocolTypeAdapters.register(builder);
+                })
             .create();
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
@@ -142,6 +175,8 @@ public class CodyAgent implements IDisposable {
             .toString();
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
+    // Enable string-encoding for webview messages.
+    capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String;
     clientInfo.capabilities = capabilities;
     ExtensionConfiguration configuration = new ExtensionConfiguration();
     configuration.accessToken =
@@ -154,7 +189,7 @@ public class CodyAgent implements IDisposable {
     configuration.customConfiguration = new HashMap<>();
 
     clientInfo.extensionConfiguration = configuration;
-    server.initialize(clientInfo).get(10, TimeUnit.SECONDS);
+    server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     server.initialized(null);
   }
 

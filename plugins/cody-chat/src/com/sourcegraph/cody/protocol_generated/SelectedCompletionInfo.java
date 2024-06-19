@@ -4,3 +4,4 @@ public final class SelectedCompletionInfo {
   public Range range;
   public String text;
 }
+

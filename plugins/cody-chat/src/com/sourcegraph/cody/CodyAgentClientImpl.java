@@ -70,11 +70,16 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void webview_postMessage(WebviewPostMessageParams params) {
+  public void webview_postMessageString(Webview_PostMessageStringParams params) {
     System.out.println("webview_postMessage called with params: " + ChatView.gson.toJson(params));
-    if (extensionMessageConsumer != null && params.message != null) {
-      extensionMessageConsumer.accept(params.message);
+    if (extensionMessageConsumer != null && params.stringEncodedMessage != null) {
+      extensionMessageConsumer.accept(params.stringEncodedMessage);
     }
+  }
+
+  @Override
+  public void webview_postMessage(WebviewPostMessageParams params) {
+	  throw new IllegalStateException("webview/postMessage got called when webview/postMessageString was expected. To fix this problem, make sure the webviewMessages client capability is set to 'string'.");
   }
 
   @Override
@@ -102,13 +107,5 @@ public class CodyAgentClientImpl implements CodyAgentClient {
     System.out.println("remoteRepo_didChangeState called with params: " + params);
   }
 
-  public Consumer<JsonElement> extensionMessageConsumer;
-
-  @Override
-  public void grosshacks_webview_postMessage(ExtensionMessage params) {
-    System.out.println(
-        String.format("grosshacks/webview/postMessage %s", new Gson().toJson(params)));
-    // TODO Auto-generated method stub
-
-  }
+  public Consumer<String> extensionMessageConsumer;
 }

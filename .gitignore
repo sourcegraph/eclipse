@@ -1,3 +1,4 @@
+.metals/
 *.jar
 .vscode/
 plugins/cody-chat/resources/cody-webviews/
