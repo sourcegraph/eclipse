@@ -65,12 +65,14 @@ public class CodyAgent implements IDisposable {
       return path;
     }
     // Get the Node.js installation directory
-    Path nodeJsDir = Paths.get(Platform.getInstallLocation().getURL().toURI()).resolve("node");
-    for (File subdir : nodeJsDir.toFile().listFiles()) {
-      String nodeExecutable = Platform.getOS().equals(Platform.OS_WIN32) ? "node.exe" : "node";
-      Path nodejsBinary = subdir.toPath().resolve(nodeExecutable);
-      if (Files.isRegularFile(nodejsBinary)) {
-        return nodejsBinary;
+    Path nodeJsDir = Paths.get(Platform.getInstallLocation().getURL().toURI()).resolve(".node");
+    if (Files.isDirectory(nodeJsDir)) {
+      for (File subdir : nodeJsDir.toFile().listFiles()) {
+        String nodeExecutable = Platform.getOS().equals(Platform.OS_WIN32) ? "node.exe" : "node";
+        Path nodejsBinary = subdir.toPath().resolve(nodeExecutable);
+        if (Files.isRegularFile(nodejsBinary)) {
+          return nodejsBinary;
+        }
       }
     }
     throw new IllegalStateException(
@@ -120,7 +122,12 @@ public class CodyAgent implements IDisposable {
     try {
       return startUnsafe();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e) {
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+          return this;
+        }
+      };
     }
   }
 
