@@ -2,25 +2,13 @@ package com.sourcegraph.cody.chat;
 
 import static java.lang.System.out;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.sourcegraph.cody.CodyAgent;
-import com.sourcegraph.cody.chat.access.TokenSelectionView;
-import com.sourcegraph.cody.chat.access.TokenStorage;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageParams;
-import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
-
-import jakarta.inject.Inject;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -32,6 +20,16 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sourcegraph.cody.CodyAgent;
+import com.sourcegraph.cody.chat.access.TokenSelectionView;
+import com.sourcegraph.cody.chat.access.TokenStorage;
+import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
+import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
+
+import jakarta.inject.Inject;
 
 public class ChatView extends ViewPart {
   public static final String ID = "com.sourcegraph.cody.chat.ChatView";
@@ -48,9 +46,9 @@ public class ChatView extends ViewPart {
     configureGson(builder);
     return builder.create();
   }
-  
+
   private static void configureGson(GsonBuilder builder) {
-	  ProtocolTypeAdapters.register(builder);
+    ProtocolTypeAdapters.register(builder);
   }
 
   private void doPostMessage(Browser browser, String message) {
@@ -99,9 +97,6 @@ public class ChatView extends ViewPart {
       e.printStackTrace();
     }
 
-    //    browser.setText(loadIndex());
-    // out.println("HTMLTEXT " + text);
-    //    browser.get().setText(text);
     browser.get().setUrl("http://localhost:8000/cody-index.html");
   }
 
@@ -113,7 +108,8 @@ public class ChatView extends ViewPart {
             () -> {
               String message = (String) arguments[0];
               System.out.println("SERVER - eclipse_receiveMessage: " + message);
-              Webview_ReceiveMessageStringEncodedParams params = new Webview_ReceiveMessageStringEncodedParams();
+              Webview_ReceiveMessageStringEncodedParams params =
+                  new Webview_ReceiveMessageStringEncodedParams();
               params.id = chatId;
               params.messageStringEncoded = message;
               agent.server.webview_receiveMessageStringEncoded(params);
@@ -193,36 +189,4 @@ public class ChatView extends ViewPart {
 
   @Override
   public void setFocus() {}
-
-  public String loadIndex() {
-    return loadResource("/resources/index.html");
-  }
-
-  private String loadCodyIndex() {
-    String content = loadResource("/resources/cody-webviews/index.html");
-
-    return content
-        .replace("{cspSource}", "'self' https://*.sourcegraphstatic.com")
-        .replace(
-            "<head>",
-            String.format(
-                "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()));
-  }
-
-  private String loadInjectedJS() {
-    return loadResource("/resources/injected-script.js");
-  }
-
-  private String loadInjectedCSS() {
-    return loadResource("/resources/injected-styles.css");
-  }
-
-  private String loadResource(String path) {
-    try (var stream = getClass().getResourceAsStream(path)) {
-      return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return "<h1> Cannot load index.html </h1>";
-    }
-  }
 }

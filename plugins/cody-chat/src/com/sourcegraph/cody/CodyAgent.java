@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -122,12 +123,7 @@ public class CodyAgent implements IDisposable {
     try {
       return startUnsafe();
     } catch (Exception e) {
-      throw new RuntimeException(e) {
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-          return this;
-        }
-      };
+      throw new WrappedRuntimeException(e);
     }
   }
 
@@ -138,12 +134,23 @@ public class CodyAgent implements IDisposable {
     }
     ProjectDirectories dirs =
         dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "Cody Eclipse");
-    System.out.println("DIRS " + dirs);
-    Path out = Paths.get(dirs.dataDir).resolve("index.js");
-    try (InputStream in = CodyAgent.class.getResourceAsStream("/resources/agent/index.js")) {
-      Files.copy(in, out);
+    Path dataDir = Paths.get(dirs.dataDir);
+    String assets = CodyResources.loadResourceString("/resources/cody-agent/assets.txt");
+    Files.createDirectories(dataDir);
+    for (String asset : assets.split("\n")) {
+      String path = "/resources/cody-agent/" + asset;
+      try (InputStream in = CodyAgent.class.getResourceAsStream(path)) {
+        if (in == null) {
+          throw new IllegalStateException(
+              String.format(
+                  "not found: %s. To fix this problem, "
+                      + "run `./scripts/build-agent.sh` and try again.",
+                  path));
+        }
+        Files.copy(in, dataDir.resolve(asset), StandardCopyOption.REPLACE_EXISTING);
+      }
     }
-    return out;
+    return dataDir.resolve("index.js");
   }
 
   private static CodyAgent startUnsafe()
