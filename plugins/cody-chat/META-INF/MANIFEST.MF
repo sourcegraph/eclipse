@@ -23,6 +23,4 @@ Require-Bundle: com.google.gson,
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)"
 Automatic-Module-Name: cody.chat
-Bundle-ActivationPolicy: lazy
-Bundle-Activator: com.sourcegraph.cody.CodyActivator
 Bundle-ClassPath: lib/directories-26.jar
