@@ -24,6 +24,7 @@ import org.eclipse.lsp4j.jsonrpc.Launcher;
 import org.eclipse.ui.services.IDisposable;
 
 import com.google.gson.GsonBuilder;
+import com.sourcegraph.cody.chat.ChatView;
 import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
@@ -54,6 +55,17 @@ public class CodyAgent implements IDisposable {
 
   private static ExecutorService executorService = Executors.newCachedThreadPool();
 
+  /**
+   * Returns the path to a Node.js executable to run the agent.
+   *
+   * <p>Modern versions of Eclipse include a Node.js installation and this method detects those. In
+   * other cases, users can provide the location through the system property code.nodejs-executable.
+   * Down the road, we may consider publishing separate plugin jars for each OS (cody-win.jar,
+   * cody-macos.jar, etc).
+   *
+   * <p>Importantly, we don't try to just shell out to "node". While this may work in some cases, we
+   * have no guarantee what Node version this gives us (and the agent requires Node >=v18).
+   */
   public static Path getNodeJsLocation() throws URISyntaxException {
     String userProvidedNode = System.getProperty("cody.nodejs-executable");
     if (userProvidedNode != null) {
@@ -133,7 +145,7 @@ public class CodyAgent implements IDisposable {
       return Paths.get(userProvidedAgentScript);
     }
     ProjectDirectories dirs =
-        dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "Cody Eclipse");
+        dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
     Path dataDir = Paths.get(dirs.dataDir);
     String assets = CodyResources.loadResourceString("/resources/cody-agent/assets.txt");
     Files.createDirectories(dataDir);
@@ -229,7 +241,7 @@ public class CodyAgent implements IDisposable {
   public static void onConfigChange(ExtensionConfiguration config) {
     CodyAgent.config = config;
     if (CodyAgent.AGENT != null && CodyAgent.AGENT.isRunning()) {
-      // TODO: send config change notification
+      //      CodyAgent.AGENT.server.extensionConfiguration_didChange(config);
     }
   }
 
@@ -248,7 +260,8 @@ public class CodyAgent implements IDisposable {
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     clientInfo.capabilities = capabilities;
-    clientInfo.extensionConfiguration = CodyAgent.config;
+    System.out.println("CONFIG " + ChatView.gson.toJson(CodyAgent.config));
+    //    clientInfo.extensionConfiguration = CodyAgent.config;
     server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     server.initialized(null);
   }

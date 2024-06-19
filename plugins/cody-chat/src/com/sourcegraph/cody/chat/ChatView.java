@@ -24,6 +24,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyAgent;
+import com.sourcegraph.cody.WebviewServer;
 import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
@@ -75,6 +76,7 @@ public class ChatView extends ViewPart {
                 }
               });
         };
+    tokenStorage.updateCodyAgentConfiguration();
 
     CodyAgent agent = CodyAgent.start();
     var b = new Browser(parent, SWT.EDGE);
@@ -97,7 +99,10 @@ public class ChatView extends ViewPart {
       e.printStackTrace();
     }
 
-    browser.get().setUrl("http://localhost:8000/cody-index.html");
+    var server = new WebviewServer();
+    var port = server.start();
+
+    browser.get().setUrl(String.format("http://localhost:%d", port));
   }
 
   private void createCallbacks(Browser browser, CodyAgent agent, String chatId) {
@@ -113,8 +118,6 @@ public class ChatView extends ViewPart {
               params.id = chatId;
               params.messageStringEncoded = message;
               agent.server.webview_receiveMessageStringEncoded(params);
-              //              browser.execute("eclipse_receiveMessage(\"received: " + arguments[0] +
-              // "\");");
             });
         return null;
       }

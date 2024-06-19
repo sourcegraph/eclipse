@@ -81,7 +81,7 @@ public class TokenSelectionView extends ViewPart {
             return ((List<Profile>) inputElement).toArray();
           }
         });
-    viewer.setInput(tokenStorage.getAllProfiless());
+    viewer.setInput(tokenStorage.getAllProfiles());
     viewer.setLabelProvider(new ViewLabelProvider());
     getSite().setSelectionProvider(viewer);
     makeActions();
@@ -91,7 +91,7 @@ public class TokenSelectionView extends ViewPart {
         () -> {
           display.asyncExec(
               () -> {
-                viewer.setInput(tokenStorage.getAllProfiless());
+                viewer.setInput(tokenStorage.getAllProfiles());
               });
         });
   }

@@ -9,3 +9,4 @@ pnpm dlx pnpm@8.6.7 -C vscode build
 popd
 mkdir -p plugins/cody-chat/resources/cody-webviews
 cp ../cody/vscode/dist/webviews/* plugins/cody-chat/resources/cody-webviews
+cp plugins/cody-chat/resources/favicon.ico plugins/cody-chat/resources/cody-webviews
