@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: cody-chat
 Bundle-SymbolicName: cody-chat;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Require-Bundle: 
- com.google.gson,
+Require-Bundle: com.google.gson,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.e4.core.contexts,
