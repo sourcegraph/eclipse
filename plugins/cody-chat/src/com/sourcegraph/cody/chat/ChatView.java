@@ -99,6 +99,7 @@ public class ChatView extends ViewPart {
                   display.asyncExec(
                       () -> {
                         if (isDone.compareAndSet(false, true)) {
+                          tokenStorage.updateCodyAgentConfiguration();
                           button.dispose();
                           addWebview(parent);
                         }
@@ -112,15 +113,8 @@ public class ChatView extends ViewPart {
 
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
+    restartWebviewPrototocol(browser);
     addStartNewChatAction(browser);
-    CodyAgent.CLIENT.extensionMessageConsumer =
-        (message) -> {
-          if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
-            doPostMessage(browser, message);
-          } else {
-            pendingExtensionMessages.add(message);
-          }
-        };
     job.schedule();
     onStartNewChat(browser);
   }
@@ -134,6 +128,20 @@ public class ChatView extends ViewPart {
         });
   }
 
+  private void restartWebviewPrototocol(Browser browser) {
+    pendingExtensionMessages.clear();
+    webviewInitialized = new CompletableFuture<>();
+    webviewInitialized.thenRun(() -> flushPendingMessages(browser));
+    CodyAgent.CLIENT.extensionMessageConsumer =
+        (message) -> {
+          if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
+            doPostMessage(browser, message);
+          } else {
+            pendingExtensionMessages.add(message);
+          }
+        };
+  }
+
   private void onStartNewChat(Browser browser) {
     System.out.println("onStartNewChat()");
     job.agent.thenAccept(
@@ -142,9 +150,6 @@ public class ChatView extends ViewPart {
           try {
             System.out.println("Callbacks done completed...");
             System.out.println("CHAT/NEW");
-            pendingExtensionMessages.clear();
-            webviewInitialized = new CompletableFuture<>();
-            webviewInitialized.thenRun(() -> flushPendingMessages(browser));
             chatId = agent.server.chat_new(null).get(5, TimeUnit.SECONDS);
             System.out.println("DONE - CHAT/NEW " + chatId);
           } catch (InterruptedException | ExecutionException | TimeoutException e) {
