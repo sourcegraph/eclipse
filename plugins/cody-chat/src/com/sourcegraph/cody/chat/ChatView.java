@@ -51,7 +51,7 @@ public class ChatView extends ViewPart {
 
   final StartAgentJob job = new StartAgentJob();
   private volatile String chatId = "";
-  private final CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
+  private CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
   private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
       new ConcurrentLinkedQueue<>();
 
@@ -112,26 +112,26 @@ public class ChatView extends ViewPart {
 
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
-    webviewInitialized.thenRun(() -> flushPendingMessages(browser));
     addStartNewChatAction(browser);
     CodyAgent.CLIENT.extensionMessageConsumer =
-        (message) ->
-            display.asyncExec(
-                () -> {
-                  if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
-                    doPostMessage(browser, message);
-                  } else {
-                    pendingExtensionMessages.add(message);
-                  }
-                });
+        (message) -> {
+          if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
+            doPostMessage(browser, message);
+          } else {
+            pendingExtensionMessages.add(message);
+          }
+        };
     job.schedule();
     onStartNewChat(browser);
   }
 
   private void doPostMessage(Browser browser, String message) {
-    System.out.println("WEBVIEW/POST_MESSAGE " + message);
-    String stringifiedMessage = gson.toJson(message);
-    browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
+    display.asyncExec(
+        () -> {
+          System.out.println("WEBVIEW/POST_MESSAGE " + message);
+          String stringifiedMessage = gson.toJson(message);
+          browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
+        });
   }
 
   private void onStartNewChat(Browser browser) {
@@ -143,6 +143,8 @@ public class ChatView extends ViewPart {
             System.out.println("Callbacks done completed...");
             System.out.println("CHAT/NEW");
             pendingExtensionMessages.clear();
+            webviewInitialized = new CompletableFuture<>();
+            webviewInitialized.thenRun(() -> flushPendingMessages(browser));
             chatId = agent.server.chat_new(null).get(5, TimeUnit.SECONDS);
             System.out.println("DONE - CHAT/NEW " + chatId);
           } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -155,7 +157,6 @@ public class ChatView extends ViewPart {
               () -> {
                 createCallbacks(browser, agent);
                 var url = String.format("http://localhost:%d", job.webserverPort);
-                System.out.println("AGENT IS READY! " + url);
                 browser.setUrl(url);
               });
         });
@@ -221,6 +222,11 @@ public class ChatView extends ViewPart {
     };
   }
 
+  private void addActionToToolbar(Action action) {
+    var toolBar = getViewSite().getActionBars().getToolBarManager();
+    toolBar.add(action);
+  }
+
   private void addLogInAction() {
     var action =
         new Action() {
@@ -240,9 +246,7 @@ public class ChatView extends ViewPart {
         PlatformUI.getWorkbench()
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
-
-    var toolBar = getViewSite().getActionBars().getToolBarManager();
-    toolBar.add(action);
+    addActionToToolbar(action);
   }
 
   private void addStartNewChatAction(Browser browser) {
@@ -260,8 +264,7 @@ public class ChatView extends ViewPart {
         PlatformUI.getWorkbench()
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
-    var toolBar = getViewSite().getActionBars().getToolBarManager();
-    toolBar.add(action);
+    addActionToToolbar(action);
   }
 
   private void addRestartCodyAction() {
@@ -287,8 +290,7 @@ public class ChatView extends ViewPart {
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_ELCL_SYNCED));
 
-    var toolBar = getViewSite().getActionBars().getToolBarManager();
-    toolBar.add(action);
+    addActionToToolbar(action);
   }
 
   @Override
