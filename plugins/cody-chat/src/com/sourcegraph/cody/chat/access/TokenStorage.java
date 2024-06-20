@@ -1,8 +1,13 @@
 package com.sourcegraph.cody.chat.access;
 
+import com.sourcegraph.cody.CodyAgent;
+import com.sourcegraph.cody.WrappedRuntimeException;
+import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import jakarta.inject.Singleton;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -44,7 +49,7 @@ public class TokenStorage {
 
   private String activeProfile = null;
 
-  public List<Profile> getAllProfiless() {
+  public List<Profile> getAllProfiles() {
     List<Profile> result = new ArrayList<>();
     try {
       profileStorage.accept(
@@ -92,7 +97,7 @@ public class TokenStorage {
       profileStorage.flush();
       secureStorage.flush();
     } catch (StorageException | BackingStoreException | IOException e) {
-      throw new RuntimeException(e); // Escalating unlikely exceptions
+      throw new WrappedRuntimeException(e); // Escalating unlikely exceptions
     }
   }
 
@@ -101,7 +106,7 @@ public class TokenStorage {
       String id = safeID(name);
       return secureStorage.get(id, "");
     } catch (StorageException e) {
-      throw new RuntimeException(e); // Escalating unlikely exception
+      throw new WrappedRuntimeException(e); // Escalating unlikely exception
     }
   }
 
@@ -112,6 +117,19 @@ public class TokenStorage {
       settingsStorage.flush();
     } catch (BackingStoreException e) {
       throw new RuntimeException(e); // Escalating unlikely exception
+    }
+    updateCodyAgentConfiguration();
+  }
+
+  public void updateCodyAgentConfiguration() {
+    var profileName = this.getActiveProfileName().orElse(null);
+
+    if (profileName != null) {
+      var configuration = new ExtensionConfiguration();
+      configuration.serverEndpoint = this.getServerEndpoint(profileName);
+      configuration.accessToken = this.getToken(profileName);
+      configuration.customConfiguration = new HashMap<>();
+      CodyAgent.onConfigChange(configuration);
     }
   }
 
@@ -145,5 +163,14 @@ public class TokenStorage {
     // Node ids in secure storage can only contain ASCII chars
     // from open ranges (32, 47) and (47, 126).
     return EncodingUtils.encodeSlashes(EncodingUtils.encodeBase64(name.getBytes()));
+  }
+
+  public String getServerEndpoint(String profileName) {
+    for (var profile : getAllProfiles()) {
+      if (profile.name.equals(profileName)) {
+        return String.format("https://%s/", URI.create(profile.url).getHost());
+      }
+    }
+    return null;
   }
 }

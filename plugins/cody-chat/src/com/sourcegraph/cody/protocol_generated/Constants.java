@@ -141,4 +141,6 @@ public final class Constants {
   public static final String enabled = "enabled";
   public static final String notification = "notification";
   public static final String request = "request";
+  public static final String object_encoded = "object-encoded";
+  public static final String string_encoded = "string-encoded";
 }

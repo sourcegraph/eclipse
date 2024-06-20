@@ -5,7 +5,7 @@ import org.eclipse.lsp4j.jsonrpc.services.JsonNotification;
 import org.eclipse.lsp4j.jsonrpc.services.JsonRequest;
 
 @SuppressWarnings("unused")
-interface CodyAgentServer {
+public interface CodyAgentServer {
   // ========
   // Requests
   // ========
@@ -119,6 +119,10 @@ interface CodyAgentServer {
 
   @JsonRequest("webview/receiveMessage")
   CompletableFuture<Void> webview_receiveMessage(Webview_ReceiveMessageParams params);
+
+  @JsonRequest("webview/receiveMessageStringEncoded")
+  CompletableFuture<Void> webview_receiveMessageStringEncoded(
+      Webview_ReceiveMessageStringEncodedParams params);
 
   @JsonRequest("diagnostics/publish")
   CompletableFuture<Void> diagnostics_publish(Diagnostics_PublishParams params);

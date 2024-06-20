@@ -13,6 +13,7 @@ public final class ClientCapabilities {
   public ShowWindowMessageEnum showWindowMessage; // Oneof: notification, request
   public IgnoreEnum ignore; // Oneof: none, enabled
   public CodeActionsEnum codeActions; // Oneof: none, enabled
+  public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
 
   public enum CompletionsEnum {
     @com.google.gson.annotations.SerializedName("none")
@@ -94,5 +95,12 @@ public final class ClientCapabilities {
     None,
     @com.google.gson.annotations.SerializedName("enabled")
     Enabled,
+  }
+
+  public enum WebviewMessagesEnum {
+    @com.google.gson.annotations.SerializedName("object-encoded")
+    Object_encoded,
+    @com.google.gson.annotations.SerializedName("string-encoded")
+    String_encoded,
   }
 }

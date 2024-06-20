@@ -28,8 +28,7 @@ public class TokenSelectionView extends ViewPart {
 
   public static final String ID = "com.sourcegraph.cody.chat.access.TokenSelectionView";
 
-  public static final String DEFAULT_URL =
-      "https://sourcegraph.com/user/settings/tokens/new/callback";
+  public static final String DEFAULT_URL = "https://sourcegraph.com";
 
   @Inject IWorkbench workbench;
 
@@ -81,7 +80,7 @@ public class TokenSelectionView extends ViewPart {
             return ((List<Profile>) inputElement).toArray();
           }
         });
-    viewer.setInput(tokenStorage.getAllProfiless());
+    viewer.setInput(tokenStorage.getAllProfiles());
     viewer.setLabelProvider(new ViewLabelProvider());
     getSite().setSelectionProvider(viewer);
     makeActions();
@@ -91,7 +90,7 @@ public class TokenSelectionView extends ViewPart {
         () -> {
           display.asyncExec(
               () -> {
-                viewer.setInput(tokenStorage.getAllProfiless());
+                viewer.setInput(tokenStorage.getAllProfiles());
               });
         });
   }
@@ -116,24 +115,16 @@ public class TokenSelectionView extends ViewPart {
             }
           }
         };
-    removeAction.setText("Remove");
-    removeAction.setToolTipText("Remove profile");
+    removeAction.setText("Remove Selected Account");
+    removeAction.setToolTipText("Remove Selected Account");
     removeAction.setImageDescriptor(
         PlatformUI.getWorkbench()
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
 
-    addAction =
-        new Action() {
-          public void run() {
-            var profile = NewTokenDialog.ask(shell);
-            if (profile.isPresent()) {
-              new LogInJob(context, profile.get().name, profile.get().url).schedule();
-            }
-          }
-        };
-    addAction.setText("Add");
-    addAction.setToolTipText("Add");
+    addAction = new AddProfileAction(context);
+    addAction.setText("Add New Account");
+    addAction.setToolTipText("Add New Account");
     addAction.setImageDescriptor(
         workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
 
