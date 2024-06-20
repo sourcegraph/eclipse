@@ -3,6 +3,7 @@ package com.sourcegraph.cody.chat;
 import static java.lang.System.out;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,9 @@ public class ChatView extends ViewPart {
 
   final StartAgentJob job = new StartAgentJob();
   private volatile String chatId = "";
+  private final CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
+  private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
+      new ConcurrentLinkedQueue<>();
 
   public static Gson gson = ChatView.createGson();
 
@@ -106,28 +110,26 @@ public class ChatView extends ViewPart {
         });
   }
 
-  private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
-      new ConcurrentLinkedQueue<>();
-
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
+    webviewInitialized.thenRun(() -> flushPendingMessages(browser));
+    addStartNewChatAction(browser);
     CodyAgent.CLIENT.extensionMessageConsumer =
         (message) ->
             display.asyncExec(
                 () -> {
-                  System.out.println("WEBVIEW/POST_MESSAGE " + message);
-                  if (job.agent.isDone() && pendingExtensionMessages.isEmpty()) {
+                  if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
                     doPostMessage(browser, message);
                   } else {
                     pendingExtensionMessages.add(message);
                   }
                 });
     job.schedule();
-    addStartNewChatAction(browser);
     onStartNewChat(browser);
   }
 
   private void doPostMessage(Browser browser, String message) {
+    System.out.println("WEBVIEW/POST_MESSAGE " + message);
     String stringifiedMessage = gson.toJson(message);
     browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
   }
@@ -151,25 +153,34 @@ public class ChatView extends ViewPart {
           // We have the chat ID, let's update the browser URL.
           display.asyncExec(
               () -> {
+                createCallbacks(browser, agent);
                 var url = String.format("http://localhost:%d", job.webserverPort);
                 System.out.println("AGENT IS READY! " + url);
                 browser.setUrl(url);
-
-                try {
-                  String message;
-                  while ((message = pendingExtensionMessages.poll()) != null) {
-                    doPostMessage(browser, message);
-                  }
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-
-                createCallbacks(browser, agent);
               });
         });
   }
 
+  private void flushPendingMessages(Browser browser) {
+    try {
+      String message;
+      while ((message = pendingExtensionMessages.poll()) != null) {
+        doPostMessage(browser, message);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   private void createCallbacks(Browser browser, CodyAgent agent) {
+    new BrowserFunction(browser, "eclipse_initialized") {
+      @Override
+      public Object function(Object[] arguments) {
+        webviewInitialized.complete(true);
+        return null;
+      }
+    };
+
     new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
@@ -223,8 +234,8 @@ public class ChatView extends ViewPart {
           }
         };
 
-    action.setText("Log in");
-    action.setToolTipText("Log in using GitHub");
+    action.setText("Open Cody Settings");
+    action.setToolTipText("Open Cody Settings");
     action.setImageDescriptor(
         PlatformUI.getWorkbench()
             .getSharedImages()
@@ -254,6 +265,9 @@ public class ChatView extends ViewPart {
   }
 
   private void addRestartCodyAction() {
+    if (!"true".equals(System.getProperty("cody-agent.restart-button", "false"))) {
+      return;
+    }
     var action =
         new Action() {
           @Override

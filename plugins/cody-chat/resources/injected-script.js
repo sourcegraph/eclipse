@@ -26,6 +26,9 @@ globalThis.acquireVsCodeApi = (function () {
     return Object.freeze({
       postMessage: function (message, transfer) {
         console.assert(!transfer);
+        if (message?.command === "initialized") {
+          eclipse_initialized(true);
+        }
         // console.log(`do-post-message: ${JSON.stringify(message)}`);
         eclipse_receiveMessage(JSON.stringify(message));
         //   ${viewToHost.inject("JSON.stringify({what: 'postMessage', value: message})")}

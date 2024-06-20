@@ -118,16 +118,16 @@ public class TokenSelectionView extends ViewPart {
             }
           }
         };
-    removeAction.setText("Remove");
-    removeAction.setToolTipText("Remove profile");
+    removeAction.setText("Remove Selected Account");
+    removeAction.setToolTipText("Remove Selected Account");
     removeAction.setImageDescriptor(
         PlatformUI.getWorkbench()
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
 
     addAction = new AddProfileAction(context);
-    addAction.setText("Add");
-    addAction.setToolTipText("Add");
+    addAction.setText("Add New Account");
+    addAction.setToolTipText("Add New Account");
     addAction.setImageDescriptor(
         workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
 
