@@ -1,5 +1,5 @@
 function eclipse_postMessage(message) {
-  console.log(`eclipse_postMessage ${message}`);
+  //   console.log(`eclipse_postMessage ${message}`);
   fire(JSON.parse(message));
 }
 

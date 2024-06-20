@@ -7,12 +7,17 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
@@ -25,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyAgent;
 import com.sourcegraph.cody.WebviewServer;
+import com.sourcegraph.cody.chat.access.AddProfileAction;
 import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
@@ -40,6 +46,9 @@ public class ChatView extends ViewPart {
   @Inject private TokenStorage tokenStorage;
 
   @Inject private IWorkbenchPage page;
+
+  @Inject IEclipseContext context;
+
   public static Gson gson = ChatView.createGson();
 
   private static Gson createGson() {
@@ -59,8 +68,47 @@ public class ChatView extends ViewPart {
 
   @Override
   public void createPartControl(Composite parent) {
-    addLogInAction();
-    addRestartCodyAction();
+    try {
+      addLogInAction();
+      addRestartCodyAction();
+      if (tokenStorage.getActiveProfileName().isPresent()) {
+        addWebview(parent);
+      } else {
+        addLoginButton(parent);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  Button loginButton;
+
+  public void addLoginButton(Composite parent) {
+    var button = new Button(parent, SWT.NONE);
+    button.setText("Log in");
+    button.setToolTipText("Log into your Cody account");
+    button.addSelectionListener(
+        new SelectionAdapter() {
+          @Override
+          public void widgetSelected(SelectionEvent e) {
+            var isDone = new AtomicBoolean(false);
+            tokenStorage.addCallback(
+                () -> {
+                  display.asyncExec(
+                      () -> {
+                        if (isDone.compareAndSet(false, true)) {
+                          button.dispose();
+                          addWebview(parent);
+                        }
+                      });
+                });
+            var action = new AddProfileAction(context);
+            action.run();
+          }
+        });
+  }
+
+  public void addWebview(Composite parent) {
     AtomicReference<Browser> browser = new AtomicReference<>();
     ArrayList<String> pendingExtensionMessages = new ArrayList<>();
     AtomicReference<String> chatId = new AtomicReference<>("");
@@ -78,7 +126,13 @@ public class ChatView extends ViewPart {
         };
     tokenStorage.updateCodyAgentConfiguration();
 
-    CodyAgent agent = CodyAgent.start();
+    CodyAgent agent;
+    try {
+      agent = CodyAgent.start();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+    }
     var b = new Browser(parent, SWT.EDGE);
     browser.set(b);
     try {
@@ -99,10 +153,15 @@ public class ChatView extends ViewPart {
       e.printStackTrace();
     }
 
-    var server = new WebviewServer();
-    var port = server.start();
+    try {
 
-    browser.get().setUrl(String.format("http://localhost:%d", port));
+      var server = new WebviewServer();
+      var port = server.start();
+      browser.get().setUrl(String.format("http://localhost:%d", port));
+    } catch (Exception e) {
+      System.out.println("Failed to start webview server");
+      e.printStackTrace();
+    }
   }
 
   private void createCallbacks(Browser browser, CodyAgent agent, String chatId) {

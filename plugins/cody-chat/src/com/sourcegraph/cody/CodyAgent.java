@@ -53,7 +53,7 @@ public class CodyAgent implements IDisposable {
 
   @Nullable public static volatile CodyAgent AGENT = null;
 
-  private static ExecutorService executorService = Executors.newCachedThreadPool();
+  public static ExecutorService executorService = Executors.newCachedThreadPool();
 
   /**
    * Returns the path to a Node.js executable to run the agent.
@@ -135,6 +135,7 @@ public class CodyAgent implements IDisposable {
     try {
       return startUnsafe();
     } catch (Exception e) {
+      e.printStackTrace();
       throw new WrappedRuntimeException(e);
     }
   }
@@ -241,7 +242,11 @@ public class CodyAgent implements IDisposable {
   public static void onConfigChange(ExtensionConfiguration config) {
     CodyAgent.config = config;
     if (CodyAgent.AGENT != null && CodyAgent.AGENT.isRunning()) {
-      //      CodyAgent.AGENT.server.extensionConfiguration_didChange(config);
+      try {
+        CodyAgent.AGENT.server.extensionConfiguration_didChange(config);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -261,7 +266,7 @@ public class CodyAgent implements IDisposable {
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     clientInfo.capabilities = capabilities;
     System.out.println("CONFIG " + ChatView.gson.toJson(CodyAgent.config));
-    //    clientInfo.extensionConfiguration = CodyAgent.config;
+    clientInfo.extensionConfiguration = CodyAgent.config;
     server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     server.initialized(null);
   }

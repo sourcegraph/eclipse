@@ -1,8 +1,7 @@
 package com.sourcegraph.cody.chat.access;
 
-import com.sourcegraph.cody.chat.access.TokenStorage.Profile;
-import jakarta.inject.Inject;
 import java.util.List;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -23,6 +22,10 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import com.sourcegraph.cody.chat.access.TokenStorage.Profile;
+
+import jakarta.inject.Inject;
 
 public class TokenSelectionView extends ViewPart {
 
@@ -123,15 +126,7 @@ public class TokenSelectionView extends ViewPart {
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
 
-    addAction =
-        new Action() {
-          public void run() {
-            var profile = NewTokenDialog.ask(shell);
-            if (profile.isPresent()) {
-              new LogInJob(context, profile.get().name, profile.get().url).schedule();
-            }
-          }
-        };
+    addAction = new AddProfileAction(context);
     addAction.setText("Add");
     addAction.setToolTipText("Add");
     addAction.setImageDescriptor(
