@@ -31,8 +31,7 @@ public class TokenSelectionView extends ViewPart {
 
   public static final String ID = "com.sourcegraph.cody.chat.access.TokenSelectionView";
 
-  public static final String DEFAULT_URL =
-      "https://sourcegraph.com/user/settings/tokens/new/callback";
+  public static final String DEFAULT_URL = "https://sourcegraph.com";
 
   @Inject IWorkbench workbench;
 

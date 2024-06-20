@@ -1,7 +1,8 @@
 package com.sourcegraph.cody.chat.access;
 
-import com.sourcegraph.cody.chat.access.TokenStorage.Profile;
+import java.net.URI;
 import java.util.Optional;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -13,9 +14,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.sourcegraph.cody.chat.access.TokenStorage.Profile;
+
 public class NewTokenDialog extends Dialog {
 
-  private Text nameText;
   private Text urlText;
 
   private String name;
@@ -30,30 +32,23 @@ public class NewTokenDialog extends Dialog {
     var composite = new Composite(parent, SWT.NONE);
     composite.setLayout(new GridLayout(2, false));
 
-    Label nameLabel = new Label(composite, SWT.NONE);
-    nameLabel.setText("Name");
-    nameText = new Text(composite, SWT.BORDER);
-    var nameLayout = new GridData();
-    nameLayout.grabExcessHorizontalSpace = true;
-    nameLayout.horizontalAlignment = GridData.FILL;
-    nameText.setLayoutData(nameLayout);
-
     Label urlLabel = new Label(composite, SWT.NONE);
-    urlLabel.setText("URL");
+    urlLabel.setText("Sourcegraph Instance URL");
     urlText = new Text(composite, SWT.BORDER);
     var urlLayout = new GridData();
     urlLayout.grabExcessHorizontalSpace = true;
     urlLayout.horizontalAlignment = GridData.FILL;
     urlText.setLayoutData(urlLayout);
     urlText.setText(TokenSelectionView.DEFAULT_URL);
+    //    getButton(IDialogConstants.OK_ID).setText("Open");
 
     return composite;
   }
 
   @Override
   protected void okPressed() {
-    name = nameText.getText();
     url = urlText.getText();
+    name = URI.create(url).getHost();
     super.okPressed();
   }
 

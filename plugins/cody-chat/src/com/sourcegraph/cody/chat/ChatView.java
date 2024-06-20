@@ -3,7 +3,7 @@ package com.sourcegraph.cody.chat;
 import static java.lang.System.out;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -69,6 +69,7 @@ public class ChatView extends ViewPart {
       addLogInAction();
       addRestartCodyAction();
       if (tokenStorage.getActiveProfileName().isPresent()) {
+        tokenStorage.updateCodyAgentConfiguration();
         addWebview(parent);
       } else {
         addLoginButton(parent);
@@ -105,7 +106,8 @@ public class ChatView extends ViewPart {
         });
   }
 
-  private final ArrayList<String> pendingExtensionMessages = new ArrayList<>();
+  private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
+      new ConcurrentLinkedQueue<>();
 
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
@@ -114,7 +116,7 @@ public class ChatView extends ViewPart {
             display.asyncExec(
                 () -> {
                   System.out.println("WEBVIEW/POST_MESSAGE " + message);
-                  if (pendingExtensionMessages.isEmpty()) {
+                  if (job.agent.isDone() && pendingExtensionMessages.isEmpty()) {
                     doPostMessage(browser, message);
                   } else {
                     pendingExtensionMessages.add(message);
@@ -132,15 +134,8 @@ public class ChatView extends ViewPart {
 
   private void onStartNewChat(Browser browser) {
     System.out.println("onStartNewChat()");
-    CodyAgent.executorService.execute(
-        () -> {
-          CodyAgent agent;
-          try {
-            agent = job.agent.get(20, TimeUnit.SECONDS);
-          } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return;
-          }
+    job.agent.thenAccept(
+        agent -> {
           System.out.println("Agent completed...");
           try {
             System.out.println("Callbacks done completed...");
@@ -161,7 +156,8 @@ public class ChatView extends ViewPart {
                 browser.setUrl(url);
 
                 try {
-                  for (var message : pendingExtensionMessages) {
+                  String message;
+                  while ((message = pendingExtensionMessages.poll()) != null) {
                     doPostMessage(browser, message);
                   }
                 } catch (Exception e) {
