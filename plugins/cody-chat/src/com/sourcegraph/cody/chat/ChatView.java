@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
@@ -29,7 +28,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyAgent;
-import com.sourcegraph.cody.WebviewServer;
+import com.sourcegraph.cody.StartAgentJob;
 import com.sourcegraph.cody.chat.access.AddProfileAction;
 import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
@@ -49,6 +48,9 @@ public class ChatView extends ViewPart {
 
   @Inject IEclipseContext context;
 
+  final StartAgentJob job = new StartAgentJob();
+  private volatile String chatId = "";
+
   public static Gson gson = ChatView.createGson();
 
   private static Gson createGson() {
@@ -59,11 +61,6 @@ public class ChatView extends ViewPart {
 
   private static void configureGson(GsonBuilder builder) {
     ProtocolTypeAdapters.register(builder);
-  }
-
-  private void doPostMessage(Browser browser, String message) {
-    String stringifiedMessage = gson.toJson(message);
-    browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
   }
 
   @Override
@@ -108,66 +105,82 @@ public class ChatView extends ViewPart {
         });
   }
 
+  private final ArrayList<String> pendingExtensionMessages = new ArrayList<>();
+
   public void addWebview(Composite parent) {
-    AtomicReference<Browser> browser = new AtomicReference<>();
-    ArrayList<String> pendingExtensionMessages = new ArrayList<>();
-    AtomicReference<String> chatId = new AtomicReference<>("");
+    final Browser browser = new Browser(parent, SWT.EDGE);
     CodyAgent.CLIENT.extensionMessageConsumer =
-        (message) -> {
-          display.asyncExec(
-              () -> {
-                System.out.println("WEBVIEW/POST_MESSAGE " + message);
-                if (browser.get() != null && pendingExtensionMessages.isEmpty()) {
-                  doPostMessage(browser.get(), message);
-                } else {
-                  pendingExtensionMessages.add(message);
-                }
-              });
-        };
-    tokenStorage.updateCodyAgentConfiguration();
-
-    CodyAgent agent;
-    try {
-      agent = CodyAgent.start();
-    } catch (Exception e) {
-      e.printStackTrace();
-      return;
-    }
-    var b = new Browser(parent, SWT.EDGE);
-    browser.set(b);
-    try {
-      System.out.println("CHAT/NEW");
-      chatId.set(agent.server.chat_new(null).get(5, TimeUnit.SECONDS));
-      System.out.println("DONE - CHAT/NEW " + chatId);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      e.printStackTrace();
-    }
-    createCallbacks(browser.get(), agent, chatId.get());
-
-    try {
-
-      for (var message : pendingExtensionMessages) {
-        doPostMessage(browser.get(), message);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    try {
-
-      var server = new WebviewServer();
-      var port = server.start();
-      browser.get().setUrl(String.format("http://localhost:%d", port));
-    } catch (Exception e) {
-      System.out.println("Failed to start webview server");
-      e.printStackTrace();
-    }
+        (message) ->
+            display.asyncExec(
+                () -> {
+                  System.out.println("WEBVIEW/POST_MESSAGE " + message);
+                  if (pendingExtensionMessages.isEmpty()) {
+                    doPostMessage(browser, message);
+                  } else {
+                    pendingExtensionMessages.add(message);
+                  }
+                });
+    job.schedule();
+    addStartNewChatAction(browser);
+    onStartNewChat(browser);
   }
 
-  private void createCallbacks(Browser browser, CodyAgent agent, String chatId) {
+  private void doPostMessage(Browser browser, String message) {
+    String stringifiedMessage = gson.toJson(message);
+    browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
+  }
+
+  private void onStartNewChat(Browser browser) {
+    System.out.println("onStartNewChat()");
+    CodyAgent.executorService.execute(
+        () -> {
+          CodyAgent agent;
+          try {
+            agent = job.agent.get(20, TimeUnit.SECONDS);
+          } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return;
+          }
+          System.out.println("Agent completed...");
+          try {
+            System.out.println("Callbacks done completed...");
+            System.out.println("CHAT/NEW");
+            pendingExtensionMessages.clear();
+            chatId = agent.server.chat_new(null).get(5, TimeUnit.SECONDS);
+            System.out.println("DONE - CHAT/NEW " + chatId);
+          } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return; // TODO: display error message to the user
+          }
+
+          // We have the chat ID, let's update the browser URL.
+          display.asyncExec(
+              () -> {
+                var url = String.format("http://localhost:%d", job.webserverPort);
+                System.out.println("AGENT IS READY! " + url);
+                browser.setUrl(url);
+
+                try {
+                  for (var message : pendingExtensionMessages) {
+                    doPostMessage(browser, message);
+                  }
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+
+                createCallbacks(browser, agent);
+              });
+        });
+  }
+
+  private void createCallbacks(Browser browser, CodyAgent agent) {
     new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
+        if (chatId.isEmpty()) {
+          System.out.println("CHAT ID IS EMPTY!!");
+          return null;
+        }
         display.asyncExec(
             () -> {
               String message = (String) arguments[0];
@@ -221,6 +234,25 @@ public class ChatView extends ViewPart {
             .getSharedImages()
             .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
 
+    var toolBar = getViewSite().getActionBars().getToolBarManager();
+    toolBar.add(action);
+  }
+
+  private void addStartNewChatAction(Browser browser) {
+    var action =
+        new Action() {
+          @Override
+          public void run() {
+            onStartNewChat(browser);
+          }
+        };
+
+    action.setText("Start new chat");
+    action.setToolTipText("Start new chat session");
+    action.setImageDescriptor(
+        PlatformUI.getWorkbench()
+            .getSharedImages()
+            .getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
     var toolBar = getViewSite().getActionBars().getToolBarManager();
     toolBar.add(action);
   }
