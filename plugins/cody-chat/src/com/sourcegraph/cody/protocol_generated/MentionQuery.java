@@ -7,4 +7,3 @@ public final class MentionQuery {
   public Boolean maybeHasRangeSuffix;
   public Boolean includeRemoteRepositories;
 }
-

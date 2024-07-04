@@ -11,4 +11,3 @@ public final class CodyCommandContext {
   public String directoryPath;
   public Boolean codebase;
 }
-

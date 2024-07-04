@@ -4,4 +4,3 @@ public final class Webview_ReceiveMessageStringEncodedParams {
   public String id;
   public String messageStringEncoded;
 }
-

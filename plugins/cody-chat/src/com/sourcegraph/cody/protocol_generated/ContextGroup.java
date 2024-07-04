@@ -5,4 +5,3 @@ public final class ContextGroup {
   public String displayName;
   public java.util.List<ContextProvider> providers;
 }
-

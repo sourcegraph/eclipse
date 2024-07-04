@@ -6,4 +6,3 @@ public final class ProtocolCommand {
   public String tooltip;
   public java.util.List<Object> arguments;
 }
-

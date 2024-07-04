@@ -14,3 +14,5 @@ eclipse-plugins-directory.txt
 /bin/
 
 jars/
+/bazel-*
+

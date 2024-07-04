@@ -7,4 +7,3 @@ public final class CurrentUserCodySubscription {
   public Date currentPeriodStartAt;
   public Date currentPeriodEndAt;
 }
-
