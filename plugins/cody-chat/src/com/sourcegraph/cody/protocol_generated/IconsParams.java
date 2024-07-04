@@ -4,3 +4,4 @@ public final class IconsParams {
   public String value;
   public Integer position;
 }
+

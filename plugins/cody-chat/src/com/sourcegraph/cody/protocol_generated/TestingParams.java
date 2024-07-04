@@ -4,3 +4,4 @@ public final class TestingParams {
   public String selectedText;
   public ProtocolTextDocument sourceOfTruthDocument;
 }
+

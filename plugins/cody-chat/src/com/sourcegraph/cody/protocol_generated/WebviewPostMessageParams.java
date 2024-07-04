@@ -4,3 +4,4 @@ public final class WebviewPostMessageParams {
   public String id;
   public ExtensionMessage message;
 }
+

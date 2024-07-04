@@ -6,3 +6,4 @@ public final class ContextMentionProviderMetadata {
   public String queryLabel;
   public String emptyLabel;
 }
+

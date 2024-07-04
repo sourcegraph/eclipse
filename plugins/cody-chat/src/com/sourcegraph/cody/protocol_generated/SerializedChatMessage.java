@@ -9,11 +9,9 @@ public final class SerializedChatMessage {
   public String model;
 
   public enum SpeakerEnum {
-    @com.google.gson.annotations.SerializedName("human")
-    Human,
-    @com.google.gson.annotations.SerializedName("assistant")
-    Assistant,
-    @com.google.gson.annotations.SerializedName("system")
-    System,
+    @com.google.gson.annotations.SerializedName("human") Human,
+    @com.google.gson.annotations.SerializedName("assistant") Assistant,
+    @com.google.gson.annotations.SerializedName("system") System,
   }
 }
+

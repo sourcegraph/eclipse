@@ -5,3 +5,4 @@ public final class ProgressReportParams {
   public String message;
   public Integer increment;
 }
+

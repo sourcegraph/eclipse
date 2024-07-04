@@ -5,6 +5,7 @@ public final class AuthStatus {
   public String endpoint;
   public Boolean isDotCom;
   public Boolean isLoggedIn;
+  public Boolean isFireworksTracingEnabled;
   public Boolean showInvalidAccessTokenError;
   public Boolean authenticated;
   public Boolean hasVerifiedEmail;
@@ -18,4 +19,6 @@ public final class AuthStatus {
   public String displayName;
   public String avatarURL;
   public Boolean userCanUpgrade;
+  public Boolean isOfflineMode;
 }
+

@@ -5,3 +5,4 @@ public final class Chat_RestoreParams {
   public java.util.List<SerializedChatMessage> messages;
   public String chatID;
 }
+
