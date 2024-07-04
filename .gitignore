@@ -1,3 +1,5 @@
+/.ijwb/
+/eclipse-plugins-sources/
 /eclipse-plugins/
 .metals/
 *.jar
