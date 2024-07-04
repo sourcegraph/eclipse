@@ -37,19 +37,19 @@ java_import(
 java_import(
     name = "eclipse_2024_03",
     jars = glob(["eclipse-platforms/eclipse-2024-03-jars/*.jar"]),
-    srcjar = "sources.jar",
+    srcjar = "eclipse-platforms/eclipse-2024-03-jars-sources.jar",
 )
 
 java_import(
     name = "eclipse_2022_12",
     jars = glob(["eclipse-platforms/eclipse-2022-12-jars/*.jar"]),
-    srcjar = "sources.jar",
+    srcjar = "eclipse-platforms/eclipse-2022-12-jars-sources.jar",
 )
 
 java_import(
     name = "eclipse_2019_12",
     jars = glob(["eclipse-platforms/eclipse-2019-12-jars/*.jar"]),
-    srcjar = "sources.jar",
+    srcjar = "eclipse-platforms/eclipse-2019-12-jars-sources.jar",
 )
 
 

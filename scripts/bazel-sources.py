@@ -1,3 +1,4 @@
+import sys
 import os
 import zipfile
 import glob
@@ -21,15 +22,22 @@ def process_jar_files(directory):
                         # Read the content of the .java file
                         content = jar.read(entry.filename)
                         # Write the content to the new sources.jar
-                        output_jar.writestr(entry.filename, content)
-
-    print(f"Created sources.jar in {directory}")
+                        if entry.filename not in output_jar.namelist():
+                            output_jar.writestr(entry.filename, content)
+    print(f"Created {output_jar_path}")
 
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: python bazel-sources.py <directory>")
+    
+    base_directory = os.getcwd()
+    eclipse_platforms_dir = os.path.join(base_directory, "eclipse-platforms")
+    
+    if not os.path.isdir(eclipse_platforms_dir):
+        print(f"Error: {eclipse_platforms_dir} is not a directory")
         sys.exit(1)
     
-    directory = sys.argv[1]
-    process_jar_files(directory)
+    subdirectories = [d for d in os.listdir(eclipse_platforms_dir) if os.path.isdir(os.path.join(eclipse_platforms_dir, d))]
+    
+    for subdir in subdirectories:
+        full_path = os.path.join(eclipse_platforms_dir, subdir)
+        print(f"Processing directory: {full_path}")
+        process_jar_files(full_path)
