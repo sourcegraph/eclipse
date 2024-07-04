@@ -7,11 +7,16 @@ java_library(
     srcs = glob(["plugins/cody-chat/src/**/*.java"]),
   deps = [
             ":eclipse_plugin_jars",
+            ":custom_jars",
 
   ],
 
 )
 
+java_import(
+    name = "custom_jars",
+    jars = glob(["plugins/cody-chat/lib/*.jar"]),
+)
 
 java_import(
     name = "eclipse_plugin_jars",
