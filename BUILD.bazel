@@ -1,4 +1,4 @@
-load("@rules_java//java:defs.bzl", "java_binary")
+load("@rules_java//java:defs.bzl", "java_library", "java_import")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -6,14 +6,16 @@ java_library(
     name = "cody-eclipse",
     srcs = glob(["plugins/cody-chat/src/**/*.java"]),
   deps = [
-    "//foo:lib.jar",
+            ":eclipse_plugin_jars",
+
   ],
 
 )
 
 
 java_import(
-    name = "local_jar",
-    jars = ["local.jar"],
-    visibility = ["//visibility:public"],
+    name = "eclipse_plugin_jars",
+    jars = glob(["eclipse-plugins/*.jar"]),
 )
+
+

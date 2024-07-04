@@ -58,12 +58,12 @@ public abstract class WorkspaceEditOperation {
     }
   }
 
-  public final class EditFileOperation extends WorkspaceEditOperation {
+  public static final class EditFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: edit-file
     public String uri;
     public java.util.List<TextEdit> edits;
 
-    public enum TypeEnum {
+    public static enum TypeEnum {
       @com.google.gson.annotations.SerializedName("edit-file")
       Edit_file,
     }
