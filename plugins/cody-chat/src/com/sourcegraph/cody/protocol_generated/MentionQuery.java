@@ -5,4 +5,5 @@ public final class MentionQuery {
   public String text;
   public RangeData range;
   public Boolean maybeHasRangeSuffix;
+  public Boolean includeRemoteRepositories;
 }

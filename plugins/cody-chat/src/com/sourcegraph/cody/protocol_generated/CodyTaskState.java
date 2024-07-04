@@ -9,8 +9,6 @@ public enum CodyTaskState {
   Inserting,
   @com.google.gson.annotations.SerializedName("Applying")
   Applying,
-  @com.google.gson.annotations.SerializedName("Formatting")
-  Formatting,
   @com.google.gson.annotations.SerializedName("Applied")
   Applied,
   @com.google.gson.annotations.SerializedName("Finished")

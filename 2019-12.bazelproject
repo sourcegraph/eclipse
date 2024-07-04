@@ -1,0 +1,5 @@
+targets:
+  //:cody_eclipse_2019_12
+  //:eclipse_2019_12
+directories:
+  plugins/cody-chat/src

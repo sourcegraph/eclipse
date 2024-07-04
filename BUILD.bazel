@@ -1,0 +1,55 @@
+load("@rules_java//java:defs.bzl", "java_library", "java_import")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+  name = "cody_eclipse_2024_03",
+  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
+  deps = [
+    ":eclipse_2024_03",
+    ":custom_jars",
+  ],
+)
+
+java_library(
+  name = "cody_eclipse_2019_12",
+  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
+  deps = [
+    ":eclipse_2019_12",
+    ":custom_jars",
+  ],
+)
+
+java_library(
+  name = "cody_eclipse_2022_12",
+  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
+  deps = [
+    ":eclipse_2022_12",
+    ":custom_jars",
+  ],
+)
+
+java_import(
+    name = "custom_jars",
+    jars = glob(["plugins/cody-chat/lib/*.jar"]),
+)
+
+java_import(
+    name = "eclipse_2024_03",
+    jars = glob(["eclipse-platforms/eclipse-2024-03-jars/*.jar"]),
+    srcjar = "eclipse-platforms/eclipse-2024-03-jars-sources.jar",
+)
+
+java_import(
+    name = "eclipse_2022_12",
+    jars = glob(["eclipse-platforms/eclipse-2022-12-jars/*.jar"]),
+    srcjar = "eclipse-platforms/eclipse-2022-12-jars-sources.jar",
+)
+
+java_import(
+    name = "eclipse_2019_12",
+    jars = glob(["eclipse-platforms/eclipse-2019-12-jars/*.jar"]),
+    srcjar = "eclipse-platforms/eclipse-2019-12-jars-sources.jar",
+)
+
+
