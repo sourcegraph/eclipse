@@ -1,0 +1,17 @@
+p2repo = use_repo_rule("//meta:p2repo.bzl", "p2repo")
+
+bazel_dep(
+    name = "rules_java",
+    version = "7.3.2",
+)
+
+p2repo(
+    name = "eclipse_2023_03",
+    local_features = ["cody_feature"],
+    run_config = "releng/cody-feature/minimal_run.launch",
+    sites = [
+        "https://download.eclipse.org/eclipse/updates/4.23",
+        "https://download.eclipse.org/technology/epp/packages/2024-03",
+        "https://download.eclipse.org/lsp4e/releases/0.25.1/",
+    ],
+)
