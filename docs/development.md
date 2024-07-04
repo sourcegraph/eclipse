@@ -35,7 +35,7 @@ run and debug menus in the toolbar.
 If you can open the Cody Chat view from `Window > Show view > Other`, the plugin
 is loaded properly.
 
-![View selection](img/cody_view.png)
+![View selection](img/cody-view.png)
 
 ## Manual build
 
