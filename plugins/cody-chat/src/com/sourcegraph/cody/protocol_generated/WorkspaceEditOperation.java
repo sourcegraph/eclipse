@@ -20,7 +20,7 @@ public abstract class WorkspaceEditOperation {
     };
   }
 
-  public final class CreateFileOperation extends WorkspaceEditOperation {
+  public static final class CreateFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: create-file
     public String uri;
     public WriteFileOptions options;
@@ -33,7 +33,7 @@ public abstract class WorkspaceEditOperation {
     }
   }
 
-  public final class RenameFileOperation extends WorkspaceEditOperation {
+  public static final class RenameFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: rename-file
     public String oldUri;
     public String newUri;
@@ -46,7 +46,7 @@ public abstract class WorkspaceEditOperation {
     }
   }
 
-  public final class DeleteFileOperation extends WorkspaceEditOperation {
+  public static final class DeleteFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: delete-file
     public String uri;
     public DeleteOptionsParams deleteOptions;
@@ -58,7 +58,7 @@ public abstract class WorkspaceEditOperation {
     }
   }
 
-  public final class EditFileOperation extends WorkspaceEditOperation {
+  public static final class EditFileOperation extends WorkspaceEditOperation {
     public TypeEnum type; // Oneof: edit-file
     public String uri;
     public java.util.List<TextEdit> edits;

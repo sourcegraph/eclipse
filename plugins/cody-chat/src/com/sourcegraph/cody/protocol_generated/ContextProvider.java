@@ -16,11 +16,11 @@ public abstract class ContextProvider {
     };
   }
 
-  public final class LocalEmbeddingsProvider extends ContextProvider {
+  public static final class LocalEmbeddingsProvider extends ContextProvider {
     public KindEnum kind; // Oneof: embeddings
     public StateEnum state; // Oneof: indeterminate, no-match, unconsented, indexing, ready
     public ErrorReasonEnum errorReason; // Oneof: not-a-git-repo, git-repo-has-no-remote
-    public EmbeddingsProvider embeddingsAPIProvider; // Oneof: sourcegraph, openai
+    public EmbeddingsProvider embeddingsAPIProvider; // Oneof: sourcegraph
 
     public enum KindEnum {
       @com.google.gson.annotations.SerializedName("embeddings")
@@ -48,7 +48,7 @@ public abstract class ContextProvider {
     }
   }
 
-  public final class LocalSearchProvider extends ContextProvider {
+  public static final class LocalSearchProvider extends ContextProvider {
     public KindEnum kind; // Oneof: search
     public TypeEnum type; // Oneof: local
     public StateEnum state; // Oneof: unindexed, indexing, ready, failed
@@ -75,7 +75,7 @@ public abstract class ContextProvider {
     }
   }
 
-  public final class RemoteSearchProvider extends ContextProvider {
+  public static final class RemoteSearchProvider extends ContextProvider {
     public KindEnum kind; // Oneof: search
     public TypeEnum type; // Oneof: remote
     public StateEnum state; // Oneof: ready, no-match

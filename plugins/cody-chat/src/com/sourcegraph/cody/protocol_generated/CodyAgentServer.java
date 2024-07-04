@@ -18,6 +18,12 @@ public interface CodyAgentServer {
   @JsonRequest("chat/new")
   CompletableFuture<String> chat_new(Void params);
 
+  @JsonRequest("chat/web/new")
+  CompletableFuture<Chat_Web_NewResult> chat_web_new(Void params);
+
+  @JsonRequest("chat/delete")
+  CompletableFuture<java.util.List<ChatExportResult>> chat_delete(Chat_DeleteParams params);
+
   @JsonRequest("chat/restore")
   CompletableFuture<String> chat_restore(Chat_RestoreParams params);
 
@@ -25,7 +31,7 @@ public interface CodyAgentServer {
   CompletableFuture<Chat_ModelsResult> chat_models(Chat_ModelsParams params);
 
   @JsonRequest("chat/export")
-  CompletableFuture<java.util.List<ChatExportResult>> chat_export(Void params);
+  CompletableFuture<java.util.List<ChatExportResult>> chat_export(Chat_ExportParams params);
 
   @JsonRequest("chat/remoteRepos")
   CompletableFuture<Chat_RemoteReposResult> chat_remoteRepos(Chat_RemoteReposParams params);
@@ -47,6 +53,9 @@ public interface CodyAgentServer {
 
   @JsonRequest("commands/custom")
   CompletableFuture<CustomCommandResult> commands_custom(Commands_CustomParams params);
+
+  @JsonRequest("customCommands/list")
+  CompletableFuture<java.util.List<CodyCommand>> customCommands_list(Void params);
 
   @JsonRequest("editCommands/code")
   CompletableFuture<EditTask> editCommands_code(EditCommands_CodeParams params);
@@ -146,6 +155,9 @@ public interface CodyAgentServer {
   @JsonRequest("testing/awaitPendingPromises")
   CompletableFuture<Void> testing_awaitPendingPromises(Void params);
 
+  @JsonRequest("testing/workspaceDocuments")
+  CompletableFuture<GetDocumentsResult> testing_workspaceDocuments(GetDocumentsParams params);
+
   @JsonRequest("testing/diagnostics")
   CompletableFuture<Testing_DiagnosticsResult> testing_diagnostics(
       Testing_DiagnosticsParams params);
@@ -162,6 +174,9 @@ public interface CodyAgentServer {
 
   @JsonRequest("extensionConfiguration/status")
   CompletableFuture<AuthStatus> extensionConfiguration_status(Void params);
+
+  @JsonRequest("textDocument/change")
+  CompletableFuture<TextDocument_ChangeResult> textDocument_change(ProtocolTextDocument params);
 
   @JsonRequest("attribution/search")
   CompletableFuture<Attribution_SearchResult> attribution_search(Attribution_SearchParams params);

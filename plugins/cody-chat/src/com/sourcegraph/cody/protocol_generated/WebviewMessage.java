@@ -24,6 +24,8 @@ public abstract class WebviewMessage {
           return context.deserialize(element, DeleteHistoryWebviewMessage.class);
         case "links":
           return context.deserialize(element, LinksWebviewMessage.class);
+        case "openURI":
+          return context.deserialize(element, OpenURIWebviewMessage.class);
         case "show-page":
           return context.deserialize(element, Show_pageWebviewMessage.class);
         case "chatModel":
@@ -64,10 +66,6 @@ public abstract class WebviewMessage {
           return context.deserialize(element, GetUserContextWebviewMessage.class);
         case "queryContextItems":
           return context.deserialize(element, QueryContextItemsWebviewMessage.class);
-        case "search":
-          return context.deserialize(element, SearchWebviewMessage.class);
-        case "show-search-result":
-          return context.deserialize(element, Show_search_resultWebviewMessage.class);
         case "reset":
           return context.deserialize(element, ResetWebviewMessage.class);
         case "attribution-search":
@@ -82,7 +80,7 @@ public abstract class WebviewMessage {
     };
   }
 
-  public final class ReadyWebviewMessage extends WebviewMessage {
+  public static final class ReadyWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: ready
 
     public enum CommandEnum {
@@ -91,7 +89,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class InitializedWebviewMessage extends WebviewMessage {
+  public static final class InitializedWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: initialized
 
     public enum CommandEnum {
@@ -100,7 +98,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class EventWebviewMessage extends WebviewMessage {
+  public static final class EventWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: event
     public String eventName;
     public TelemetryEventProperties properties;
@@ -111,7 +109,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class RecordEventWebviewMessage extends WebviewMessage {
+  public static final class RecordEventWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: recordEvent
     public String feature;
     public String action;
@@ -123,7 +121,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class SubmitWebviewMessage extends WebviewMessage {
+  public static final class SubmitWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: submit
     public Boolean addEnhancedContext;
     public java.util.List<ContextItem> contextFiles;
@@ -137,7 +135,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class HistoryWebviewMessage extends WebviewMessage {
+  public static final class HistoryWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: history
     public ActionEnum action; // Oneof: clear, export
 
@@ -154,7 +152,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class RestoreHistoryWebviewMessage extends WebviewMessage {
+  public static final class RestoreHistoryWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: restoreHistory
     public String chatID;
 
@@ -164,7 +162,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class DeleteHistoryWebviewMessage extends WebviewMessage {
+  public static final class DeleteHistoryWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: deleteHistory
     public String chatID;
 
@@ -174,7 +172,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class LinksWebviewMessage extends WebviewMessage {
+  public static final class LinksWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: links
     public String value;
 
@@ -184,7 +182,17 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Show_pageWebviewMessage extends WebviewMessage {
+  public static final class OpenURIWebviewMessage extends WebviewMessage {
+    public CommandEnum command; // Oneof: openURI
+    public Uri uri;
+
+    public enum CommandEnum {
+      @com.google.gson.annotations.SerializedName("openURI")
+      OpenURI,
+    }
+  }
+
+  public static final class Show_pageWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: show-page
     public String page;
 
@@ -194,7 +202,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class ChatModelWebviewMessage extends WebviewMessage {
+  public static final class ChatModelWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: chatModel
     public String model;
 
@@ -204,7 +212,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Get_chat_modelsWebviewMessage extends WebviewMessage {
+  public static final class Get_chat_modelsWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: get-chat-models
 
     public enum CommandEnum {
@@ -213,7 +221,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class OpenFileWebviewMessage extends WebviewMessage {
+  public static final class OpenFileWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: openFile
     public Uri uri;
     public RangeData range;
@@ -224,7 +232,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class OpenLocalFileWithRangeWebviewMessage extends WebviewMessage {
+  public static final class OpenLocalFileWithRangeWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: openLocalFileWithRange
     public String filePath;
     public RangeData range;
@@ -235,7 +243,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class EditWebviewMessage extends WebviewMessage {
+  public static final class EditWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: edit
     public Boolean addEnhancedContext;
     public java.util.List<ContextItem> contextFiles;
@@ -249,7 +257,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Context_get_remote_search_reposWebviewMessage extends WebviewMessage {
+  public static final class Context_get_remote_search_reposWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: context/get-remote-search-repos
 
     public enum CommandEnum {
@@ -258,7 +266,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Context_choose_remote_search_repoWebviewMessage extends WebviewMessage {
+  public static final class Context_choose_remote_search_repoWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: context/choose-remote-search-repo
     public java.util.List<Repo> explicitRepos;
 
@@ -268,7 +276,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Context_remove_remote_search_repoWebviewMessage extends WebviewMessage {
+  public static final class Context_remove_remote_search_repoWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: context/remove-remote-search-repo
     public String repoId;
 
@@ -278,7 +286,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Embeddings_indexWebviewMessage extends WebviewMessage {
+  public static final class Embeddings_indexWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: embeddings/index
 
     public enum CommandEnum {
@@ -287,7 +295,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Symf_indexWebviewMessage extends WebviewMessage {
+  public static final class Symf_indexWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: symf/index
 
     public enum CommandEnum {
@@ -296,7 +304,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class InsertWebviewMessage extends WebviewMessage {
+  public static final class InsertWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: insert
     public String text;
 
@@ -306,7 +314,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class NewFileWebviewMessage extends WebviewMessage {
+  public static final class NewFileWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: newFile
     public String text;
 
@@ -316,7 +324,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class CopyWebviewMessage extends WebviewMessage {
+  public static final class CopyWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: copy
     public EventTypeEnum eventType; // Oneof: Button, Keydown
     public String text;
@@ -334,10 +342,10 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class AuthWebviewMessage extends WebviewMessage {
+  public static final class AuthWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: auth
     public AuthKindEnum
-        authKind; // Oneof: signin, signout, support, callback, simplified-onboarding
+        authKind; // Oneof: signin, signout, support, callback, simplified-onboarding, offline
     public String endpoint;
     public String value;
     public AuthMethod authMethod; // Oneof: dotcom, github, gitlab, google
@@ -358,10 +366,12 @@ public abstract class WebviewMessage {
       Callback,
       @com.google.gson.annotations.SerializedName("simplified-onboarding")
       Simplified_onboarding,
+      @com.google.gson.annotations.SerializedName("offline")
+      Offline,
     }
   }
 
-  public final class AbortWebviewMessage extends WebviewMessage {
+  public static final class AbortWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: abort
 
     public enum CommandEnum {
@@ -370,7 +380,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Simplified_onboardingWebviewMessage extends WebviewMessage {
+  public static final class Simplified_onboardingWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: simplified-onboarding
     public OnboardingKindEnum onboardingKind; // Oneof: web-sign-in-token
 
@@ -385,7 +395,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class GetUserContextWebviewMessage extends WebviewMessage {
+  public static final class GetUserContextWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: getUserContext
     public String query;
 
@@ -395,7 +405,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class QueryContextItemsWebviewMessage extends WebviewMessage {
+  public static final class QueryContextItemsWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: queryContextItems
     public MentionQuery query;
 
@@ -405,28 +415,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class SearchWebviewMessage extends WebviewMessage {
-    public CommandEnum command; // Oneof: search
-    public String query;
-
-    public enum CommandEnum {
-      @com.google.gson.annotations.SerializedName("search")
-      Search,
-    }
-  }
-
-  public final class Show_search_resultWebviewMessage extends WebviewMessage {
-    public CommandEnum command; // Oneof: show-search-result
-    public Uri uri;
-    public RangeData range;
-
-    public enum CommandEnum {
-      @com.google.gson.annotations.SerializedName("show-search-result")
-      Show_search_result,
-    }
-  }
-
-  public final class ResetWebviewMessage extends WebviewMessage {
+  public static final class ResetWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: reset
 
     public enum CommandEnum {
@@ -435,7 +424,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Attribution_searchWebviewMessage extends WebviewMessage {
+  public static final class Attribution_searchWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: attribution-search
     public String snippet;
 
@@ -445,7 +434,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class Troubleshoot_reloadAuthWebviewMessage extends WebviewMessage {
+  public static final class Troubleshoot_reloadAuthWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: troubleshoot/reloadAuth
 
     public enum CommandEnum {
@@ -454,7 +443,7 @@ public abstract class WebviewMessage {
     }
   }
 
-  public final class GetAllMentionProvidersMetadataWebviewMessage extends WebviewMessage {
+  public static final class GetAllMentionProvidersMetadataWebviewMessage extends WebviewMessage {
     public CommandEnum command; // Oneof: getAllMentionProvidersMetadata
 
     public enum CommandEnum {

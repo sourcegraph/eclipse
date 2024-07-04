@@ -22,7 +22,7 @@ public abstract class ContextItem {
     };
   }
 
-  public final class ContextItemFile extends ContextItem {
+  public static final class ContextItemFile extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -46,7 +46,7 @@ public abstract class ContextItem {
     }
   }
 
-  public final class ContextItemRepository extends ContextItem {
+  public static final class ContextItemRepository extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -71,7 +71,7 @@ public abstract class ContextItem {
     }
   }
 
-  public final class ContextItemTree extends ContextItem {
+  public static final class ContextItemTree extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -97,7 +97,7 @@ public abstract class ContextItem {
     }
   }
 
-  public final class ContextItemSymbol extends ContextItem {
+  public static final class ContextItemSymbol extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;
@@ -123,7 +123,7 @@ public abstract class ContextItem {
     }
   }
 
-  public final class ContextItemOpenCtx extends ContextItem {
+  public static final class ContextItemOpenCtx extends ContextItem {
     public String uri;
     public RangeData range;
     public String content;

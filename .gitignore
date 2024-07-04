@@ -1,3 +1,6 @@
+/.ijwb/
+/eclipse-plugins-sources/
+/eclipse-plugins/
 .metals/
 *.jar
 .vscode/
@@ -9,3 +12,7 @@ build.scala
 .idea/
 eclipse-plugins-directory.txt
 /bin/
+
+jars/
+/bazel-*
+

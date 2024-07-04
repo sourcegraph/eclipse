@@ -16,7 +16,7 @@ public abstract class CustomCommandResult {
     };
   }
 
-  public final class CustomChatCommandResult extends CustomCommandResult {
+  public static final class CustomChatCommandResult extends CustomCommandResult {
     public TypeEnum type; // Oneof: chat
     public String chatResult;
 
@@ -26,7 +26,7 @@ public abstract class CustomCommandResult {
     }
   }
 
-  public final class CustomEditCommandResult extends CustomCommandResult {
+  public static final class CustomEditCommandResult extends CustomCommandResult {
     public TypeEnum type; // Oneof: edit
     public EditTask editResult;
 

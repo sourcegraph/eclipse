@@ -6,7 +6,12 @@ public final class Constants {
   public static final String errored = "errored";
   public static final String complete = "complete";
   public static final String config = "config";
-  public static final String search_config = "search:config";
+  public static final String ui_theme = "ui/theme";
+  public static final String VSCode = "VSCode";
+  public static final String JetBrains = "JetBrains";
+  public static final String Neovim = "Neovim";
+  public static final String Emacs = "Emacs";
+  public static final String Web = "Web";
   public static final String history = "history";
   public static final String transcript = "transcript";
   public static final String view = "view";
@@ -18,11 +23,8 @@ public final class Constants {
   public static final String clientState = "clientState";
   public static final String clientAction = "clientAction";
   public static final String chatModels = "chatModels";
-  public static final String update_search_results = "update-search-results";
-  public static final String index_updated = "index-updated";
   public static final String enhanced_context = "enhanced-context";
   public static final String attribution = "attribution";
-  public static final String setChatEnabledConfigFeature = "setChatEnabledConfigFeature";
   public static final String context_remote_repos = "context/remote-repos";
   public static final String setConfigFeatures = "setConfigFeatures";
   public static final String allMentionProvidersMetadata = "allMentionProvidersMetadata";
@@ -35,7 +37,6 @@ public final class Constants {
   public static final String not_a_git_repo = "not-a-git-repo";
   public static final String git_repo_has_no_remote = "git-repo-has-no-remote";
   public static final String sourcegraph = "sourcegraph";
-  public static final String openai = "openai";
   public static final String search = "search";
   public static final String local = "local";
   public static final String unindexed = "unindexed";
@@ -66,7 +67,6 @@ public final class Constants {
   public static final String Working = "Working";
   public static final String Inserting = "Inserting";
   public static final String Applying = "Applying";
-  public static final String Formatting = "Formatting";
   public static final String Applied = "Applied";
   public static final String Finished = "Finished";
   public static final String Error = "Error";
@@ -96,6 +96,7 @@ public final class Constants {
   public static final String restoreHistory = "restoreHistory";
   public static final String deleteHistory = "deleteHistory";
   public static final String links = "links";
+  public static final String openURI = "openURI";
   public static final String show_page = "show-page";
   public static final String chatModel = "chatModel";
   public static final String get_chat_models = "get-chat-models";
@@ -119,6 +120,7 @@ public final class Constants {
   public static final String support = "support";
   public static final String callback = "callback";
   public static final String simplified_onboarding = "simplified-onboarding";
+  public static final String offline = "offline";
   public static final String dotcom = "dotcom";
   public static final String github = "github";
   public static final String gitlab = "gitlab";
@@ -127,7 +129,6 @@ public final class Constants {
   public static final String web_sign_in_token = "web-sign-in-token";
   public static final String getUserContext = "getUserContext";
   public static final String queryContextItems = "queryContextItems";
-  public static final String show_search_result = "show-search-result";
   public static final String reset = "reset";
   public static final String attribution_search = "attribution-search";
   public static final String troubleshoot_reloadAuth = "troubleshoot/reloadAuth";
@@ -136,6 +137,11 @@ public final class Constants {
   public static final String indentation = "indentation";
   public static final String Automatic = "Automatic";
   public static final String Invoke = "Invoke";
+  public static final String workspace = "workspace";
+  public static final String default_ = "default";
+  public static final String experimental = "experimental";
+  public static final String recently_used = "recently used";
+  public static final String ask = "ask";
   public static final String none = "none";
   public static final String streaming = "streaming";
   public static final String enabled = "enabled";
