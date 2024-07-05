@@ -256,7 +256,7 @@ public class CodyAgent implements IDisposable {
           URISyntaxException {
     ClientInfo clientInfo = new ClientInfo();
     clientInfo.name = "cody-eclipse";
-    clientInfo.version = "0.1.1";
+    clientInfo.version = "0.2.0";
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
