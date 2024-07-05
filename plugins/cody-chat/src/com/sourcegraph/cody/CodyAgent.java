@@ -178,6 +178,8 @@ public class CodyAgent implements IDisposable {
     arguments.add(nodeExecutable.toString());
     arguments.add("--enable-source-maps");
     arguments.add(agentScript().toString());
+    arguments.add("api");
+    arguments.add("jsonrpc-stdio");
     ProcessBuilder processBuilder =
         new ProcessBuilder(arguments)
             .directory(workspaceRoot.toFile())
