@@ -2,7 +2,8 @@
 <feature
       id="cody_feature"
       label="Cody"
-      version="0.2.0.qualifier">
+      version="0.2.1.qualifier"
+      provider-name="Sourcegraph Inc">
 
    <description url="https://github.com/sourcegraph/eclipse">
       Ship code faster with Cody, the AI coding assistant. Cody uses advanced search and codebase context to help you write and fix code.
@@ -17,8 +18,12 @@
       Apache License 2.0
    </license>
 
+   <url>
+      <update label="Sourcegraph Cody" url="https://sourcegraph.github.io/eclipse"/>
+   </url>
+
    <plugin
          id="cody-chat"
-         version="0.2.0.qualifier"/>
+         version="0.2.1.qualifier"/>
 
 </feature>
