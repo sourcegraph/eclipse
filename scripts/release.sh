@@ -11,6 +11,9 @@ git checkout releases
 git rebase main
 
 cp -r releng/cody-update-site/* docs
+cp -r README.md docs/index.md
+mkdir -p docs/docs/img
+mv docs/img docs/docs/img
 git add --force docs
 
 git add .
