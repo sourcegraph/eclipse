@@ -17,6 +17,8 @@
   `Existing Projects into Workspace`. ![Import categories](img/import.png)
 - On the next page choose `Select root directory` then using `Browse` open the
   root directory of this repository.
+- Select "Search for nested projects" and uncheck the root "eclipse" project (important to uncheck, otherwise you get build errors).
+  ![Select root directory](img/select-root.png)
 - Three projects should appear. Make sure that all are selected and click
   `Finish`
 

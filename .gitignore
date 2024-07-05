@@ -1,3 +1,5 @@
+.classpath
+.project
 /.ijwb/
 /eclipse-plugins-sources/
 /eclipse-plugins/
@@ -15,4 +17,4 @@ eclipse-plugins-directory.txt
 
 jars/
 /bazel-*
-
+/releng/cody-update-site/site.xml
