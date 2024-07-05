@@ -10,10 +10,15 @@ This is a log of all notable changes to the Cody command-line tool. [Unreleased]
 
 ### Changed
 
+## 0.1.1
+
+### Fixed
+
+- The Chat UI should no longer a blank page
+
 ## 0.1.0
 
 ### Added
 
 - Very basic interface to sign into a Sourcegraph account
 - Very basic chat interface without support for important functionality like `@-file` mentions
-
