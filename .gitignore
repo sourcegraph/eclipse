@@ -17,4 +17,3 @@ eclipse-plugins-directory.txt
 
 jars/
 /bazel-*
-/releng/cody-update-site/site.xml
