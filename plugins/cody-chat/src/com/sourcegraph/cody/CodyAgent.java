@@ -96,7 +96,7 @@ public class CodyAgent implements IDisposable {
     }
   }
 
-  private boolean isRunning() {
+  public boolean isRunning() {
     return !listening.isDone();
   }
 
@@ -206,7 +206,8 @@ public class CodyAgent implements IDisposable {
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
     initialize(server, workspaceRoot);
-    return new CodyAgent(listening, server, process);
+    AGENT = new CodyAgent(listening, server, process);
+    return AGENT;
   }
 
   public static void configureGson(GsonBuilder builder) {
