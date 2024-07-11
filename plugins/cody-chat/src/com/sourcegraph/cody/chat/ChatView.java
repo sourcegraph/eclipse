@@ -14,7 +14,6 @@ import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewMessage;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
 import jakarta.inject.Inject;
-
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -38,7 +36,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.ViewPart;
 
 public class ChatView extends ViewPart {
@@ -209,7 +206,7 @@ public class ChatView extends ViewPart {
 
               if (!handled) {
                 Webview_ReceiveMessageStringEncodedParams params =
-                        new Webview_ReceiveMessageStringEncodedParams();
+                    new Webview_ReceiveMessageStringEncodedParams();
                 params.id = chatId;
                 params.messageStringEncoded = messageJson;
                 agent.server.webview_receiveMessageStringEncoded(params);
