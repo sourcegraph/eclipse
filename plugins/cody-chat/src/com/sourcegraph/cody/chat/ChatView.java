@@ -9,9 +9,12 @@ import com.sourcegraph.cody.StartAgentJob;
 import com.sourcegraph.cody.chat.access.AddProfileAction;
 import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
+import com.sourcegraph.cody.handlers.MessageHandlers;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
+import com.sourcegraph.cody.protocol_generated.WebviewMessage;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
 import jakarta.inject.Inject;
+
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -19,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -34,6 +38,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.ViewPart;
 
 public class ChatView extends ViewPart {
@@ -46,6 +51,8 @@ public class ChatView extends ViewPart {
   @Inject private IWorkbenchPage page;
 
   @Inject IEclipseContext context;
+
+  @Inject MessageHandlers handlers;
 
   private Browser browserField;
   final StartAgentJob job = new StartAgentJob();
@@ -144,7 +151,6 @@ public class ChatView extends ViewPart {
   }
 
   private void onStartNewChat(Browser browser) {
-
     job.agent.thenAccept(
         agent -> {
           try {
@@ -196,13 +202,18 @@ public class ChatView extends ViewPart {
         }
         display.asyncExec(
             () -> {
-              String message = (String) arguments[0];
+              String messageJson = (String) arguments[0];
+              var message = gson.fromJson(messageJson, WebviewMessage.class);
 
-              Webview_ReceiveMessageStringEncodedParams params =
-                  new Webview_ReceiveMessageStringEncodedParams();
-              params.id = chatId;
-              params.messageStringEncoded = message;
-              agent.server.webview_receiveMessageStringEncoded(params);
+              boolean handled = handlers.handle(message);
+
+              if (!handled) {
+                Webview_ReceiveMessageStringEncodedParams params =
+                        new Webview_ReceiveMessageStringEncodedParams();
+                params.id = chatId;
+                params.messageStringEncoded = messageJson;
+                agent.server.webview_receiveMessageStringEncoded(params);
+              }
             });
         return null;
       }
