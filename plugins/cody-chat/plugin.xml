@@ -45,6 +45,10 @@
             implementation="com.sourcegraph.cody.handlers.NewFileHandler"
             message="com.sourcegraph.cody.protocol_generated.WebviewMessage$NewFileWebviewMessage">
       </handler>
+      <handler
+            implementation="com.sourcegraph.cody.handlers.InsertHandler"
+            message="com.sourcegraph.cody.protocol_generated.WebviewMessage$InsertWebviewMessage">
+      </handler>
    </extension>
 
 </plugin>
