@@ -1,11 +1,8 @@
 package com.sourcegraph.cody;
 
 import com.google.gson.GsonBuilder;
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
+import com.sourcegraph.cody.protocol_generated.*;
+import com.sourcegraph.cody.workspace.EditorState;
 import dev.dirs.ProjectDirectories;
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +21,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IDisposable;
 
 // @Creatable
@@ -206,7 +206,12 @@ public class CodyAgent implements IDisposable {
     Future<Void> listening = launcher.startListening();
     CodyAgentServer server = launcher.getRemoteProxy();
     initialize(server, workspaceRoot);
-    return new CodyAgent(listening, server, process);
+
+    var instance = new CodyAgent(listening, server, process);
+    instance.discoverWorkbenchState();
+
+    AGENT = instance;
+    return instance;
   }
 
   public static void configureGson(GsonBuilder builder) {
@@ -267,6 +272,59 @@ public class CodyAgent implements IDisposable {
     clientInfo.extensionConfiguration = CodyAgent.config;
     server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     server.initialized(null);
+  }
+
+  private void discoverWorkbenchState() {
+    // This can cause UI to hang for a moment after the start of the agent. If that's a problem,
+    // split this function into two parts: collecting the state and then notifying the agent. Run
+    // the first part with Display.syncExec.
+    Display.getDefault()
+        .asyncExec(
+            () -> {
+              var editors =
+                  PlatformUI.getWorkbench()
+                      .getActiveWorkbenchWindow()
+                      .getActivePage()
+                      .getEditorReferences();
+
+              for (var editor : editors) {
+                var editorState = EditorState.from(editor);
+                if (editorState != null) {
+                  fileOpened(editorState);
+                }
+              }
+
+              var activeEditor =
+                  PlatformUI.getWorkbench()
+                      .getActiveWorkbenchWindow()
+                      .getActivePage()
+                      .getActivePartReference();
+
+              var activeEditorState = EditorState.from(activeEditor);
+              if (activeEditorState != null) {
+                focusChanged(activeEditorState);
+              }
+            });
+  }
+
+  public void focusChanged(EditorState state) {
+    var params = new TextDocument_DidFocusParams();
+    params.uri = state.uri;
+    server.textDocument_didFocus(params);
+  }
+
+  public void fileOpened(EditorState state) {
+    var params = new ProtocolTextDocument();
+    params.uri = state.uri;
+    params.content = state.readContents();
+    server.textDocument_didOpen(params);
+  }
+
+  public static void withAgent(Consumer<CodyAgent> callback) {
+    var agent = CodyAgent.AGENT;
+    if (agent != null && agent.isRunning()) {
+      callback.accept(agent);
+    }
   }
 
   private static PrintWriter traceWriter() {
