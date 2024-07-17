@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="com.sourcegraph.cody.messageHandler" name="Cody Message Handler" schema="schema/com.sourcegraph.cody.messageHandler.exsd"/>
 
    <extension
          point="org.eclipse.ui.views">
@@ -37,6 +38,13 @@
                visible="true">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="com.sourcegraph.cody.messageHandler">
+      <handler
+            implementation="com.sourcegraph.cody.handlers.NewFileHandler"
+            message="com.sourcegraph.cody.protocol_generated.WebviewMessage$NewFileWebviewMessage">
+      </handler>
    </extension>
 
 </plugin>
