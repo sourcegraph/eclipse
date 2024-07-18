@@ -3,6 +3,7 @@ package com.sourcegraph.cody;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.workspace.EditorState;
+import com.sourcegraph.cody.workspace.WorkspaceListener;
 import dev.dirs.ProjectDirectories;
 import java.io.File;
 import java.io.IOException;
@@ -303,9 +304,17 @@ public class CodyAgent implements IDisposable {
               var activeEditorState = EditorState.from(activeEditor);
               if (activeEditorState != null) {
                 focusChanged(activeEditorState);
+
+                // TODO: Refactor this.
+                WorkspaceListener.setupSelectionListener(activeEditorState);
+                WorkspaceListener.setupContentListener(activeEditorState);
               }
             });
   }
+
+  ////////////////////
+  // NOTIFICATIONS //
+  ///////////////////
 
   public void focusChanged(EditorState state) {
     var params = new TextDocument_DidFocusParams();
@@ -318,6 +327,21 @@ public class CodyAgent implements IDisposable {
     params.uri = state.uri;
     params.content = state.readContents();
     server.textDocument_didOpen(params);
+  }
+
+  public void selectionChanged(EditorState state, Range range) {
+    var params = new ProtocolTextDocument();
+    params.uri = state.uri;
+    params.selection = range;
+    server.textDocument_didChange(params);
+  }
+
+  public void fileChanged(EditorState state) {
+    var params = new ProtocolTextDocument();
+    params.uri = state.uri;
+    params.content = state.readContents();
+    System.out.println(params.content);
+    server.textDocument_didChange(params);
   }
 
   public static void withAgent(Consumer<CodyAgent> callback) {

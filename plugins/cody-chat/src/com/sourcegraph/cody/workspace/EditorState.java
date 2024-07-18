@@ -1,12 +1,8 @@
 package com.sourcegraph.cody.workspace;
 
-import com.sourcegraph.cody.WrappedRuntimeException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -14,18 +10,24 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public final class EditorState {
   public final IFile file;
   public final String uri;
+  public final ITextEditor editor;
+  @Nullable private IDocument document = null;
 
-  private EditorState(IFile file, String uri) {
+  private EditorState(IFile file, String uri, ITextEditor editor) {
     this.file = file;
     this.uri = uri;
+    this.editor = editor;
   }
 
   public String readContents() {
-    try {
-      return new String(file.getContents().readAllBytes(), StandardCharsets.UTF_8);
-    } catch (CoreException | IOException e) {
-      throw new WrappedRuntimeException(e);
+    return getDocument().get();
+  }
+
+  public IDocument getDocument() {
+    if (document == null) {
+      document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
     }
+    return document;
   }
 
   @Nullable  public static EditorState from(IWorkbenchPartReference partReference) {
@@ -33,13 +35,14 @@ public final class EditorState {
     if (!(part instanceof ITextEditor)) {
       return null;
     }
-    var editor = (ITextEditor) part;
-    var input = editor.getEditorInput();
+    var editor1 = (ITextEditor) part;
+    var input = editor1.getEditorInput();
     if (!(input instanceof FileEditorInput)) {
       System.out.println("Unknown input kind: " + input.getClass());
       return null;
     }
-    var file = ((FileEditorInput) input).getFile();
-    return new EditorState(file, file.getLocationURI().toString());
+    var file1 = ((FileEditorInput) input).getFile();
+    return new EditorState(file1, file1.getLocationURI().toString(), editor1);
   }
+
 }

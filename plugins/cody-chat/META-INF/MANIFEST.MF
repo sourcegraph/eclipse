@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.lsp4j.jsonrpc,
  org.eclipse.ui.ide,
  org.eclipse.core.resources,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.jface.text;bundle-version="3.25.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,lib/directories-26.jar
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)"
