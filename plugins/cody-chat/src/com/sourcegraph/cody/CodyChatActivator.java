@@ -2,10 +2,9 @@ package com.sourcegraph.cody;
 
 import static java.lang.System.out;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPartReference;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.*;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -17,14 +16,19 @@ public class CodyChatActivator extends AbstractUIPlugin {
     Display.getDefault()
         .asyncExec(
             () -> {
-              var partService =
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService();
+              IWorkbenchWindow workbenchWindow =
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+              var partService = workbenchWindow.getPartService();
               partService.addPartListener(new DebugListener());
               partService.addPartListener(new WorkspaceListener());
+
+              var selectionListener = workbenchWindow.getSelectionService();
+              selectionListener.addPostSelectionListener(new SelectionListener());
             });
   }
 
   static class DebugListener implements IPartListener2 {
+
     @Override
     public void partActivated(IWorkbenchPartReference iWorkbenchPartReference) {
       out.println(
@@ -95,6 +99,13 @@ public class CodyChatActivator extends AbstractUIPlugin {
               + iWorkbenchPartReference.getTitle()
               + " "
               + iWorkbenchPartReference.getPart(false));
+    }
+  }
+
+  private static class SelectionListener implements ISelectionListener {
+    @Override
+    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+      out.println("selection changed: " + selection);
     }
   }
 }
