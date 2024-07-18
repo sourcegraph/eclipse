@@ -186,6 +186,14 @@ public class ChatView extends ViewPart {
       return;
     }
 
+    new BrowserFunction(browser, "eclipse_initialized") {
+      @Override
+      public Object function(Object[] arguments) {
+        webviewInitialized.complete(true);
+        return null;
+      }
+    };
+
     // Most webview messages are proxied directly to the Cody Agent.
     // We only intercept a small number of messages for features are easier
     // to implement directly in Eclipse instead of wiring through the agent
