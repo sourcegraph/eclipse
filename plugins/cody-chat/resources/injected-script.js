@@ -29,9 +29,15 @@ globalThis.acquireVsCodeApi = (function () {
         if (message?.command === "initialized") {
           eclipse_initialized(true);
         }
-        // console.log(`do-post-message: ${JSON.stringify(message)}`);
-        eclipse_receiveMessage(JSON.stringify(message));
-        //   ${viewToHost.inject("JSON.stringify({what: 'postMessage', value: message})")}
+
+        switch (message?.command) {
+          case 'insert':
+          case 'newFile':
+            eclipse_interceptMessage(JSON.stringify(message));
+            break;
+          default:
+            eclipse_receiveMessage(JSON.stringify(message));
+        }
       },
       setState: function (newState) {
         state = newState;

@@ -182,6 +182,10 @@ public class ChatView extends ViewPart {
   }
 
   private void createCallbacks(Browser browser, CodyAgent agent) {
+    if (browser == null) {
+      return;
+    }
+
     new BrowserFunction(browser, "eclipse_initialized") {
       @Override
       public Object function(Object[] arguments) {
@@ -190,27 +194,43 @@ public class ChatView extends ViewPart {
       }
     };
 
-    new BrowserFunction(browser, "eclipse_receiveMessage") {
+    // Most webview messages are proxied directly to the Cody Agent.
+    // We only intercept a small number of messages for features are easier
+    // to implement directly in Eclipse instead of wiring through the agent
+    // to implement low-level editor primitives.
+    new BrowserFunction(browser, "eclipse_interceptMessage") {
       @Override
       public Object function(Object[] arguments) {
         if (chatId.isEmpty()) {
-
           return null;
         }
         display.asyncExec(
             () -> {
               String messageJson = (String) arguments[0];
               var message = gson.fromJson(messageJson, WebviewMessage.class);
-
               boolean handled = handlers.handle(message);
-
               if (!handled) {
-                Webview_ReceiveMessageStringEncodedParams params =
-                    new Webview_ReceiveMessageStringEncodedParams();
-                params.id = chatId;
-                params.messageStringEncoded = messageJson;
-                agent.server.webview_receiveMessageStringEncoded(params);
+                System.out.println("Unhandled intercept message: " + messageJson);
               }
+            });
+        return null;
+      }
+    };
+
+    new BrowserFunction(browser, "eclipse_receiveMessage") {
+      @Override
+      public Object function(Object[] arguments) {
+        if (chatId.isEmpty()) {
+          return null;
+        }
+        display.asyncExec(
+            () -> {
+              String messageJson = (String) arguments[0];
+              Webview_ReceiveMessageStringEncodedParams params =
+                  new Webview_ReceiveMessageStringEncodedParams();
+              params.id = chatId;
+              params.messageStringEncoded = messageJson;
+              agent.server.webview_receiveMessageStringEncoded(params);
             });
         return null;
       }
