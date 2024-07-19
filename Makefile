@@ -1,6 +1,7 @@
 all:
 	./scripts/build-agent.sh
 	./scripts/build-webview.sh
+	./scripts/download-node.sh
 bindings:
 	./scripts/build-java-bindings.sh
 format:
