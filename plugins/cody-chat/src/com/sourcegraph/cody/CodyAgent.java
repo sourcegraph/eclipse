@@ -279,7 +279,13 @@ public class CodyAgent implements IDisposable {
   private static void initialize(CodyAgentServer server, Path workspaceRoot)
       throws InterruptedException, ExecutionException, TimeoutException {
     ClientInfo clientInfo = new ClientInfo();
-    clientInfo.name = "cody-eclipse";
+    // See
+    // https://sourcegraph.com/github.com/sourcegraph/cody/-/blob/agent/src/cli/codyCliClientName.ts
+    // for a detailed explanation why we use the name "jetbrains" instead of "eclipse". The short
+    // explanation is that
+    // we need to wait for enterprise customers to upgrade to a new version that includes the fix
+    // from this PR here https://github.com/sourcegraph/sourcegraph/pull/63855.
+    clientInfo.name = "jetbrains";
     clientInfo.version = "0.2.1";
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
