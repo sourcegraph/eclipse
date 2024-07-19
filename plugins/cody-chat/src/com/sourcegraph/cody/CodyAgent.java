@@ -64,7 +64,7 @@ public class CodyAgent implements IDisposable {
    * <p>Importantly, we don't try to just shell out to "node". While this may work in some cases, we
    * have no guarantee what Node version this gives us (and the agent requires Node >=v18).
    */
-  public static Path getNodeJsLocation() throws URISyntaxException {
+  public static Path getNodeJsLocation() throws IOException {
     String userProvidedNode = System.getProperty("cody.nodejs-executable");
     if (userProvidedNode != null) {
       Path path = Paths.get(userProvidedNode);
@@ -75,17 +75,17 @@ public class CodyAgent implements IDisposable {
 
       return path;
     }
-    // Get the Node.js installation directory
-    Path nodeJsDir = Paths.get(Platform.getInstallLocation().getURL().toURI()).resolve(".node");
-    if (Files.isDirectory(nodeJsDir)) {
-      for (File subdir : nodeJsDir.toFile().listFiles()) {
-        String nodeExecutable = Platform.getOS().equals(Platform.OS_WIN32) ? "node.exe" : "node";
-        Path nodejsBinary = subdir.toPath().resolve(nodeExecutable);
-        if (Files.isRegularFile(nodejsBinary)) {
-          return nodejsBinary;
-        }
+
+    // We only support Windows at this time. The binary for Node.js is included in the plugin JAR.
+    if (Platform.getOS().equals(Platform.OS_WIN32)) {
+      String nodeExecutableName = "node-win-x64.exe";
+      Path path = getDataDirectory().resolve(nodeExecutableName);
+      if (!Files.isRegularFile(path)) {
+        copyResourcePath("/resources/node-binaries/" + nodeExecutableName, path);
       }
+      return path;
     }
+
     throw new IllegalStateException(
         "Unable to infer the location of a Node.js installation. To fix this problem, set the VM"
             + " argument -Dcody.nodejs-executable and restart Eclipse.");
@@ -143,25 +143,32 @@ public class CodyAgent implements IDisposable {
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    ProjectDirectories dirs =
-        dev.dirs.ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
-    Path dataDir = Paths.get(dirs.dataDir);
+    Path dataDir = getDataDirectory();
     String assets = CodyResources.loadResourceString("/resources/cody-agent/assets.txt");
     Files.createDirectories(dataDir);
     for (String asset : assets.split("\n")) {
-      String path = "/resources/cody-agent/" + asset;
-      try (InputStream in = CodyAgent.class.getResourceAsStream(path)) {
-        if (in == null) {
-          throw new IllegalStateException(
-              String.format(
-                  "not found: %s. To fix this problem, "
-                      + "run `./scripts/build-agent.sh` and try again.",
-                  path));
-        }
-        Files.copy(in, dataDir.resolve(asset), StandardCopyOption.REPLACE_EXISTING);
-      }
+      copyResourcePath("/resources/cody-agent/" + asset, dataDir.resolve(asset));
     }
     return dataDir.resolve("index.js");
+  }
+
+  private static Path getDataDirectory() {
+    ProjectDirectories dirs =
+        ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
+    return Paths.get(dirs.dataDir);
+  }
+
+  private static void copyResourcePath(String path, Path target) throws IOException {
+    try (InputStream in = CodyAgent.class.getResourceAsStream(path)) {
+      if (in == null) {
+        throw new IllegalStateException(
+            String.format(
+                "not found: %s. To fix this problem, "
+                    + "run `./scripts/build-agent.sh` and try again.",
+                path));
+      }
+      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    }
   }
 
   private static Path getWorkspaceRoot() throws URISyntaxException {
