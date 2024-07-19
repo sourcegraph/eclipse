@@ -1,9 +1,9 @@
 package com.sourcegraph.cody;
 
+import static java.lang.System.out;
+
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
-
-import static java.lang.System.out;
 
 class DebugWorkspaceListener implements IPartListener2 {
   @Override

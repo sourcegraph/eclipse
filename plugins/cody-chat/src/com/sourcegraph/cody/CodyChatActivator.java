@@ -1,12 +1,8 @@
 package com.sourcegraph.cody;
 
-import static java.lang.System.out;
-
 import com.sourcegraph.cody.workspace.WorkspaceListener;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
