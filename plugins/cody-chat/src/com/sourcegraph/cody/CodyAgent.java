@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
@@ -163,6 +164,20 @@ public class CodyAgent implements IDisposable {
     return dataDir.resolve("index.js");
   }
 
+  private static Path getWorkspaceRoot() throws URISyntaxException {
+    // Pick the first open project as the workspace root.
+    for (var project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+      if (project.isOpen()) {
+        return project.getLocation().toFile().toPath();
+      }
+    }
+
+    // This path is 100% wrong. The main problem with workspace root in Eclipse is that
+    // it's common to have multiple projects with different workspace roots. The agent server
+    // doesn't support multi-root workspaces at this time.
+    return Paths.get(Platform.getInstanceLocation().getURL().toURI());
+  }
+
   private static CodyAgent startUnsafe()
       throws IOException,
           InterruptedException,
@@ -173,7 +188,8 @@ public class CodyAgent implements IDisposable {
       return AGENT;
     }
 
-    Path workspaceRoot = Paths.get(Platform.getInstanceLocation().getURL().toURI());
+    Path workspaceRoot = getWorkspaceRoot();
+
     Path nodeExecutable = getNodeJsLocation();
     ArrayList<String> arguments = new ArrayList<>();
     arguments.add(nodeExecutable.toString());
@@ -255,11 +271,7 @@ public class CodyAgent implements IDisposable {
   }
 
   private static void initialize(CodyAgentServer server, Path workspaceRoot)
-      throws InterruptedException,
-          ExecutionException,
-          TimeoutException,
-          IOException,
-          URISyntaxException {
+      throws InterruptedException, ExecutionException, TimeoutException {
     ClientInfo clientInfo = new ClientInfo();
     clientInfo.name = "cody-eclipse";
     clientInfo.version = "0.2.1";
