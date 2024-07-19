@@ -5,7 +5,6 @@ import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.workspace.EditorState;
 import com.sourcegraph.cody.workspace.WorkspaceListener;
 import dev.dirs.ProjectDirectories;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
