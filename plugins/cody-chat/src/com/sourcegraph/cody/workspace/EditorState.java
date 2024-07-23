@@ -1,6 +1,8 @@
 package com.sourcegraph.cody.workspace;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -12,6 +14,8 @@ public final class EditorState {
   public final String uri;
   public final ITextEditor editor;
   @Nullable private IDocument document = null;
+
+  private static ILog log = Platform.getLog(EditorState.class);
 
   private EditorState(IFile file, String uri, ITextEditor editor) {
     this.file = file;
@@ -39,7 +43,7 @@ public final class EditorState {
     var editor1 = (ITextEditor) part;
     var input = editor1.getEditorInput();
     if (!(input instanceof FileEditorInput)) {
-      System.out.println("Unknown input kind: " + input.getClass());
+      log.warn("Unknown input kind: " + input.getClass());
       return null;
     }
     var file1 = ((FileEditorInput) input).getFile();
