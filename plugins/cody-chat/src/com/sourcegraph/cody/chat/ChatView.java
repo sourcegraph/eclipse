@@ -2,17 +2,16 @@ package com.sourcegraph.cody.chat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sourcegraph.cody.CodyAgent;
-import com.sourcegraph.cody.StartAgentJob;
 import com.sourcegraph.cody.chat.access.AddProfileAction;
 import com.sourcegraph.cody.chat.access.TokenSelectionView;
 import com.sourcegraph.cody.chat.access.TokenStorage;
+import com.sourcegraph.cody.chat.agent.CodyAgent;
+import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.handlers.MessageHandlers;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewMessage;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
 import jakarta.inject.Inject;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
@@ -51,10 +50,11 @@ public class ChatView extends ViewPart {
 
   @Inject private MessageHandlers handlers;
 
-  private ILog log = Platform.getLog(getClass());
+  @Inject private CodyManager manager;
+
+  private final ILog log = Platform.getLog(getClass());
 
   private Browser browserField;
-  final StartAgentJob job = new StartAgentJob();
   private volatile String chatId = "";
   private CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
   private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
@@ -121,7 +121,6 @@ public class ChatView extends ViewPart {
     this.browserField = browser;
     restartWebviewPrototocol(browser);
     addStartNewChatAction();
-    job.schedule();
     onStartNewChat(browser);
   }
 
@@ -137,18 +136,21 @@ public class ChatView extends ViewPart {
     pendingExtensionMessages.clear();
     webviewInitialized = new CompletableFuture<>();
     webviewInitialized.thenRun(() -> flushPendingMessages(browser));
-    CodyAgent.CLIENT.extensionMessageConsumer =
-        (message) -> {
-          if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
-            doPostMessage(browser, message);
-          } else {
-            pendingExtensionMessages.add(message);
-          }
-        };
+    manager.withAgent(
+        agent -> {
+          agent.client.extensionMessageConsumer =
+              (message) -> {
+                if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
+                  doPostMessage(browser, message);
+                } else {
+                  pendingExtensionMessages.add(message);
+                }
+              };
+        });
   }
 
   private void onStartNewChat(Browser browser) {
-    job.agent.thenAccept(
+    manager.withAgent(
         agent -> {
           try {
 
@@ -163,7 +165,7 @@ public class ChatView extends ViewPart {
           display.asyncExec(
               () -> {
                 createCallbacks(browser, agent);
-                var url = String.format("http://localhost:%d", job.webserverPort);
+                var url = String.format("http://localhost:%d", agent.webviewPort);
                 browser.setUrl(url);
                 browser.getParent().layout();
               });
@@ -308,11 +310,8 @@ public class ChatView extends ViewPart {
         new Action() {
           @Override
           public void run() {
-            try {
-              CodyAgent.restart();
-            } catch (IOException e) {
-              log.error("Cannot restart Cody agent", e);
-            }
+            manager.withAgent(CodyAgent::dispose);
+            manager.withAgent(a -> log.info("Agent restarted successfully"));
           }
         };
 
