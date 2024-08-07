@@ -9,4 +9,3 @@ public final class ClientInfo {
   public ExtensionConfiguration extensionConfiguration;
   public ClientCapabilities capabilities;
 }
-

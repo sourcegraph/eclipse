@@ -6,4 +6,3 @@ public final class ProgressOptions {
   public String locationViewId;
   public Boolean cancellable;
 }
-

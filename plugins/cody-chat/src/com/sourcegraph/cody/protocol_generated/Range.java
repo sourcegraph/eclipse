@@ -4,4 +4,3 @@ public final class Range {
   public Position start;
   public Position end;
 }
-

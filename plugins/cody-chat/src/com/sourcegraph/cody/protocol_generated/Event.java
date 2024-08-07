@@ -11,4 +11,3 @@ public final class Event {
   public String connectedSiteID;
   public String hashedLicenseKey;
 }
-

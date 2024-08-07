@@ -4,4 +4,3 @@ public final class DeleteOptionsParams {
   public Boolean recursive;
   public Boolean ignoreIfNotExists;
 }
-

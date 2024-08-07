@@ -4,4 +4,3 @@ public final class Position {
   public Long line;
   public Long character;
 }
-

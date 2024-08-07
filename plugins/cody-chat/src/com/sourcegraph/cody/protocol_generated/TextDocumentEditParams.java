@@ -5,4 +5,3 @@ public final class TextDocumentEditParams {
   public java.util.List<TextEdit> edits;
   public OptionsParams options;
 }
-

@@ -5,4 +5,3 @@ public final class ModelContextWindow {
   public Long output;
   public ContextParams context;
 }
-

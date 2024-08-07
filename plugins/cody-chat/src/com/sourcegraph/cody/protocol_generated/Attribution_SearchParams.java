@@ -4,4 +4,3 @@ public final class Attribution_SearchParams {
   public String id;
   public String snippet;
 }
-

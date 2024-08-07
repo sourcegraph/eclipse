@@ -4,4 +4,3 @@ public final class EndParams {
   public Long line;
   public Long character;
 }
-

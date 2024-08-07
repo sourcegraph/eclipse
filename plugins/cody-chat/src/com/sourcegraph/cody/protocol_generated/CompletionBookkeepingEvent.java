@@ -14,4 +14,3 @@ public final class CompletionBookkeepingEvent {
   public Long loggedPartialAcceptedLength;
   public Boolean read;
 }
-

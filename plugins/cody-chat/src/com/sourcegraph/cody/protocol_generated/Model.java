@@ -10,4 +10,3 @@ public final class Model {
   public java.util.List<ModelTag> tags;
   public ModelRef modelRef;
 }
-

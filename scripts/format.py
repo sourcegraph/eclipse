@@ -19,12 +19,8 @@ def format_java_files():
     subprocess.run(
         [
             "java",
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
             "-jar",
             os.path.join(os.path.dirname(__file__), "coursier"),
-            "--add-exports",
-            "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
             "launch",
             "com.google.googlejavaformat:google-java-format:1.22.0",
             "--",

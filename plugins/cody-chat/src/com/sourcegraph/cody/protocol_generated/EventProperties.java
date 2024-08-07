@@ -7,7 +7,7 @@ public final class EventProperties {
   public SourceEnum source; // Oneof: IDEEXTENSION
 
   public enum SourceEnum {
-    @com.google.gson.annotations.SerializedName("IDEEXTENSION") IDEEXTENSION,
+    @com.google.gson.annotations.SerializedName("IDEEXTENSION")
+    IDEEXTENSION,
   }
 }
-
