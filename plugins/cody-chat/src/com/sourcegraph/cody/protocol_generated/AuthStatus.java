@@ -12,7 +12,7 @@ public final class AuthStatus {
   public Boolean requiresVerifiedEmail;
   public Boolean siteHasCodyEnabled;
   public String siteVersion;
-  public Integer codyApiVersion;
+  public Long codyApiVersion;
   public CodyLLMSiteConfiguration configOverwrites;
   public Boolean showNetworkError;
   public String primaryEmail;
@@ -21,3 +21,4 @@ public final class AuthStatus {
   public Boolean userCanUpgrade;
   public Boolean isOfflineMode;
 }
+

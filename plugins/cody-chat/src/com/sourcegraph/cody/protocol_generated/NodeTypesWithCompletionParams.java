@@ -7,3 +7,4 @@ public final class NodeTypesWithCompletionParams {
   public String greatGrandparent;
   public String lastAncestorOnTheSameLine;
 }
+

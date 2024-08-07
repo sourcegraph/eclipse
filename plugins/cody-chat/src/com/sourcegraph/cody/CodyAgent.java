@@ -292,6 +292,7 @@ public class CodyAgent implements IDisposable {
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
+    capabilities.persistencePath = getDataDirectory().resolve("agentGlobalState.json").toString();
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = CodyAgent.config;

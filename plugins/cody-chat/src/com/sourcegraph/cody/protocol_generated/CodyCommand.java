@@ -10,3 +10,4 @@ public final class CodyCommand {
   public CodyCommandMode mode; // Oneof: ask, edit, insert
   public String requestID;
 }
+

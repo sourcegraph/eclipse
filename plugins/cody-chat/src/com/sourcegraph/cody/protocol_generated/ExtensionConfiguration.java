@@ -10,8 +10,10 @@ public final class ExtensionConfiguration {
   public String autocompleteAdvancedModel;
   public Boolean debug;
   public Boolean verboseDebug;
+  public String telemetryClientName;
   public String codebase;
   public EventProperties eventProperties;
   public java.util.Map<String, Object> customConfiguration;
   public java.util.Map<String, Object> baseGlobalState;
 }
+

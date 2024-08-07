@@ -4,3 +4,4 @@ public final class TelemetryEvent {
   public String feature;
   public String action;
 }
+

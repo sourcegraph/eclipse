@@ -7,3 +7,4 @@ public final class ServerInfo {
   public String codyVersion;
   public AuthStatus authStatus;
 }
+

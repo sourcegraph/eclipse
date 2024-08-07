@@ -2,11 +2,12 @@ package com.sourcegraph.cody.protocol_generated;
 
 public final class CodyLLMSiteConfiguration {
   public String chatModel;
-  public Integer chatModelMaxTokens;
+  public Long chatModelMaxTokens;
   public String fastChatModel;
-  public Integer fastChatModelMaxTokens;
+  public Long fastChatModelMaxTokens;
   public String completionModel;
-  public Integer completionModelMaxTokens;
+  public Long completionModelMaxTokens;
   public String provider;
   public Boolean smartContextWindow;
 }
+

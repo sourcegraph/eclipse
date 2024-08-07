@@ -5,7 +5,7 @@ public final class ChatError {
   public String name;
   public String message;
   public String retryAfter;
-  public Integer limit;
+  public Long limit;
   public String userMessage;
   public Date retryAfterDate;
   public String retryAfterDateString;
@@ -15,7 +15,7 @@ public final class ChatError {
   public IsChatErrorGuardEnum isChatErrorGuard; // Oneof: isChatErrorGuard
 
   public enum IsChatErrorGuardEnum {
-    @com.google.gson.annotations.SerializedName("isChatErrorGuard")
-    IsChatErrorGuard,
+    @com.google.gson.annotations.SerializedName("isChatErrorGuard") IsChatErrorGuard,
   }
 }
+

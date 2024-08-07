@@ -4,3 +4,4 @@ public final class CodeActions_ProvideParams {
   public ProtocolLocation location;
   public CodeActionTriggerKind triggerKind; // Oneof: Invoke, Automatic
 }
+

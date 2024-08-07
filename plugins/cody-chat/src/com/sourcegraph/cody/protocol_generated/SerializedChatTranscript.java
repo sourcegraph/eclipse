@@ -8,3 +8,4 @@ public final class SerializedChatTranscript {
   public String lastInteractionTimestamp;
   public EnhancedContextParams enhancedContext;
 }
+

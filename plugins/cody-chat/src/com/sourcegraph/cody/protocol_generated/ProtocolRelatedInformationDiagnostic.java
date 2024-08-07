@@ -4,3 +4,4 @@ public final class ProtocolRelatedInformationDiagnostic {
   public ProtocolLocation location;
   public String message;
 }
+

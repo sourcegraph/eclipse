@@ -5,13 +5,10 @@ public final class RemoteRepoFetchState {
   public CodyError error;
 
   public enum StateEnum {
-    @com.google.gson.annotations.SerializedName("paused")
-    Paused,
-    @com.google.gson.annotations.SerializedName("fetching")
-    Fetching,
-    @com.google.gson.annotations.SerializedName("errored")
-    Errored,
-    @com.google.gson.annotations.SerializedName("complete")
-    Complete,
+    @com.google.gson.annotations.SerializedName("paused") Paused,
+    @com.google.gson.annotations.SerializedName("fetching") Fetching,
+    @com.google.gson.annotations.SerializedName("errored") Errored,
+    @com.google.gson.annotations.SerializedName("complete") Complete,
   }
 }
+

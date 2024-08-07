@@ -4,3 +4,4 @@ public final class ExecuteCommandParams {
   public String command;
   public java.util.List<Object> arguments;
 }
+

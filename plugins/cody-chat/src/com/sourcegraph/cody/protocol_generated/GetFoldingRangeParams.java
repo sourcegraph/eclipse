@@ -4,3 +4,4 @@ public final class GetFoldingRangeParams {
   public String uri;
   public Range range;
 }
+

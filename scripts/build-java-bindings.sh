@@ -20,5 +20,5 @@ pushd $CODY_DIR
 pnpm install
 pnpm build
 pnpm dlx ts-node $INDEXER_DIR/src/main.ts index --emit-signatures --emit-external-symbols
-pnpm dlx ts-node agent/src/cli/scip-codegen/command.ts --language java --output $ECLIPSE_DIR/plugins/cody-chat/src/com/sourcegraph/cody/protocol_generated
+pnpm dlx ts-node agent/src/cli/scip-codegen/command.ts --language java --output $ECLIPSE_DIR/plugins/cody-chat/src/com/sourcegraph/cody/protocol_generated --kotlin-package com.sourcegraph.cody.protocol_generated
 popd
