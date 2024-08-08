@@ -43,11 +43,11 @@
          point="com.sourcegraph.cody.messageHandler">
       <handler
             implementation="com.sourcegraph.cody.handlers.NewFileHandler"
-            message="com.sourcegraph.cody.protocol_generated.WebviewMessage$NewFileWebviewMessage">
+            message="com.sourcegraph.cody.webview_protocol.WebviewMessage$NewFileWebviewMessage">
       </handler>
       <handler
             implementation="com.sourcegraph.cody.handlers.InsertHandler"
-            message="com.sourcegraph.cody.protocol_generated.WebviewMessage$InsertWebviewMessage">
+            message="com.sourcegraph.cody.webview_protocol.WebviewMessage$InsertWebviewMessage">
       </handler>
    </extension>
 

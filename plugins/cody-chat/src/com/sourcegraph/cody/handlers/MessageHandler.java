@@ -1,6 +1,6 @@
 package com.sourcegraph.cody.handlers;
 
-import com.sourcegraph.cody.protocol_generated.WebviewMessage;
+import com.sourcegraph.cody.webview_protocol.WebviewMessage;
 
 public interface MessageHandler<T extends WebviewMessage> {
 
