@@ -1,6 +1,7 @@
 package com.sourcegraph.cody;
 
 import com.sourcegraph.cody.protocol_generated.*;
+import com.sourcegraph.cody.webview_protocol.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -18,7 +19,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<Boolean> textDocument_openUntitledDocument(UntitledTextDocument params) {
+  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(UntitledTextDocument params) {
 
     return null;
   }
@@ -62,13 +63,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
     if (extensionMessageConsumer != null && params.stringEncodedMessage != null) {
       extensionMessageConsumer.accept(params.stringEncodedMessage);
     }
-  }
-
-  @Override
-  public void webview_postMessage(WebviewPostMessageParams params) {
-    throw new IllegalStateException(
-        "webview/postMessage got called when webview/postMessageString was expected. To fix this"
-            + " problem, make sure the webviewMessages client capability is set to 'string'.");
   }
 
   @Override

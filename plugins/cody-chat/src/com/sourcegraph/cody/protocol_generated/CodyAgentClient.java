@@ -16,7 +16,8 @@ public interface CodyAgentClient {
   CompletableFuture<Boolean> textDocument_edit(TextDocumentEditParams params);
 
   @JsonRequest("textDocument/openUntitledDocument")
-  CompletableFuture<Boolean> textDocument_openUntitledDocument(UntitledTextDocument params);
+  CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params);
 
   @JsonRequest("textDocument/show")
   CompletableFuture<Boolean> textDocument_show(TextDocument_ShowParams params);
@@ -44,9 +45,6 @@ public interface CodyAgentClient {
 
   @JsonNotification("ignore/didChange")
   void ignore_didChange(Void params);
-
-  @JsonNotification("webview/postMessage")
-  void webview_postMessage(WebviewPostMessageParams params);
 
   @JsonNotification("webview/postMessageStringEncoded")
   void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params);

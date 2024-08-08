@@ -1,11 +1,12 @@
 package com.sourcegraph.cody.protocol_generated;
 
 public final class Model {
-  @com.google.gson.annotations.SerializedName("default")
-  public Boolean default_;
-
-  public Boolean codyProOnly;
+  public String model;
+  public java.util.List<ModelUsage> usage;
+  public ModelContextWindow contextWindow;
+  public ClientSideConfig clientSideConfig;
   public String provider;
   public String title;
-  public Boolean deprecated;
+  public java.util.List<ModelTag> tags;
+  public ModelRef modelRef;
 }
