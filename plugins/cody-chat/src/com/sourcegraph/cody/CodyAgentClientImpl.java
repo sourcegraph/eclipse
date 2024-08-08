@@ -1,7 +1,6 @@
 package com.sourcegraph.cody;
 
 import com.sourcegraph.cody.protocol_generated.*;
-import com.sourcegraph.cody.webview_protocol.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
