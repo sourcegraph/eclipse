@@ -63,4 +63,7 @@ public interface CodyAgentClient {
 
   @JsonNotification("remoteRepo/didChangeState")
   void remoteRepo_didChangeState(RemoteRepoFetchState params);
+
+  @JsonNotification("authentication/didChange")
+  void authentication_didChange(AuthStatus params);
 }

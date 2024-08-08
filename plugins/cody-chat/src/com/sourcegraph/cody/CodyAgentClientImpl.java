@@ -44,7 +44,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void debug_message(DebugMessage params) {
-	  System.out.println(params);
+    System.out.println(params);
   }
 
   @Override
@@ -81,6 +81,11 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
+
+  @Override
+  public void authentication_didChange(AuthStatus params) {
+      System.out.println("Auth did change: " + params);
+  }
 
   public Consumer<String> extensionMessageConsumer;
 }

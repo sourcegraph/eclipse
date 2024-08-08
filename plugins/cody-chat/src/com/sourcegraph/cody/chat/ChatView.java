@@ -1,6 +1,5 @@
 package com.sourcegraph.cody.chat;
 
-import static java.lang.System.out;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
