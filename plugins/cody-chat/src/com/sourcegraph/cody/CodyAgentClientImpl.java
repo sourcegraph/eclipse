@@ -18,7 +18,8 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(UntitledTextDocument params) {
+  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params) {
 
     return null;
   }

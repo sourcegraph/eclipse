@@ -21,6 +21,9 @@ public interface CodyAgentServer {
   @JsonRequest("chat/web/new")
   CompletableFuture<Chat_Web_NewResult> chat_web_new(Void params);
 
+  @JsonRequest("chat/sidebar/new")
+  CompletableFuture<Chat_Sidebar_NewResult> chat_sidebar_new(Void params);
+
   @JsonRequest("chat/delete")
   CompletableFuture<java.util.List<ChatExportResult>> chat_delete(Chat_DeleteParams params);
 

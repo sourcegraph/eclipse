@@ -5,4 +5,3 @@ public final class ModelRef {
   public ApiVersionId apiVersionId;
   public ModelId modelId;
 }
-
