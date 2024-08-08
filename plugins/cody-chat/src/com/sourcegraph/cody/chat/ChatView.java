@@ -1,6 +1,5 @@
 package com.sourcegraph.cody.chat;
 
-import static java.lang.System.out;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -230,6 +229,7 @@ public class ChatView extends ViewPart {
                   new Webview_ReceiveMessageStringEncodedParams();
               params.id = chatId;
               params.messageStringEncoded = messageJson;
+              System.out.println("Params are: " + params);
               agent.server.webview_receiveMessageStringEncoded(params);
             });
         return null;
@@ -239,7 +239,7 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_log") {
       @Override
       public Object function(Object[] arguments) {
-        out.println("SERVER - eclipse_log: " + arguments[0]);
+        System.out.println("SERVER - eclipse_log: " + arguments[0]);
         return null;
       }
     };

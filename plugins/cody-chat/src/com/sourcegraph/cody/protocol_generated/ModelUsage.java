@@ -5,4 +5,6 @@ public enum ModelUsage {
   Chat,
   @com.google.gson.annotations.SerializedName("edit")
   Edit,
+  @com.google.gson.annotations.SerializedName("autocomplete")
+  Autocomplete,
 }

@@ -1,3 +1,3 @@
 package com.sourcegraph.cody.protocol_generated;
 
-public class ContextMentionProviderID {}
+public final class ModelId {} // TODO: fixme

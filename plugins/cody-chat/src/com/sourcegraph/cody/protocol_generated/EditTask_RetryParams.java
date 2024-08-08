@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.protocol_generated;
 
-public final class EditCommands_CodeParams {
+public final class EditTask_RetryParams {
+  public FixupTaskID id;
   public String instruction;
   public String model;
   public ModeEnum mode; // Oneof: edit, insert

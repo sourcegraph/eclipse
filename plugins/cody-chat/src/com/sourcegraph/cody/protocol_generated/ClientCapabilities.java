@@ -14,6 +14,7 @@ public final class ClientCapabilities {
   public IgnoreEnum ignore; // Oneof: none, enabled
   public CodeActionsEnum codeActions; // Oneof: none, enabled
   public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
+  public String persistencePath;
 
   public enum CompletionsEnum {
     @com.google.gson.annotations.SerializedName("none")

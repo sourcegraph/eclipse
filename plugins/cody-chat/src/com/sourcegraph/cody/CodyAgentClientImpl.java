@@ -18,7 +18,8 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<Boolean> textDocument_openUntitledDocument(UntitledTextDocument params) {
+  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params) {
 
     return null;
   }
@@ -42,7 +43,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+    System.out.println(params);
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -65,13 +68,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void webview_postMessage(WebviewPostMessageParams params) {
-    throw new IllegalStateException(
-        "webview/postMessage got called when webview/postMessageString was expected. To fix this"
-            + " problem, make sure the webviewMessages client capability is set to 'string'.");
-  }
-
-  @Override
   public void progress_start(ProgressStartParams params) {}
 
   @Override
@@ -85,6 +81,11 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
+
+  @Override
+  public void authentication_didChange(AuthStatus params) {
+      System.out.println("Auth did change: " + params);
+  }
 
   public Consumer<String> extensionMessageConsumer;
 }

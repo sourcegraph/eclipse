@@ -34,8 +34,8 @@ import org.eclipse.ui.services.IDisposable;
 // @Singleton
 public class CodyAgent implements IDisposable {
 
-  //	@Inject
-  //	IWorkbench workbench;
+  // @Inject
+  // IWorkbench workbench;
 
   private final Future<Void> listening;
   public static final CodyAgentClientImpl CLIENT = new CodyAgentClientImpl();
@@ -75,7 +75,8 @@ public class CodyAgent implements IDisposable {
       return path;
     }
 
-    // We only support Windows at this time. The binary for Node.js is included in the plugin JAR.
+    // We only support Windows at this time. The binary for Node.js is included in
+    // the plugin JAR.
     if (Platform.getOS().equals(Platform.OS_WIN32)) {
       String nodeExecutableName = "node-win-x64.exe";
       Path path = getDataDirectory().resolve(nodeExecutableName);
@@ -178,8 +179,10 @@ public class CodyAgent implements IDisposable {
       }
     }
 
-    // This path is 100% wrong. The main problem with workspace root in Eclipse is that
-    // it's common to have multiple projects with different workspace roots. The agent server
+    // This path is 100% wrong. The main problem with workspace root in Eclipse is
+    // that
+    // it's common to have multiple projects with different workspace roots. The
+    // agent server
     // doesn't support multi-root workspaces at this time.
     return Paths.get(Platform.getInstanceLocation().getURL().toURI());
   }
@@ -241,7 +244,8 @@ public class CodyAgent implements IDisposable {
     // LSP4J registers a type adapter that emits numbers for all enums, ignoring
     // `@SerializedName` annotations.
     // https://sourcegraph.com/github.com/eclipse-lsp4j/lsp4j/-/blob/org.eclipse.lsp4j.jsonrpc/src/main/java/org/eclipse/lsp4j/jsonrpc/json/adapters/EnumTypeAdapter.java?L30:14-30:29
-    // See CODY-2427 for follow-up issue to remove this ugly runtime reflection hack.
+    // See CODY-2427 for follow-up issue to remove this ugly runtime reflection
+    // hack.
     try {
       // HACK: lsp4j adds customizations to the gson builder that break serialization
       // of enums. We can work around this issue by removing these customizations.
@@ -281,9 +285,11 @@ public class CodyAgent implements IDisposable {
     ClientInfo clientInfo = new ClientInfo();
     // See
     // https://sourcegraph.com/github.com/sourcegraph/cody/-/blob/agent/src/cli/codyCliClientName.ts
-    // for a detailed explanation why we use the name "jetbrains" instead of "eclipse". The short
+    // for a detailed explanation why we use the name "jetbrains" instead of
+    // "eclipse". The short
     // explanation is that
-    // we need to wait for enterprise customers to upgrade to a new version that includes the fix
+    // we need to wait for enterprise customers to upgrade to a new version that
+    // includes the fix
     // from this PR here https://github.com/sourcegraph/sourcegraph/pull/63855.
     clientInfo.name = "jetbrains";
     clientInfo.version = "5.5.20-eclipse"; // Needs to be greater than 5.5.8
@@ -292,6 +298,7 @@ public class CodyAgent implements IDisposable {
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
+    capabilities.persistencePath = getDataDirectory().resolve("agentGlobalState.json").toString();
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = CodyAgent.config;
@@ -300,8 +307,10 @@ public class CodyAgent implements IDisposable {
   }
 
   private void discoverWorkbenchState() {
-    // This can cause UI to hang for a moment after the start of the agent. If that's a problem,
-    // split this function into two parts: collecting the state and then notifying the agent. Run
+    // This can cause UI to hang for a moment after the start of the agent. If
+    // that's a problem,
+    // split this function into two parts: collecting the state and then notifying
+    // the agent. Run
     // the first part with Display.syncExec.
     Display.getDefault()
         .asyncExec(
