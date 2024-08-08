@@ -42,7 +42,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+	  System.out.println(params);
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
