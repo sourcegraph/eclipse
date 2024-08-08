@@ -5,4 +5,3 @@ public final class TextDocumentShowOptionsParams {
   public Boolean preview;
   public Range selection;
 }
-

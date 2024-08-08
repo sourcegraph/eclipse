@@ -6,4 +6,3 @@ public final class WorkspaceEditEntryMetadata {
   public String description;
   public Uri iconPath;
 }
-

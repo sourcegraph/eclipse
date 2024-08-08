@@ -12,8 +12,9 @@ public final class CompletionItemInfo {
   public String stopReason;
 
   public enum TruncatedWithEnum {
-    @com.google.gson.annotations.SerializedName("tree-sitter") Tree_sitter,
-    @com.google.gson.annotations.SerializedName("indentation") Indentation,
+    @com.google.gson.annotations.SerializedName("tree-sitter")
+    Tree_sitter,
+    @com.google.gson.annotations.SerializedName("indentation")
+    Indentation,
   }
 }
-

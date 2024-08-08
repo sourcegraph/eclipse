@@ -133,10 +133,12 @@ public abstract class WebviewMessage {
       @com.google.gson.annotations.SerializedName("submit")
       Submit,
     }
-    
+
     public enum ChatSubmitType {
-    	@com.google.gson.annotations.SerializedName("user") User,
-    	@com.google.gson.annotations.SerializedName("user-newchat") User_newchat,
+      @com.google.gson.annotations.SerializedName("user")
+      User,
+      @com.google.gson.annotations.SerializedName("user-newchat")
+      User_newchat,
     }
   }
 

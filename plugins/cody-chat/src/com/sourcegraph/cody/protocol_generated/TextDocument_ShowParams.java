@@ -4,4 +4,3 @@ public final class TextDocument_ShowParams {
   public String uri;
   public TextDocumentShowOptionsParams options;
 }
-

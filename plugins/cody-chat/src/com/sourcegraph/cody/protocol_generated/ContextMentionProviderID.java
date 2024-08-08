@@ -1,5 +1,3 @@
 package com.sourcegraph.cody.protocol_generated;
 
-public class ContextMentionProviderID {
-
-}
+public class ContextMentionProviderID {}

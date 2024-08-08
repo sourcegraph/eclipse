@@ -7,8 +7,9 @@ public final class EditCommands_CodeParams {
   public Range range;
 
   public enum ModeEnum {
-    @com.google.gson.annotations.SerializedName("edit") Edit,
-    @com.google.gson.annotations.SerializedName("insert") Insert,
+    @com.google.gson.annotations.SerializedName("edit")
+    Edit,
+    @com.google.gson.annotations.SerializedName("insert")
+    Insert,
   }
 }
-

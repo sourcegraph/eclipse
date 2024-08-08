@@ -4,4 +4,3 @@ public final class SerializedChatInteraction {
   public SerializedChatMessage humanMessage;
   public SerializedChatMessage assistantMessage;
 }
-

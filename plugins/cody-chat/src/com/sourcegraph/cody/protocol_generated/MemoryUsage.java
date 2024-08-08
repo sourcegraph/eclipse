@@ -7,4 +7,3 @@ public final class MemoryUsage {
   public Long external;
   public Long arrayBuffers;
 }
-

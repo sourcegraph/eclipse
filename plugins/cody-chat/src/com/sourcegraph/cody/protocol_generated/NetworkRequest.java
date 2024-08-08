@@ -5,4 +5,3 @@ public final class NetworkRequest {
   public String body;
   public String error;
 }
-

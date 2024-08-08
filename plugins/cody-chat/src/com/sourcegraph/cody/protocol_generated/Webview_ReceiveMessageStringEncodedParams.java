@@ -8,4 +8,3 @@ public final class Webview_ReceiveMessageStringEncodedParams {
 	  return "id: " + this.id + ", messageString: " + messageStringEncoded;
   }
 }
-

@@ -4,4 +4,3 @@ public final class ProtocolTextDocumentContentChangeEvent {
   public Range range;
   public String text;
 }
-

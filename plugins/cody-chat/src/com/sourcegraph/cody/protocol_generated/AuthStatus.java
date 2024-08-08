@@ -21,4 +21,3 @@ public final class AuthStatus {
   public Boolean userCanUpgrade;
   public Boolean isOfflineMode;
 }
-

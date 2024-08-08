@@ -4,4 +4,3 @@ public final class AutocompleteResult {
   public java.util.List<AutocompleteItem> items;
   public CompletionBookkeepingEvent completionEvent;
 }
-

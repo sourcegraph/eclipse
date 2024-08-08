@@ -5,4 +5,3 @@ public final class RemoteRepo_ListParams {
   public Long first;
   public String afterId;
 }
-

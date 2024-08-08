@@ -24,4 +24,3 @@ public final class OpenAICompatible {
   public Long editTemperature;
   public Long editMaxTokens;
 }
-

@@ -4,4 +4,3 @@ public final class StartParams {
   public Long line;
   public Long character;
 }
-

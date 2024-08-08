@@ -5,4 +5,3 @@ public final class CodyError {
   public CodyError cause;
   public String stack;
 }
-

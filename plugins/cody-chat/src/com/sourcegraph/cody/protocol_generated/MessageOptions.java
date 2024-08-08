@@ -4,4 +4,3 @@ public final class MessageOptions {
   public Boolean modal;
   public String detail;
 }
-

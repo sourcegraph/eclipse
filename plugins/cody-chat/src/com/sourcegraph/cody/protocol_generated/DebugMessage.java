@@ -8,4 +8,3 @@ public final class DebugMessage {
 	  return channel + ": " + message;
   }
 }
-

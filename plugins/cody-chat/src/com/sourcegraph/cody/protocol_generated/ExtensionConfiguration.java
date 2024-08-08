@@ -16,4 +16,3 @@ public final class ExtensionConfiguration {
   public java.util.Map<String, Object> customConfiguration;
   public java.util.Map<String, Object> baseGlobalState;
 }
-
