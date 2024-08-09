@@ -122,7 +122,7 @@ public class StartAgentJob extends Job {
     // we need to wait for enterprise customers to upgrade to a new version that includes the fix
     // from this PR here https://github.com/sourcegraph/sourcegraph/pull/63855.
     clientInfo.name = "jetbrains";
-    clientInfo.version = "5.5.20-eclipse"; // Needs to be greater than 5.5.8
+    clientInfo.version = "5.5.21-eclipse"; // Needs to be greater than 5.5.8
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
