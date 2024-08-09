@@ -8,8 +8,10 @@ import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -34,6 +36,8 @@ public class LogInJob extends Job {
   @Inject private Display display;
 
   @Inject private Shell shell;
+
+  private ILog log = Platform.getLog(getClass());
 
   private String name;
   private String url;
@@ -134,13 +138,13 @@ public class LogInJob extends Job {
     } catch (CancellationException e) {
       return Status.CANCEL_STATUS;
     } catch (Throwable e) {
-      e.printStackTrace();
+      log.error("Problem while opening a login page", e);
       return Status.CANCEL_STATUS;
     } finally {
       try {
         server.stop();
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error("Problem stopping login server", e);
       }
       closeWindow();
     }

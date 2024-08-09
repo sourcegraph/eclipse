@@ -1,14 +1,16 @@
 package com.sourcegraph.cody;
 
-import static java.lang.System.out;
-
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 
 class DebugWorkspaceListener implements IPartListener2 {
+  private ILog log = Platform.getLog(getClass());
+
   @Override
   public void partActivated(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partActivated "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -17,7 +19,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partBroughtToTop(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partBroughtToTop "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -26,7 +28,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partClosed(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partClosed "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -35,7 +37,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partDeactivated(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partDeactivated "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -44,7 +46,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partOpened(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partOpened "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -53,7 +55,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partHidden(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partHidden "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -62,7 +64,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partVisible(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partVisible "
             + iWorkbenchPartReference.getTitle()
             + " "
@@ -71,7 +73,7 @@ class DebugWorkspaceListener implements IPartListener2 {
 
   @Override
   public void partInputChanged(IWorkbenchPartReference iWorkbenchPartReference) {
-    out.println(
+    log.info(
         "partInputChanged "
             + iWorkbenchPartReference.getTitle()
             + " "

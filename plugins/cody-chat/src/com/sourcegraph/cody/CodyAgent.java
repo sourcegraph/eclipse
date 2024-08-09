@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
@@ -41,6 +42,8 @@ public class CodyAgent implements IDisposable {
   public static final CodyAgentClientImpl CLIENT = new CodyAgentClientImpl();
   public final CodyAgentServer server;
   private final Process process;
+
+  private static ILog log = Platform.getLog(CodyAgent.class);
 
   public CodyAgent(Future<Void> listening, CodyAgentServer server, Process process) {
     this.listening = listening;
@@ -111,14 +114,12 @@ public class CodyAgent implements IDisposable {
       server.exit(null);
       listening.cancel(true);
     } catch (Exception e) {
-
-      e.printStackTrace();
+      log.error("Cannot shut down the server", e);
     } finally {
       try {
         process.destroy();
       } catch (Exception e) {
-
-        e.printStackTrace();
+        log.error("Cannot shut down the server process", e);
       }
     }
   }
@@ -132,7 +133,7 @@ public class CodyAgent implements IDisposable {
     try {
       return startUnsafe();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Cannot start Cody agent", e);
       throw new WrappedRuntimeException(e);
     }
   }
@@ -257,7 +258,7 @@ public class CodyAgent implements IDisposable {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Problems configuring Gson", e);
     }
 
     ProtocolTypeAdapters.register(builder);
@@ -271,7 +272,7 @@ public class CodyAgent implements IDisposable {
       try {
         CodyAgent.AGENT.server.extensionConfiguration_didChange(config);
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error("Cannot notify about config change", e);
       }
     }
   }
@@ -385,8 +386,7 @@ public class CodyAgent implements IDisposable {
             Files.newOutputStream(
                 trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
       } catch (IOException e) {
-
-        e.printStackTrace();
+        log.error("Cannot create a trace", e);
       }
     }
     return null;

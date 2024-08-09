@@ -1,6 +1,8 @@
 package com.sourcegraph.cody;
 
 import com.sourcegraph.cody.workspace.WorkspaceListener;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -9,6 +11,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 public class CodyChatActivator extends AbstractUIPlugin {
+
+  private ILog log = Platform.getLog(getClass());
 
   @Override
   public void start(BundleContext bundleContext) throws Exception {
@@ -21,7 +25,7 @@ public class CodyChatActivator extends AbstractUIPlugin {
                   PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 
               if (workbenchWindow == null) {
-                System.out.println("No active workbench window");
+                log.error("No active workbench window");
                 return;
               }
 
@@ -30,7 +34,7 @@ public class CodyChatActivator extends AbstractUIPlugin {
               partService.addPartListener(new WorkspaceListener());
 
               // Uncomment below to debug the workspace listener.
-              // partService.addPartListener(new DebugListener());
+              // partService.addPartListener(new DebugWorkspaceListener());
             });
   }
 }

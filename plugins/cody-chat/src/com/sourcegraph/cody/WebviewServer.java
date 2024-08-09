@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
@@ -17,7 +19,8 @@ public class WebviewServer {
 
   private final Server server;
   private final ServerConnector connector;
-
+  private ILog log = Platform.getLog(getClass());
+  ;
   private static final Map<String, String> MIME_TYPES = new HashMap<>();
 
   static {
@@ -111,7 +114,7 @@ public class WebviewServer {
             try {
               this.server.start();
             } catch (Exception e) {
-              e.printStackTrace();
+              log.error("Cannot start WebviewServer", e);
               port.completeExceptionally(e);
             }
             port.complete(this.connector.getLocalPort());

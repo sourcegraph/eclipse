@@ -1,7 +1,5 @@
 package com.sourcegraph.cody.chat;
 
-import static java.lang.System.out;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyAgent;
@@ -21,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -47,9 +47,11 @@ public class ChatView extends ViewPart {
 
   @Inject private IWorkbenchPage page;
 
-  @Inject IEclipseContext context;
+  @Inject private IEclipseContext context;
 
-  @Inject MessageHandlers handlers;
+  @Inject private MessageHandlers handlers;
+
+  private ILog log = Platform.getLog(getClass());
 
   private Browser browserField;
   final StartAgentJob job = new StartAgentJob();
@@ -82,11 +84,9 @@ public class ChatView extends ViewPart {
         addLoginButton(parent);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Cannot create chat view", e);
     }
   }
-
-  Button loginButton;
 
   public void addLoginButton(Composite parent) {
     var button = new Button(parent, SWT.NONE);
@@ -155,7 +155,7 @@ public class ChatView extends ViewPart {
             chatId = agent.server.chat_new(null).get(5, TimeUnit.SECONDS);
 
           } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
+            log.error("Cannot create new chat", e);
             return; // TODO: display error message to the user
           }
 
@@ -177,7 +177,7 @@ public class ChatView extends ViewPart {
         doPostMessage(browser, message);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Cannot post message", e);
     }
   }
 
@@ -210,7 +210,7 @@ public class ChatView extends ViewPart {
               var message = gson.fromJson(messageJson, WebviewMessage.class);
               boolean handled = handlers.handle(message);
               if (!handled) {
-                System.out.println("Unhandled intercept message: " + messageJson);
+                log.warn("Unhandled intercept message: " + messageJson);
               }
             });
         return null;
@@ -239,7 +239,7 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_log") {
       @Override
       public Object function(Object[] arguments) {
-        out.println("SERVER - eclipse_log: " + arguments[0]);
+        log.info("SERVER - eclipse_log: " + arguments[0]);
         return null;
       }
     };
@@ -266,7 +266,7 @@ public class ChatView extends ViewPart {
             try {
               page.showView(TokenSelectionView.ID);
             } catch (PartInitException e) {
-              e.printStackTrace();
+              log.error("Cannot open token selection view", e);
             }
           }
         };
@@ -311,7 +311,7 @@ public class ChatView extends ViewPart {
             try {
               CodyAgent.restart();
             } catch (IOException e) {
-              e.printStackTrace();
+              log.error("Cannot restart Cody agent", e);
             }
           }
         };
