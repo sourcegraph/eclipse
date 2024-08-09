@@ -1,8 +1,9 @@
 package com.sourcegraph.cody.chat.access;
 
-import com.sourcegraph.cody.CodyAgent;
 import com.sourcegraph.cody.WrappedRuntimeException;
+import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.URI;
@@ -24,6 +25,8 @@ import org.osgi.service.prefs.BackingStoreException;
 @Creatable
 @Singleton
 public class TokenStorage {
+
+  @Inject CodyManager manager;
 
   public static class Profile {
     public final String name;
@@ -129,7 +132,7 @@ public class TokenStorage {
       configuration.serverEndpoint = this.getServerEndpoint(profileName);
       configuration.accessToken = this.getToken(profileName);
       configuration.customConfiguration = new HashMap<>();
-      CodyAgent.onConfigChange(configuration);
+      manager.onConfigChange(configuration);
     }
   }
 

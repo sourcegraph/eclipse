@@ -1,4 +1,4 @@
-package com.sourcegraph.cody;
+package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.protocol_generated.*;
 import java.util.concurrent.CompletableFuture;

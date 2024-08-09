@@ -1,9 +1,13 @@
 package com.sourcegraph.cody.workspace;
 
+import com.sourcegraph.cody.WrappedRuntimeException;
+import com.sourcegraph.cody.protocol_generated.Position;
+import com.sourcegraph.cody.protocol_generated.Range;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.FileEditorInput;
@@ -32,6 +36,27 @@ public final class EditorState {
       document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
     }
     return document;
+  }
+
+  public Position positionFor(int offset) {
+    try {
+      var line = getDocument().getLineOfOffset(offset);
+      var lineOffset = getDocument().getLineOffset(line);
+      var character = offset - lineOffset;
+      var position = new Position();
+      position.line = line;
+      position.character = character;
+      return position;
+    } catch (BadLocationException e) {
+      throw new WrappedRuntimeException(e);
+    }
+  }
+
+  public Range rangeFor(int start, int length) {
+    var range = new Range();
+    range.start = positionFor(start);
+    range.end = positionFor(start + length);
+    return range;
   }
 
   @Nullable

@@ -1,13 +1,11 @@
 package com.sourcegraph.cody;
 
+import com.sourcegraph.cody.chat.agent.CodyManager;
+import com.sourcegraph.cody.chat.agent.Disposable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
@@ -15,11 +13,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.Callback;
 
-public class WebviewServer {
+public class WebviewServer implements Disposable {
 
   private final Server server;
   private final ServerConnector connector;
-  private ILog log = Platform.getLog(getClass());
+  private final CodyManager codyManager;
   ;
   private static final Map<String, String> MIME_TYPES = new HashMap<>();
 
@@ -37,7 +35,8 @@ public class WebviewServer {
     MIME_TYPES.put("ttf", "application/unknown");
   }
 
-  public WebviewServer() {
+  public WebviewServer(CodyManager codyManager) {
+    this.codyManager = codyManager;
     this.server = new Server();
     this.connector = new ServerConnector(server);
     connector.setPort(0);
@@ -51,18 +50,20 @@ public class WebviewServer {
             if (path.isEmpty() || path.equals("/")) {
               path = "/index.html";
             }
-            var resource = this.getClass().getResourceAsStream("/resources/cody-webviews" + path);
-            if (resource != null) {
-              String extension = getFileExtension(path);
-              String mimeType = MIME_TYPES.getOrDefault(extension, "application/octet-stream");
-              response.getHeaders().add("Content-Type", mimeType);
-              var bytes = resource.readAllBytes();
-              if (path.endsWith("/index.html")) {
-                bytes = WebviewServer.postProcessIndexHtml(bytes);
+            try (var resource =
+                this.getClass().getResourceAsStream("/resources/cody-webviews" + path)) {
+              if (resource != null) {
+                String extension = getFileExtension(path);
+                String mimeType = MIME_TYPES.getOrDefault(extension, "application/octet-stream");
+                response.getHeaders().add("Content-Type", mimeType);
+                var bytes = resource.readAllBytes();
+                if (path.endsWith("/index.html")) {
+                  bytes = WebviewServer.postProcessIndexHtml(bytes);
+                }
+                response.write(true, ByteBuffer.wrap(bytes), callback);
+                response.setStatus(200);
+                return true;
               }
-              response.write(true, ByteBuffer.wrap(bytes), callback);
-              response.setStatus(200);
-              return true;
             }
             return false;
           }
@@ -106,31 +107,19 @@ public class WebviewServer {
     return path.substring(lastIndexOfDot + 1);
   }
 
-  public int start() {
-    try {
-      var port = new CompletableFuture<Integer>();
-      CodyAgent.executorService.execute(
-          () -> {
-            try {
-              this.server.start();
-            } catch (Exception e) {
-              log.error("Cannot start WebviewServer", e);
-              port.completeExceptionally(e);
-            }
-            port.complete(this.connector.getLocalPort());
-          });
-      var result = port.get(5, TimeUnit.SECONDS);
-      return result;
-    } catch (Exception e) {
-      throw new WrappedRuntimeException(e);
-    }
+  public int start() throws Exception {
+    this.server.start();
+    return this.connector.getLocalPort();
   }
 
-  public void stop() {
+  @Override
+  public void dispose() {
     try {
       this.server.stop();
     } catch (Exception e) {
       throw new WrappedRuntimeException(e);
+    } finally {
+      codyManager.webserverDisposed();
     }
   }
 }
