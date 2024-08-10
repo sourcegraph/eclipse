@@ -1,6 +1,6 @@
 package com.sourcegraph.cody.handlers;
 
-import com.sourcegraph.cody.protocol_generated.WebviewMessage;
+import com.sourcegraph.cody.webview_protocol.WebviewMessage;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;

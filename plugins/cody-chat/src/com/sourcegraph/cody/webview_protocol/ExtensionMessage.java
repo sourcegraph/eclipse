@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.webview_protocol;
 
 import com.google.gson.JsonDeserializer;
+import com.sourcegraph.cody.protocol_generated.*;
 
 public abstract class ExtensionMessage {
   public static JsonDeserializer<ExtensionMessage> deserializer() {

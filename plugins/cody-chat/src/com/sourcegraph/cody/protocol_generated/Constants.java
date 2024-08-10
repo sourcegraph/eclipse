@@ -53,7 +53,7 @@ public final class Constants {
   public static final String isChatErrorGuard = "isChatErrorGuard";
   public static final String local = "local";
   public static final String method = "method";
-  public static final String native = "native";
+  public static final String native_ = "native";
   public static final String none = "none";
   public static final String notification = "notification";
   public static final String object_encoded = "object-encoded";
