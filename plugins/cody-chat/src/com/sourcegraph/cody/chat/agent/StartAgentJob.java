@@ -154,7 +154,6 @@ public class StartAgentJob extends Job {
         ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
     return Paths.get(dirs.dataDir);
   }
-
   private void copyResourcePath(String path, Path target) throws IOException {
     try (InputStream in = getClass().getResourceAsStream(path)) {
       if (in == null) {
@@ -164,6 +163,7 @@ public class StartAgentJob extends Job {
                     + "run `./scripts/build-agent.sh` and try again.",
                 path));
       }
+      Files.createDirectories(target.getParent());
       Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
     }
   }
