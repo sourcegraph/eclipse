@@ -33,12 +33,15 @@ public abstract class ContextItem {
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
     // uri, history
-    public Integer size;
+    public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
+    public String isTooLargeReason;
     public String provider;
     public String icon;
+    public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: file
+    public String remoteRepositoryName;
 
     public enum TypeEnum {
       @com.google.gson.annotations.SerializedName("file")
@@ -57,11 +60,13 @@ public abstract class ContextItem {
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
     // uri, history
-    public Integer size;
+    public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
+    public String isTooLargeReason;
     public String provider;
     public String icon;
+    public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: repository
     public String repoID;
 
@@ -82,11 +87,13 @@ public abstract class ContextItem {
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
     // uri, history
-    public Integer size;
+    public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
+    public String isTooLargeReason;
     public String provider;
     public String icon;
+    public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: tree
     public Boolean isWorkspaceRoot;
     public String name;
@@ -108,14 +115,17 @@ public abstract class ContextItem {
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
     // uri, history
-    public Integer size;
+    public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
+    public String isTooLargeReason;
     public String provider;
     public String icon;
+    public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: symbol
     public String symbolName;
     public SymbolKind kind; // Oneof: class, function, method
+    public String remoteRepositoryName;
 
     public enum TypeEnum {
       @com.google.gson.annotations.SerializedName("symbol")
@@ -134,11 +144,13 @@ public abstract class ContextItem {
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
     // uri, history
-    public Integer size;
+    public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
+    public String isTooLargeReason;
     public String provider;
     public String icon;
+    public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: openctx
     public String providerUri;
     public MentionParams mention;
