@@ -141,10 +141,10 @@ public class StartAgentJob extends Job {
       return Paths.get(userProvidedAgentScript);
     }
     Path dataDir = getDataDirectory();
-    String assets = CodyResources.loadResourceString("/resources/cody-agent/assets.txt");
+    String assets = CodyResources.loadAgentResourceString("assets.txt");
     Files.createDirectories(dataDir);
     for (String asset : assets.split("\n")) {
-      copyResourcePath("/resources/cody-agent/" + asset, dataDir.resolve(asset));
+      copyResourcePath(CodyResources.resolveAgentPath(asset), dataDir.resolve(asset));
     }
     return dataDir.resolve("index.js");
   }
@@ -155,8 +155,8 @@ public class StartAgentJob extends Job {
     return Paths.get(dirs.dataDir);
   }
 
-  private void copyResourcePath(String path, Path target) throws IOException {
-    try (InputStream in = getClass().getResourceAsStream(path)) {
+  private void copyResourcePath(Path path, Path target) throws IOException {
+    try (InputStream in = getClass().getResourceAsStream(path.toString())) {
       if (in == null) {
         throw new IllegalStateException(
             String.format(
@@ -209,7 +209,7 @@ public class StartAgentJob extends Job {
       String nodeExecutableName = "node-win-x64.exe";
       Path path = getDataDirectory().resolve(nodeExecutableName);
       if (!Files.isRegularFile(path)) {
-        copyResourcePath("/resources/node-binaries/" + nodeExecutableName, path);
+        copyResourcePath(CodyResources.resolveNodeBinaryPath(nodeExecutableName), path);
       }
       return path;
     }
