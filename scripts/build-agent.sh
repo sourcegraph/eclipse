@@ -4,7 +4,7 @@ set -eux
 # sibling directory.
 pushd ../cody
 pnpm dlx pnpm@8.6.7 install
-pnpm dlx pnpm@8.6.7 -C agent build:agent
+pnpm dlx pnpm@8.6.7 -C agent build
 popd
 mkdir -p plugins/cody-chat/resources/cody-agent
 cp ../cody/agent/dist/index.js plugins/cody-chat/resources/cody-agent

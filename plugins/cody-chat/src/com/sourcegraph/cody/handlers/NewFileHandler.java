@@ -1,6 +1,6 @@
 package com.sourcegraph.cody.handlers;
 
-import com.sourcegraph.cody.protocol_generated.WebviewMessage;
+import com.sourcegraph.cody.webview_protocol.WebviewMessage;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.eclipse.core.resources.ResourcesPlugin;

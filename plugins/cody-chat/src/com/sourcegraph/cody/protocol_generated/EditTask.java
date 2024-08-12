@@ -7,4 +7,6 @@ public final class EditTask {
   public CodyError error;
   public Range selectionRange;
   public String instruction;
+  public String model;
+  public String originalText;
 }
