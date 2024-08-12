@@ -4,4 +4,3 @@ public final class Webview_SetOptionsParams {
   public String handle;
   public DefiniteWebviewOptions options;
 }
-

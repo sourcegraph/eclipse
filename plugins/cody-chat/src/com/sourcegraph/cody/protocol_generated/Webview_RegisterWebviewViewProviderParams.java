@@ -4,4 +4,3 @@ public final class Webview_RegisterWebviewViewProviderParams {
   public String viewId;
   public Boolean retainContextWhenHidden;
 }
-

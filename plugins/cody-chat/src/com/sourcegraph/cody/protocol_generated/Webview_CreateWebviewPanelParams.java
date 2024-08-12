@@ -7,4 +7,3 @@ public final class Webview_CreateWebviewPanelParams {
   public ShowOptionsParams showOptions;
   public WebviewCreateWebviewPanelOptions options;
 }
-

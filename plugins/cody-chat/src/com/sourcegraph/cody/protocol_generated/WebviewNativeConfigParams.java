@@ -4,4 +4,3 @@ public final class WebviewNativeConfigParams {
   public String cspSource;
   public String webviewBundleServingPrefix;
 }
-

@@ -4,4 +4,3 @@ public final class Webview_SetTitleParams {
   public String handle;
   public String title;
 }
-

@@ -4,4 +4,3 @@ public final class Webview_ResolveWebviewViewParams {
   public String viewId;
   public String webviewHandle;
 }
-

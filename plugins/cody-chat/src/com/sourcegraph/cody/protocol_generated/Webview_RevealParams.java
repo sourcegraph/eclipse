@@ -5,4 +5,3 @@ public final class Webview_RevealParams {
   public Long viewColumn;
   public Boolean preserveFocus;
 }
-

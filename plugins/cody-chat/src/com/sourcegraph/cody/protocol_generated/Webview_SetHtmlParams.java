@@ -4,4 +4,3 @@ public final class Webview_SetHtmlParams {
   public String handle;
   public String html;
 }
-

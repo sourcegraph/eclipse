@@ -9,4 +9,3 @@ public final class DefiniteWebviewOptions {
   public Boolean enableFindWidget;
   public Boolean retainContextWhenHidden;
 }
-

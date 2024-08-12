@@ -5,4 +5,3 @@ public final class ClientSideConfig {
   public String apiEndpoint;
   public OpenAICompatible openAICompatible;
 }
-

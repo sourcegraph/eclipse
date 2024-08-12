@@ -4,4 +4,3 @@ public final class PortMappingParams {
   public Long webviewPort;
   public Long extensionHostPort;
 }
-

@@ -4,4 +4,3 @@ public final class ShowOptionsParams {
   public Boolean preserveFocus;
   public Long viewColumn;
 }
-

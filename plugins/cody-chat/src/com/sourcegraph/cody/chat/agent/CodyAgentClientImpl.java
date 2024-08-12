@@ -19,7 +19,8 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(UntitledTextDocument params) {
+  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params) {
 
     return null;
   }
@@ -76,57 +77,58 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   public Consumer<String> extensionMessageConsumer;
 
-@Override
-public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {
-	// TODO Auto-generated method stub
-	return null;
-}
+  @Override
+  public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-@Override
-public void webview_registerWebviewViewProvider(Webview_RegisterWebviewViewProviderParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  @Override
+  public void webview_registerWebviewViewProvider(
+      Webview_RegisterWebviewViewProviderParams params) {
+    // TODO Auto-generated method stub
 
-@Override
-public void webview_createWebviewPanel(Webview_CreateWebviewPanelParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  }
 
-@Override
-public void webview_dispose(Webview_DisposeParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  @Override
+  public void webview_createWebviewPanel(Webview_CreateWebviewPanelParams params) {
+    // TODO Auto-generated method stub
 
-@Override
-public void webview_reveal(Webview_RevealParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  }
 
-@Override
-public void webview_setTitle(Webview_SetTitleParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  @Override
+  public void webview_dispose(Webview_DisposeParams params) {
+    // TODO Auto-generated method stub
 
-@Override
-public void webview_setIconPath(Webview_SetIconPathParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  }
 
-@Override
-public void webview_setOptions(Webview_SetOptionsParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  @Override
+  public void webview_reveal(Webview_RevealParams params) {
+    // TODO Auto-generated method stub
 
-@Override
-public void webview_setHtml(Webview_SetHtmlParams params) {
-	// TODO Auto-generated method stub
-	
-}
+  }
+
+  @Override
+  public void webview_setTitle(Webview_SetTitleParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setIconPath(Webview_SetIconPathParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setOptions(Webview_SetOptionsParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setHtml(Webview_SetHtmlParams params) {
+    // TODO Auto-generated method stub
+
+  }
 }

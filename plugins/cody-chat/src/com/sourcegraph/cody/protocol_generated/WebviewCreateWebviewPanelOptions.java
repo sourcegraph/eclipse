@@ -9,4 +9,3 @@ public final class WebviewCreateWebviewPanelOptions {
   public Boolean enableFindWidget;
   public Boolean retainContextWhenHidden;
 }
-

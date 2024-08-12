@@ -4,4 +4,3 @@ public final class Webview_SetIconPathParams {
   public String handle;
   public String iconPathUri;
 }
-
