@@ -128,6 +128,7 @@ public class StartAgentJob extends Job {
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
+    capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
