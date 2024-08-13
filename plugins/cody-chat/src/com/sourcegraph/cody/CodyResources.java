@@ -1,5 +1,6 @@
 package com.sourcegraph.cody;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -7,9 +8,9 @@ import java.nio.file.Paths;
 
 public class CodyResources {
 
-  private static final Path WEBVIEW_PATH = Paths.get("/resources/cody-webviews");
-  private static final Path AGENT_PATH = Paths.get("/resources/cody-agent");
-  private static final Path NODE_BINARIES_PATH = Paths.get("/resources/node-binaries");
+  private static final ResourcePath WEBVIEW_PATH = new ResourcePath(Paths.get("/resources/cody-webviews"));
+  private static final ResourcePath AGENT_PATH = new ResourcePath(Paths.get("/resources/cody-agent"));
+  private static final ResourcePath NODE_BINARIES_PATH = new ResourcePath(Paths.get("/resources/node-binaries"));
 
   private static byte[] loadWebviewIndexBytes() {
     String html = loadResourceString(WEBVIEW_PATH.resolve("index.html").toString());
@@ -71,11 +72,30 @@ public class CodyResources {
       return loadResourceString(AGENT_PATH.resolve(path).toString());
   }
 
-  public static Path resolveAgentPath(String path) {
+  public static ResourcePath resolveAgentPath(String path) {
       return AGENT_PATH.resolve(path);
   }
 
-  public static Path resolveNodeBinaryPath(String path) {
+  public static ResourcePath resolveNodeBinaryPath(String path) {
     return NODE_BINARIES_PATH.resolve(path);
+  }
+
+  // java.nio.file.Path always uses the system separator, but java resources
+  // always use / as the separator. This wrapper class likewise will always use /
+  public static class ResourcePath {
+    private final Path path;
+
+
+    public ResourcePath(Path path) {
+      this.path = path;
+    }
+
+  public ResourcePath resolve(String path) {
+      return new ResourcePath(this.path.resolve(path));
+  }
+
+    public String toString() {
+      return path.toString().replace(File.separator, "/");
+    }
   }
 }

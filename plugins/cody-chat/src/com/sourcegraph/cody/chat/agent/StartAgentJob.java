@@ -155,7 +155,7 @@ public class StartAgentJob extends Job {
     return Paths.get(dirs.dataDir);
   }
 
-  private void copyResourcePath(Path path, Path target) throws IOException {
+  private void copyResourcePath(CodyResources.ResourcePath path, Path target) throws IOException {
     try (InputStream in = getClass().getResourceAsStream(path.toString())) {
       if (in == null) {
         throw new IllegalStateException(
