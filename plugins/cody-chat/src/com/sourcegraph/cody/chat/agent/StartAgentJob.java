@@ -2,6 +2,7 @@ package com.sourcegraph.cody.chat.agent;
 
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
@@ -23,20 +24,20 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
+import org.eclipse.lsp4j.jsonrpc.MessageConsumer;
 
 public class StartAgentJob extends Job {
   private final CodyManager manager;
   private final CompletableFuture<CodyAgent> agent;
   private final CompletableFuture<Integer> webserverPort;
 
-  private final ILog log = Platform.getLog(getClass());
+  private final CodyLogger log = new CodyLogger(getClass());
 
   public StartAgentJob(
       CodyManager manager,
@@ -95,6 +96,7 @@ public class StartAgentJob extends Job {
     Launcher<CodyAgentServer> launcher =
         new Launcher.Builder<CodyAgentServer>()
             .setRemoteInterface(CodyAgentServer.class)
+            .wrapMessages(this::logMessages)
             .traceMessages(traceWriter())
             .setExecutorService(manager.executorService)
             .setInput(process.getInputStream())
@@ -110,6 +112,13 @@ public class StartAgentJob extends Job {
     var instance = new CodyAgent(listening, server, port, client, process, manager);
     instance.postCreate();
     return instance;
+  }
+
+  private MessageConsumer logMessages(MessageConsumer consumer) {
+    return message -> {
+      log.sent(message.toString());
+      consumer.consume(message);
+    };
   }
 
   private void initialize(CodyAgentServer server, Path workspaceRoot)

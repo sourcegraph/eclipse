@@ -1,11 +1,10 @@
 package com.sourcegraph.cody.workspace;
 
 import com.sourcegraph.cody.WrappedRuntimeException;
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.Position;
 import com.sourcegraph.cody.protocol_generated.Range;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -19,7 +18,7 @@ public final class EditorState {
   public final ITextEditor editor;
   @Nullable private IDocument document = null;
 
-  private static ILog log = Platform.getLog(EditorState.class);
+  private static CodyLogger log = new CodyLogger(EditorState.class);
 
   private EditorState(IFile file, String uri, ITextEditor editor) {
     this.file = file;

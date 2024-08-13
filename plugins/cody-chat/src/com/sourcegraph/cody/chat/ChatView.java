@@ -8,6 +8,7 @@ import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.chat.agent.CodyAgent;
 import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.handlers.MessageHandlers;
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewMessage;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
@@ -18,8 +19,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -52,7 +51,7 @@ public class ChatView extends ViewPart {
 
   @Inject private CodyManager manager;
 
-  private final ILog log = Platform.getLog(getClass());
+  private final CodyLogger log = new CodyLogger(getClass());
 
   private Browser browserField;
   private volatile String chatId = "";
@@ -128,6 +127,7 @@ public class ChatView extends ViewPart {
     display.asyncExec(
         () -> {
           String stringifiedMessage = gson.toJson(message);
+          log.sent(stringifiedMessage);
           browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
         });
   }
@@ -203,7 +203,9 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_interceptMessage") {
       @Override
       public Object function(Object[] arguments) {
+        log.received(arguments[0].toString() + " (Intercepted)");
         if (chatId.isEmpty()) {
+          log.warn("No chat ID");
           return null;
         }
         display.asyncExec(
@@ -222,7 +224,9 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
+        log.received(arguments[0].toString());
         if (chatId.isEmpty()) {
+          log.warn("No chat ID");
           return null;
         }
         display.asyncExec(
@@ -238,10 +242,10 @@ public class ChatView extends ViewPart {
       }
     };
 
-    new BrowserFunction(browser, "eclipse_log") {
+    new BrowserFunction(browser, "eclipse_logError") {
       @Override
       public Object function(Object[] arguments) {
-        log.info("SERVER - eclipse_log: " + arguments[0]);
+        log.error(arguments[0].toString());
         return null;
       }
     };

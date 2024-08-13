@@ -25,6 +25,16 @@
             inject="true"
             name="Cody Settings">
       </view>
+      <view
+            allowMultiple="false"
+            category="cody"
+            class="com.sourcegraph.cody.logging.LogView"
+            icon="icons/sample.png"
+            id="com.sourcegraph.cody.logging.LogView"
+            inject="true"
+            name="Cody Log"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
