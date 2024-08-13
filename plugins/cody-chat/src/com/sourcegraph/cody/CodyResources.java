@@ -62,9 +62,7 @@ public class CodyResources {
   }
 
   public static byte[] loadWebviewBytes(String path) {
-    if (path.isEmpty() || path.equals("/") || path.endsWith("index.html")) {
-        return loadWebviewIndexBytes();
-    }
+
     return loadResourceBytes(WEBVIEW_PATH.resolve(path).toString());
   }
 
