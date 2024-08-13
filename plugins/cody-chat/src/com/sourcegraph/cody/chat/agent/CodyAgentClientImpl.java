@@ -38,7 +38,10 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+    // TODO: replace this with proper logging
+    System.out.println(params.channel + ": " + params.message);
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
