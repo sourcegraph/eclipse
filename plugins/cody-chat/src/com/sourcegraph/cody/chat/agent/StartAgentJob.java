@@ -2,6 +2,7 @@ package com.sourcegraph.cody.chat.agent;
 
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.ResourcePath;
 import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
@@ -155,7 +156,7 @@ public class StartAgentJob extends Job {
     return Paths.get(dirs.dataDir);
   }
 
-  private void copyResourcePath(CodyResources.ResourcePath path, Path target) throws IOException {
+  private void copyResourcePath(ResourcePath path, Path target) throws IOException {
     try (InputStream in = getClass().getResourceAsStream(path.toString())) {
       if (in == null) {
         throw new IllegalStateException(

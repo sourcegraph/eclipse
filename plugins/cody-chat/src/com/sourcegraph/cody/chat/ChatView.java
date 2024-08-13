@@ -119,7 +119,7 @@ public class ChatView extends ViewPart {
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
     this.browserField = browser;
-    restartWebviewPrototocol(browser);
+    restartWebviewProtocol(browser);
     addStartNewChatAction();
     onStartNewChat(browser);
   }
@@ -132,7 +132,7 @@ public class ChatView extends ViewPart {
         });
   }
 
-  private void restartWebviewPrototocol(Browser browser) {
+  private void restartWebviewProtocol(Browser browser) {
     pendingExtensionMessages.clear();
     webviewInitialized = new CompletableFuture<>();
     webviewInitialized.thenRun(() -> flushPendingMessages(browser));

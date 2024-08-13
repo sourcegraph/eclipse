@@ -1,45 +1,41 @@
 package com.sourcegraph.cody;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CodyResources {
 
-  private static final ResourcePath WEBVIEW_PATH = new ResourcePath(Paths.get("/resources/cody-webviews"));
-  private static final ResourcePath AGENT_PATH = new ResourcePath(Paths.get("/resources/cody-agent"));
-  private static final ResourcePath NODE_BINARIES_PATH = new ResourcePath(Paths.get("/resources/node-binaries"));
+  private static final ResourcePath WEBVIEW_PATH = ResourcePath.of("/resources/cody-webviews");
+  private static final ResourcePath AGENT_PATH = ResourcePath.of("/resources/cody-agent");
+  private static final ResourcePath NODE_BINARIES_PATH =
+      ResourcePath.of("/resources/node-binaries");
 
   private static byte[] loadWebviewIndexBytes() {
     String html = loadResourceString(WEBVIEW_PATH.resolve("index.html").toString());
     var start =
-            indexOrOrCrash(
-                    html,
-                    "<!-- This content security policy also implicitly disables inline scripts and styles."
-                            + " -->");
+        indexOrOrCrash(
+            html,
+            "<!-- This content security policy also implicitly disables inline scripts and styles."
+                + " -->");
     var endMarker = "<!-- DO NOT REMOVE: THIS FILE IS THE ENTRY FILE FOR CODY WEBVIEW -->";
     var end = indexOrOrCrash(html, endMarker);
     html = html.substring(0, start) + html.substring(end + endMarker.length() + 1);
-    return html
-        .replace("'self'", "'self' https://*.sourcegraphstatic.com")
+    return html.replace("'self'", "'self' https://*.sourcegraphstatic.com")
         .replace(
             "<head>",
             String.format(
                 "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
-            .getBytes(StandardCharsets.UTF_8);
+        .getBytes(StandardCharsets.UTF_8);
   }
 
   private static int indexOrOrCrash(String string, String substring) {
     var index = string.indexOf(substring);
     if (index < 0) {
       throw new IllegalArgumentException(
-              String.format("substring '%s' does not exist in string '%s'", substring, string));
+          String.format("substring '%s' does not exist in string '%s'", substring, string));
     }
     return index;
   }
-
 
   private static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
@@ -63,39 +59,20 @@ public class CodyResources {
 
   public static byte[] loadWebviewBytes(String path) {
     if (path.isEmpty() || path.equals("/") || path.endsWith("index.html")) {
-        return loadWebviewIndexBytes();
+      return loadWebviewIndexBytes();
     }
     return loadResourceBytes(WEBVIEW_PATH.resolve(path).toString());
   }
 
   public static String loadAgentResourceString(String path) {
-      return loadResourceString(AGENT_PATH.resolve(path).toString());
+    return loadResourceString(AGENT_PATH.resolve(path).toString());
   }
 
   public static ResourcePath resolveAgentPath(String path) {
-      return AGENT_PATH.resolve(path);
+    return AGENT_PATH.resolve(path);
   }
 
   public static ResourcePath resolveNodeBinaryPath(String path) {
     return NODE_BINARIES_PATH.resolve(path);
-  }
-
-  // java.nio.file.Path always uses the system separator, but java resources
-  // always use / as the separator. This wrapper class likewise will always use /
-  public static class ResourcePath {
-    private final Path path;
-
-
-    public ResourcePath(Path path) {
-      this.path = path;
-    }
-
-  public ResourcePath resolve(String path) {
-      return new ResourcePath(this.path.resolve(path));
-  }
-
-    public String toString() {
-      return path.toString().replace(File.separator, "/");
-    }
   }
 }
