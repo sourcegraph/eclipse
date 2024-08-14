@@ -12,7 +12,7 @@ public class CodyResources {
   public static String loadCodyIndex() {
     String content = loadResourceString("/resources/cody-webviews/index.html");
     return content
-        .replace("{cspSource}", "'self' https://*.sourcegraphstatic.com")
+        .replace("'self'", "'self' https://*.sourcegraphstatic.com")
         .replace(
             "<head>",
             String.format(

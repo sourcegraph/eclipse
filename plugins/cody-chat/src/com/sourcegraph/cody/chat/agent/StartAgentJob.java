@@ -6,6 +6,8 @@ import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
+import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
+
 import dev.dirs.ProjectDirectories;
 import java.io.IOException;
 import java.io.InputStream;
@@ -128,6 +130,11 @@ public class StartAgentJob extends Job {
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
+    capabilities.webview = ClientCapabilities.WebviewEnum.Native;
+    WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
+    webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
+    webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
+    capabilities.webviewNativeConfig = webviewConfig;
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
