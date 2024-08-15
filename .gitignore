@@ -9,6 +9,7 @@
 plugins/cody-chat/resources/node-binaries/
 plugins/cody-chat/resources/cody-agent/
 plugins/cody-chat/resources/cody-webviews/
+plugins/cody-chat/resources/webviews/
 build.scala
 .bsp/
 .scala-build/
