@@ -48,55 +48,16 @@ public class WebviewServer implements Disposable {
               throws Exception {
             var path = request.getHttpURI().getPath();
             if (path.isEmpty() || path.equals("/")) {
-              path = "/index.html";
+              path = "index.html";
             }
-            try (var resource =
-                this.getClass().getResourceAsStream("/resources/cody-webviews" + path)) {
-              if (resource != null) {
-                String extension = getFileExtension(path);
-                String mimeType = MIME_TYPES.getOrDefault(extension, "application/octet-stream");
-                response.getHeaders().add("Content-Type", mimeType);
-                var bytes = resource.readAllBytes();
-                if (path.endsWith("/index.html")) {
-                  bytes = WebviewServer.postProcessIndexHtml(bytes);
-                }
-                response.write(true, ByteBuffer.wrap(bytes), callback);
-                response.setStatus(200);
-                return true;
-              }
-            }
-            return false;
-          }
+            var resource = CodyResources.loadWebviewBytes(path);
+            String extension = getFileExtension(path);
+            String mimeType = MIME_TYPES.getOrDefault(extension, "application/octet-stream");
+            response.getHeaders().add("Content-Type", mimeType);
+            response.write(true, ByteBuffer.wrap(resource), callback);
+            response.setStatus(200);
+            return true;          }
         });
-  }
-
-  private static int indexOrOrCrash(String string, String substring) {
-    var index = string.indexOf(substring);
-    if (index < 0) {
-      throw new IllegalArgumentException(
-          String.format("substring '%s' does not exist in string '%s'", substring, string));
-    }
-    return index;
-  }
-
-  private static byte[] postProcessIndexHtml(byte[] bytes) {
-    var html = new String(bytes, StandardCharsets.UTF_8);
-    var start =
-        WebviewServer.indexOrOrCrash(
-            html,
-            "<!-- This content security policy also implicitly disables inline scripts and styles."
-                + " -->");
-    var endMarker = "<!-- DO NOT REMOVE: THIS FILE IS THE ENTRY FILE FOR CODY WEBVIEW -->";
-    var end = WebviewServer.indexOrOrCrash(html, endMarker);
-    html = html.substring(0, start) + html.substring(end + endMarker.length() + 1);
-    html = html.replace("{cspSource}", "'self' https://*.sourcegraphstatic.com");
-    html =
-        html.replace(
-            "<head>",
-            String.format(
-                "<head><script>%s</script><style>%s</style>",
-                CodyResources.loadInjectedJS(), CodyResources.loadInjectedCSS()));
-    return html.getBytes(StandardCharsets.UTF_8);
   }
 
   private String getFileExtension(String path) {

@@ -72,7 +72,10 @@ public class StartAgentJob extends Job {
     Path workspaceRoot = getWorkspaceRoot();
     var dataDir = getDataDirectory();
 
-    // Copy all needed resources to data directory
+    // Copy all necessary resources to data directory. By default this will be
+    // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows. This shared
+    // directory is known to the cody agent and the webview, and it will try
+    // to pull native assets from there
     CodyResources.copyAssetsTo(
         new CodyResources.DestinationsBuilder()
             .withAgent(dataDir)

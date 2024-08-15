@@ -12,17 +12,26 @@ import org.eclipse.core.runtime.Platform;
 public class CodyResources {
 
   private static final ResourcePath WEBVIEW_ASSETS =
-      ResourcePath.of("/resources/webviews/assets.txt");
+      ResourcePath.of("/resources/webviews");
   private static final ResourcePath AGENT_ASSETS =
-      ResourcePath.of("/resources/cody-agent/assets.txt");
+      ResourcePath.of("/resources/cody-agent");
   private static final ResourcePath NODE_BINARIES_PATH =
       ResourcePath.of("/resources/node-binaries");
 
-  public static String loadInjectedJS() {
+  private static byte[] loadWebviewIndexBytes() {
+    String html = loadResourceString(WEBVIEW_ASSETS.resolve("index.html").toString());
+    return html.replace(
+                    "<head>",
+                    String.format(
+                            "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
+            .getBytes(StandardCharsets.UTF_8);
+  }
+
+  private static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
   }
 
-  public static String loadInjectedCSS() {
+  private static String loadInjectedCSS() {
     return loadResourceString("/resources/injected-styles.css");
   }
 
@@ -40,6 +49,17 @@ public class CodyResources {
     } catch (IOException e) {
       throw new MessageOnlyException("failed to load resource " + path, e);
     }
+  }
+
+  public static byte[] loadWebviewBytes(String path) {
+    if (path.isEmpty() || path.equals("/") || path.endsWith("index.html")) {
+      return loadWebviewIndexBytes();
+    }
+    return loadResourceBytes(WEBVIEW_ASSETS.resolve(path).toString());
+  }
+
+  public static ResourcePath resolveNodeBinaryPath(String path) {
+    return NODE_BINARIES_PATH.resolve(path);
   }
 
   public static Path getNodeJSLocation() {
