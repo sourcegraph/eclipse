@@ -3,7 +3,6 @@ package com.sourcegraph.cody;
 import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.chat.agent.Disposable;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jetty.server.Handler;
@@ -56,7 +55,8 @@ public class WebviewServer implements Disposable {
             response.getHeaders().add("Content-Type", mimeType);
             response.write(true, ByteBuffer.wrap(resource), callback);
             response.setStatus(200);
-            return true;          }
+            return true;
+          }
         });
   }
 

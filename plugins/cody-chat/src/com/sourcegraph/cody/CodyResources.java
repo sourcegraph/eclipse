@@ -11,20 +11,18 @@ import org.eclipse.core.runtime.Platform;
 
 public class CodyResources {
 
-  private static final ResourcePath WEBVIEW_ASSETS =
-      ResourcePath.of("/resources/webviews");
-  private static final ResourcePath AGENT_ASSETS =
-      ResourcePath.of("/resources/cody-agent");
+  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/resources/webviews");
+  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/resources/cody-agent");
   private static final ResourcePath NODE_BINARIES_PATH =
       ResourcePath.of("/resources/node-binaries");
 
   private static byte[] loadWebviewIndexBytes() {
     String html = loadResourceString(WEBVIEW_ASSETS.resolve("index.html").toString());
     return html.replace(
-                    "<head>",
-                    String.format(
-                            "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
-            .getBytes(StandardCharsets.UTF_8);
+            "<head>",
+            String.format(
+                "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
+        .getBytes(StandardCharsets.UTF_8);
   }
 
   private static String loadInjectedJS() {
