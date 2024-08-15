@@ -116,6 +116,7 @@ public class StartAgentJob extends Job {
 
   private void initialize(CodyAgentServer server, Path workspaceRoot)
       throws InterruptedException, ExecutionException, TimeoutException {
+    System.out.println("Resources are: " + ResourceLister.listResourceFiles("/"));
     ClientInfo clientInfo = new ClientInfo();
     // See
     // https://sourcegraph.com/github.com/sourcegraph/cody/-/blob/agent/src/cli/codyCliClientName.ts
