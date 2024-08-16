@@ -142,6 +142,7 @@ public class StartAgentJob extends Job {
     WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
+    webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
     capabilities.webviewNativeConfig = webviewConfig;
     clientInfo.capabilities = capabilities;
 

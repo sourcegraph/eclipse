@@ -87,4 +87,7 @@ public interface CodyAgentClient {
 
   @JsonNotification("webview/setHtml")
   void webview_setHtml(Webview_SetHtmlParams params);
+
+  @JsonNotification("window/didChangeContext")
+  void window_didChangeContext(Window_DidChangeContextParams params);
 }
