@@ -131,4 +131,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
     // TODO Auto-generated method stub
 
   }
+
+  @Override
+  public void window_didChangeContext(Window_DidChangeContextParams params) {}
 }

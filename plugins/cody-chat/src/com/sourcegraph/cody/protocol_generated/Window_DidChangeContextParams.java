@@ -4,4 +4,3 @@ public final class Window_DidChangeContextParams {
   public String key;
   public String value;
 }
-
