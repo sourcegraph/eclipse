@@ -16,15 +16,33 @@ public class CodyResources {
   private static final ResourcePath NODE_BINARIES_PATH =
       ResourcePath.of("/resources/node-binaries");
 
+
   private static byte[] loadWebviewIndexBytes() {
     String html = loadResourceString(WEBVIEW_ASSETS.resolve("index.html").toString());
-    return html.replace(
-            "<head>",
-            String.format(
-                "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
-        .getBytes(StandardCharsets.UTF_8);
+    var start =
+            indexOrOrCrash(
+                    html,
+                    "<!-- This content security policy also implicitly disables inline scripts and styles."
+                            + " -->");
+    var endMarker = "<!-- DO NOT REMOVE: THIS FILE IS THE ENTRY FILE FOR CODY WEBVIEW -->";
+    var end = indexOrOrCrash(html, endMarker);
+    html = html.substring(0, start) + html.substring(end + endMarker.length() + 1);
+    return html.replace("'self'", "'self' https://*.sourcegraphstatic.com")
+            .replace(
+                    "<head>",
+                    String.format(
+                            "<head><script>%s</script><style>%s</style>", loadInjectedJS(), loadInjectedCSS()))
+            .getBytes(StandardCharsets.UTF_8);
   }
 
+  private static int indexOrOrCrash(String string, String substring) {
+    var index = string.indexOf(substring);
+    if (index < 0) {
+      throw new IllegalArgumentException(
+              String.format("substring '%s' does not exist in string '%s'", substring, string));
+    }
+    return index;
+  }
   private static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
   }
