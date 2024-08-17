@@ -70,18 +70,6 @@ public class StartAgentJob extends Job {
           TimeoutException {
 
     Path workspaceRoot = getWorkspaceRoot();
-    var dataDir = getDataDirectory();
-
-    // Copy all necessary resources to data directory. By default this will be
-    // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows. This shared
-    // directory is known to the cody agent and the webview, and it will try
-    // to pull native assets from there
-    CodyResources.copyAssetsTo(
-        new CodyResources.DestinationsBuilder()
-            .withAgent(dataDir)
-            .withWebviews(dataDir.resolve("webviews"))
-            .withNode(dataDir)
-            .build());
 
     ArrayList<String> arguments = new ArrayList<>();
     arguments.add(CodyResources.getNodeJSLocation().toString());
@@ -143,6 +131,9 @@ public class StartAgentJob extends Job {
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
+    webviewConfig.rootDir = workspaceRoot.resolve("resources").toUri().toString();
+    webviewConfig.injectScript = CodyResources.loadInjectedJS();
+    webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
     clientInfo.capabilities = capabilities;
 
@@ -156,7 +147,7 @@ public class StartAgentJob extends Job {
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    return getDataDirectory().resolve("index.js");
+    return CodyResources.getAgentEntry();
   }
 
   private Path getDataDirectory() {

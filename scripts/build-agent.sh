@@ -6,10 +6,11 @@ pushd ../cody
 pnpm dlx pnpm@8.6.7 install
 pnpm dlx pnpm@8.6.7 -C agent build:agent
 popd
-mkdir -p plugins/cody-chat/resources/cody-agent
-cp ../cody/agent/dist/index.js plugins/cody-chat/resources/cody-agent
-cp ../cody/agent/dist/*.wasm plugins/cody-chat/resources/cody-agent
-cp ../cody/agent/dist/win-ca-roots.exe plugins/cody-chat/resources/cody-agent
-pushd plugins/cody-chat/resources/cody-agent
+CODY_AGENT_DIR=plugins/cody-chat/resources/dist/cody-agent
+mkdir -p $CODY_AGENT_DIR 
+cp ../cody/agent/dist/index.js $CODY_AGENT_DIR
+cp ../cody/agent/dist/*.wasm $CODY_AGENT_DIR
+cp ../cody/agent/dist/win-ca-roots.exe $CODY_AGENT_DIR
+pushd $CODY_AGENT_DIR
 find . -type f >assets.txt
 popd

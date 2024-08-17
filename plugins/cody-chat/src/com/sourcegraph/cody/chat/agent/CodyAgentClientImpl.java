@@ -38,7 +38,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+    System.out.println(params.channel + ": " + params.message);
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -128,8 +130,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_setHtml(Webview_SetHtmlParams params) {
-    // TODO Auto-generated method stub
-
+    System.out.printf("Got HTML (%s): %s\n", params.handle, params.html);
   }
 
   @Override
