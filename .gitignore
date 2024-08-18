@@ -7,9 +7,7 @@
 *.jar
 .vscode/
 plugins/cody-chat/resources/node-binaries/
-plugins/cody-chat/resources/cody-agent/
-plugins/cody-chat/resources/cody-webviews/
-plugins/cody-chat/resources/webviews/
+plugins/cody-chat/resources/dist
 build.scala
 .bsp/
 .scala-build/
