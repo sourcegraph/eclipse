@@ -51,6 +51,11 @@ public class CodyResources {
     if (path.equals("index.html") && indexHTML != null) {
       return indexHTML;
     }
+    // We can't join a path that starts with a /, because Path thinks
+    // those are absolute paths
+    if (path.startsWith("/")) {
+      path = path.substring(1);
+    }
     Path resolvedPath = destinations.webviews.resolve(path);
     return Files.readAllBytes(resolvedPath);
   }
