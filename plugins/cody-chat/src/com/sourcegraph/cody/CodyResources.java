@@ -79,6 +79,10 @@ public class CodyResources {
     return destinations.agent.resolve("index.js");
   }
 
+  public Path getWebviewPath() {
+    return destinations.webviews;
+  }
+
   public static void setIndexHTML(byte[] indexHTML) {
     CodyResources.indexHTML = indexHTML;
   }

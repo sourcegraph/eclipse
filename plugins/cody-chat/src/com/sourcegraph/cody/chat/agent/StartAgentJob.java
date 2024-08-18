@@ -73,18 +73,18 @@ public class StartAgentJob extends Job {
     var dataDir = getDataDirectory();
     // Copy all necessary resources to data directory. By default this will be
     // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
-    manager.setResources(
+    manager.resources =
         new CodyResources(
             new CodyResources.DestinationsBuilder()
                 .withAgent(dataDir)
                 .withWebviews(dataDir.resolve("webviews"))
                 .withNode(dataDir)
-                .build()));
+                .build());
 
     ArrayList<String> arguments = new ArrayList<>();
-    arguments.add(manager.getResources().getNodeJSLocation().toString());
+    arguments.add(manager.resources.getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
-    arguments.add(agentScript(workspaceRoot).toString());
+    arguments.add(agentScript().toString());
     arguments.add("api");
     arguments.add("jsonrpc-stdio");
     ProcessBuilder processBuilder =
@@ -141,7 +141,7 @@ public class StartAgentJob extends Job {
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = workspaceRoot.resolve("resources/dist/webviews").toUri().toString();
+    webviewConfig.rootDir = manager.resources.getWebviewPath().toString();
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
@@ -157,7 +157,7 @@ public class StartAgentJob extends Job {
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    return manager.getResources().getAgentEntry();
+    return manager.resources.getAgentEntry();
   }
 
   private Path getDataDirectory() {
