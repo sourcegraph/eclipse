@@ -70,9 +70,19 @@ public class StartAgentJob extends Job {
           TimeoutException {
 
     Path workspaceRoot = getWorkspaceRoot();
+    var dataDir = getDataDirectory();
+    // Copy all necessary resources to data directory. By default this will be
+    // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
+    manager.setResources(
+        new CodyResources(
+            new CodyResources.DestinationsBuilder()
+                .withAgent(dataDir)
+                .withWebviews(dataDir.resolve("webviews"))
+                .withNode(dataDir)
+                .build()));
 
     ArrayList<String> arguments = new ArrayList<>();
-    arguments.add(CodyResources.getNodeJSLocation().toString());
+    arguments.add(manager.getResources().getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
     arguments.add(agentScript(workspaceRoot).toString());
     arguments.add("api");
@@ -142,12 +152,18 @@ public class StartAgentJob extends Job {
     server.initialized(null);
   }
 
-  private Path agentScript(Path workspaceRoot) throws IOException {
+  private Path agentScript() throws IOException {
     String userProvidedAgentScript = System.getProperty("cody.agent-script-path");
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    return workspaceRoot.resolve(CodyResources.getAgentEntry());
+    return manager.getResources().getAgentEntry();
+  }
+
+  private Path getDataDirectory() {
+    ProjectDirectories dirs =
+        ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
+    return Paths.get(dirs.dataDir);
   }
 
   private Path getWorkspaceRoot() throws URISyntaxException {

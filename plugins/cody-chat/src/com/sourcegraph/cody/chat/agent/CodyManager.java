@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +23,7 @@ public class CodyManager {
   private AtomicReference<CompletableFuture<Integer>> webserverPortHolder =
       new AtomicReference<>(null);
 
+  private CodyResources resources;
   private final ILog log = Platform.getLog(getClass());
 
   /**
@@ -78,5 +80,13 @@ public class CodyManager {
       throw new AssertionError(
           "Agent disposed before being started. This should never have happened.");
     }
+  }
+
+  public void setResources(CodyResources resources) {
+    this.resources = resources;
+  }
+
+  public CodyResources getResources() {
+    return resources;
   }
 }
