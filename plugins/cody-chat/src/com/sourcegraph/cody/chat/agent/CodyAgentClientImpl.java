@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.webview_protocol.*;
 import java.util.concurrent.CompletableFuture;
@@ -130,7 +131,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_setHtml(Webview_SetHtmlParams params) {
-    System.out.printf("Got HTML (%s): %s\n", params.handle, params.html);
+    CodyResources.setIndexHTML(params.html.getBytes());
   }
 
   @Override

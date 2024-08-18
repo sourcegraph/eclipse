@@ -74,7 +74,7 @@ public class StartAgentJob extends Job {
     ArrayList<String> arguments = new ArrayList<>();
     arguments.add(CodyResources.getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
-    arguments.add(agentScript().toString());
+    arguments.add(agentScript(workspaceRoot).toString());
     arguments.add("api");
     arguments.add("jsonrpc-stdio");
     ProcessBuilder processBuilder =
@@ -131,7 +131,7 @@ public class StartAgentJob extends Job {
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = workspaceRoot.resolve("resources").toUri().toString();
+    webviewConfig.rootDir = workspaceRoot.resolve("resources/dist/webviews").toUri().toString();
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
@@ -142,18 +142,12 @@ public class StartAgentJob extends Job {
     server.initialized(null);
   }
 
-  private Path agentScript() throws IOException {
+  private Path agentScript(Path workspaceRoot) throws IOException {
     String userProvidedAgentScript = System.getProperty("cody.agent-script-path");
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    return CodyResources.getAgentEntry();
-  }
-
-  private Path getDataDirectory() {
-    ProjectDirectories dirs =
-        ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
-    return Paths.get(dirs.dataDir);
+    return workspaceRoot.resolve(CodyResources.getAgentEntry());
   }
 
   private Path getWorkspaceRoot() throws URISyntaxException {

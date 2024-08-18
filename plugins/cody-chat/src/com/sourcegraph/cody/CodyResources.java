@@ -9,10 +9,12 @@ import org.eclipse.core.runtime.Platform;
 
 public class CodyResources {
 
-  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/resources/dist/webviews");
-  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/resources/dist/cody-agent");
+  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/dist/webviews");
+  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/dist/cody-agent");
   private static final ResourcePath NODE_BINARIES_PATH =
-      ResourcePath.of("/resources/node-binaries");
+      ResourcePath.of("/node-binaries");
+
+  private static byte[] indexHTML;
 
   public static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
@@ -20,10 +22,6 @@ public class CodyResources {
 
   public static String loadInjectedCSS() {
     return loadResourceString("/resources/injected-styles.css");
-  }
-
-  public static String loadResourceString(ResourcePath path) {
-    return loadResourceString(path.toString());
   }
 
   public static String loadResourceString(String path) {
@@ -39,12 +37,10 @@ public class CodyResources {
   }
 
   public static byte[] loadWebviewBytes(String path) {
-    System.out.println("Loading path: " + path);
+    if (path.equals("index.html") && indexHTML != null) {
+      return indexHTML;
+    }
     return loadResourceBytes(WEBVIEW_ASSETS.resolve(path).toString());
-  }
-
-  public static ResourcePath resolveNodeBinaryPath(String path) {
-    return NODE_BINARIES_PATH.resolve(path);
   }
 
   public static Path getNodeJSLocation() {
@@ -69,5 +65,9 @@ public class CodyResources {
 
   public static Path getAgentEntry() {
     return AGENT_ASSETS.resolve("index.js").toPath();
+  }
+
+  public static void setIndexHTML(byte[] indexHTML) {
+      CodyResources.indexHTML = indexHTML;
   }
 }
