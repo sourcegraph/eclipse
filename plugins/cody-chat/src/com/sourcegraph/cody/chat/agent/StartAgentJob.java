@@ -7,16 +7,13 @@ import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
-
 import dev.dirs.ProjectDirectories;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -73,10 +70,19 @@ public class StartAgentJob extends Job {
           TimeoutException {
 
     Path workspaceRoot = getWorkspaceRoot();
+    var dataDir = getDataDirectory();
+    // Copy all necessary resources to data directory. By default this will be
+    // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
+    manager.resources =
+        new CodyResources(
+            new CodyResources.DestinationsBuilder()
+                .withAgent(dataDir)
+                .withWebviews(dataDir.resolve("webviews"))
+                .withNode(dataDir)
+                .build());
 
-    Path nodeExecutable = getNodeJsLocation();
     ArrayList<String> arguments = new ArrayList<>();
-    arguments.add(nodeExecutable.toString());
+    arguments.add(manager.resources.getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
     arguments.add(agentScript().toString());
     arguments.add("api");
@@ -134,6 +140,10 @@ public class StartAgentJob extends Job {
     WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
+    webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
+    webviewConfig.rootDir = manager.resources.getWebviewPath().toString();
+    webviewConfig.injectScript = CodyResources.loadInjectedJS();
+    webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
     clientInfo.capabilities = capabilities;
 
@@ -147,32 +157,13 @@ public class StartAgentJob extends Job {
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    Path dataDir = getDataDirectory();
-    String assets = CodyResources.loadResourceString("/resources/cody-agent/assets.txt");
-    Files.createDirectories(dataDir);
-    for (String asset : assets.split("\n")) {
-      copyResourcePath("/resources/cody-agent/" + asset, dataDir.resolve(asset));
-    }
-    return dataDir.resolve("index.js");
+    return manager.resources.getAgentEntry();
   }
 
   private Path getDataDirectory() {
     ProjectDirectories dirs =
         ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
     return Paths.get(dirs.dataDir);
-  }
-
-  private void copyResourcePath(String path, Path target) throws IOException {
-    try (InputStream in = getClass().getResourceAsStream(path)) {
-      if (in == null) {
-        throw new IllegalStateException(
-            String.format(
-                "not found: %s. To fix this problem, "
-                    + "run `./scripts/build-agent.sh` and try again.",
-                path));
-      }
-      Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-    }
   }
 
   private Path getWorkspaceRoot() throws URISyntaxException {
@@ -187,43 +178,6 @@ public class StartAgentJob extends Job {
     // it's common to have multiple projects with different workspace roots. The agent server
     // doesn't support multi-root workspaces at this time.
     return Paths.get(Platform.getInstanceLocation().getURL().toURI());
-  }
-
-  /**
-   * Returns the path to a Node.js executable to run the agent.
-   *
-   * <p>We are bundling the correct version of Node.js with the agent on Windows. It is used by
-   * default. Users can provide the location through the system property code.nodejs-executable.
-   * Down the road, we may consider publishing separate plugin jars for each OS (cody-win.jar,
-   * cody-macos.jar, etc).
-   *
-   * <p>Importantly, we don't try to just shell out to "node". While this may work in some cases, we
-   * have no guarantee what Node version this gives us (and the agent requires Node >=v17).
-   */
-  private Path getNodeJsLocation() throws IOException {
-    String userProvidedNode = System.getProperty("cody.nodejs-executable");
-    if (userProvidedNode != null) {
-      Path path = Paths.get(userProvidedNode);
-      if (!Files.isExecutable(path)) {
-        throw new IllegalArgumentException(
-            "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
-      }
-
-      return path;
-    }
-    // We only support Windows at this time. The binary for Node.js is included in the plugin JAR.
-    if (Platform.getOS().equals(Platform.OS_WIN32)) {
-      String nodeExecutableName = "node-win-x64.exe";
-      Path path = getDataDirectory().resolve(nodeExecutableName);
-      if (!Files.isRegularFile(path)) {
-        copyResourcePath("/resources/node-binaries/" + nodeExecutableName, path);
-      }
-      return path;
-    }
-
-    throw new IllegalStateException(
-        "Unable to infer the location of a Node.js installation. To fix this problem, set the VM"
-            + " argument -Dcody.nodejs-executable and restart Eclipse.");
   }
 
   private void configureGson(GsonBuilder builder) {

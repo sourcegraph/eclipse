@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;
@@ -16,6 +17,7 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 public class CodyManager {
   public ExecutorService executorService = Executors.newCachedThreadPool();
   public ExtensionConfiguration config;
+  public CodyResources resources;
 
   // null when not started, pending CompletableFuture when starting, completed when started
   private AtomicReference<CompletableFuture<CodyAgent>> agentHolder = new AtomicReference<>(null);
