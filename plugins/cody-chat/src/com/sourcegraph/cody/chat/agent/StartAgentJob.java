@@ -145,6 +145,7 @@ public class StartAgentJob extends Job {
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
+    capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
