@@ -21,6 +21,7 @@ public final class Constants {
   public static final String byok = "byok";
   public static final String chat = "chat";
   public static final String class_ = "class";
+  public static final String client_managed = "client-managed";
   public static final String complete = "complete";
   public static final String create_file = "create-file";
   public static final String default_ = "default";
@@ -53,6 +54,7 @@ public final class Constants {
   public static final String isChatErrorGuard = "isChatErrorGuard";
   public static final String local = "local";
   public static final String method = "method";
+  public static final String multiple = "multiple";
   public static final String native_ = "native";
   public static final String none = "none";
   public static final String notification = "notification";
@@ -69,7 +71,10 @@ public final class Constants {
   public static final String request = "request";
   public static final String search = "search";
   public static final String selection = "selection";
+  public static final String server_managed = "server-managed";
+  public static final String single = "single";
   public static final String speed = "speed";
+  public static final String stateless = "stateless";
   public static final String streaming = "streaming";
   public static final String string_encoded = "string-encoded";
   public static final String suggestion = "suggestion";

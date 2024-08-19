@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.webview_protocol.*;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +39,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+    System.out.println(params.channel + ": " + params.message);
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -128,7 +131,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_setHtml(Webview_SetHtmlParams params) {
-    // TODO Auto-generated method stub
-
+    CodyResources.setIndexHTML(params.html.getBytes());
   }
+
+  @Override
+  public void window_didChangeContext(Window_DidChangeContextParams params) {}
 }

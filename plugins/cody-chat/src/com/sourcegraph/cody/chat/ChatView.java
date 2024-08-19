@@ -10,6 +10,7 @@ import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.handlers.MessageHandlers;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.Webview_ReceiveMessageStringEncodedParams;
+import com.sourcegraph.cody.protocol_generated.Webview_ResolveWebviewViewParams;
 import com.sourcegraph.cody.webview_protocol.WebviewMessage;
 import jakarta.inject.Inject;
 import java.util.concurrent.CompletableFuture;
@@ -119,7 +120,7 @@ public class ChatView extends ViewPart {
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
     this.browserField = browser;
-    restartWebviewPrototocol(browser);
+    restartWebviewProtocol(browser);
     addStartNewChatAction();
     onStartNewChat(browser);
   }
@@ -132,7 +133,7 @@ public class ChatView extends ViewPart {
         });
   }
 
-  private void restartWebviewPrototocol(Browser browser) {
+  private void restartWebviewProtocol(Browser browser) {
     pendingExtensionMessages.clear();
     webviewInitialized = new CompletableFuture<>();
     webviewInitialized.thenRun(() -> flushPendingMessages(browser));
@@ -153,8 +154,12 @@ public class ChatView extends ViewPart {
     manager.withAgent(
         agent -> {
           try {
-
-            chatId = agent.server.chat_new(null).get(5, TimeUnit.SECONDS);
+            // Resolve the native webview with the pre-defined view IDs.
+            chatId = "eclipse-sidebar";
+            Webview_ResolveWebviewViewParams viewParams = new Webview_ResolveWebviewViewParams();
+            viewParams.viewId = "cody.chat";
+            viewParams.webviewHandle = chatId;
+            agent.server.webview_resolveWebviewView(viewParams).get(5, TimeUnit.SECONDS);
 
           } catch (InterruptedException | ExecutionException | TimeoutException e) {
             log.error("Cannot create new chat", e);
