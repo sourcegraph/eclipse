@@ -1,6 +1,8 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.protocol_generated.*;
+import com.sourcegraph.cody.webview_protocol.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -18,7 +20,8 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<Boolean> textDocument_openUntitledDocument(UntitledTextDocument params) {
+  public CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params) {
 
     return null;
   }
@@ -36,13 +39,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<Void> webview_create(Webview_CreateParams params) {
-
-    return null;
+  public void debug_message(DebugMessage params) {
+    System.out.println(params.channel + ": " + params.message);
   }
-
-  @Override
-  public void debug_message(DebugMessage params) {}
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -65,13 +64,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void webview_postMessage(WebviewPostMessageParams params) {
-    throw new IllegalStateException(
-        "webview/postMessage got called when webview/postMessageString was expected. To fix this"
-            + " problem, make sure the webviewMessages client capability is set to 'string'.");
-  }
-
-  @Override
   public void progress_start(ProgressStartParams params) {}
 
   @Override
@@ -87,4 +79,61 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
 
   public Consumer<String> extensionMessageConsumer;
+
+  @Override
+  public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void webview_registerWebviewViewProvider(
+      Webview_RegisterWebviewViewProviderParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_createWebviewPanel(Webview_CreateWebviewPanelParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_dispose(Webview_DisposeParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_reveal(Webview_RevealParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setTitle(Webview_SetTitleParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setIconPath(Webview_SetIconPathParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setOptions(Webview_SetOptionsParams params) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void webview_setHtml(Webview_SetHtmlParams params) {
+    CodyResources.setIndexHTML(params.html.getBytes());
+  }
+
+  @Override
+  public void window_didChangeContext(Window_DidChangeContextParams params) {}
 }

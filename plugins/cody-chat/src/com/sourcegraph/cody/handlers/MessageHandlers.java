@@ -1,7 +1,7 @@
 package com.sourcegraph.cody.handlers;
 
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.WebviewMessage;
+import com.sourcegraph.cody.webview_protocol.WebviewMessage;
 import jakarta.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;

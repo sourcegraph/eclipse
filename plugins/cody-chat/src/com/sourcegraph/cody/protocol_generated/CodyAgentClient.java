@@ -16,7 +16,8 @@ public interface CodyAgentClient {
   CompletableFuture<Boolean> textDocument_edit(TextDocumentEditParams params);
 
   @JsonRequest("textDocument/openUntitledDocument")
-  CompletableFuture<Boolean> textDocument_openUntitledDocument(UntitledTextDocument params);
+  CompletableFuture<ProtocolTextDocument> textDocument_openUntitledDocument(
+      UntitledTextDocument params);
 
   @JsonRequest("textDocument/show")
   CompletableFuture<Boolean> textDocument_show(TextDocument_ShowParams params);
@@ -24,8 +25,8 @@ public interface CodyAgentClient {
   @JsonRequest("workspace/edit")
   CompletableFuture<Boolean> workspace_edit(WorkspaceEditParams params);
 
-  @JsonRequest("webview/create")
-  CompletableFuture<Void> webview_create(Webview_CreateParams params);
+  @JsonRequest("env/openExternal")
+  CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params);
 
   // =============
   // Notifications
@@ -45,9 +46,6 @@ public interface CodyAgentClient {
   @JsonNotification("ignore/didChange")
   void ignore_didChange(Void params);
 
-  @JsonNotification("webview/postMessage")
-  void webview_postMessage(WebviewPostMessageParams params);
-
   @JsonNotification("webview/postMessageStringEncoded")
   void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params);
 
@@ -65,4 +63,31 @@ public interface CodyAgentClient {
 
   @JsonNotification("remoteRepo/didChangeState")
   void remoteRepo_didChangeState(RemoteRepoFetchState params);
+
+  @JsonNotification("webview/registerWebviewViewProvider")
+  void webview_registerWebviewViewProvider(Webview_RegisterWebviewViewProviderParams params);
+
+  @JsonNotification("webview/createWebviewPanel")
+  void webview_createWebviewPanel(Webview_CreateWebviewPanelParams params);
+
+  @JsonNotification("webview/dispose")
+  void webview_dispose(Webview_DisposeParams params);
+
+  @JsonNotification("webview/reveal")
+  void webview_reveal(Webview_RevealParams params);
+
+  @JsonNotification("webview/setTitle")
+  void webview_setTitle(Webview_SetTitleParams params);
+
+  @JsonNotification("webview/setIconPath")
+  void webview_setIconPath(Webview_SetIconPathParams params);
+
+  @JsonNotification("webview/setOptions")
+  void webview_setOptions(Webview_SetOptionsParams params);
+
+  @JsonNotification("webview/setHtml")
+  void webview_setHtml(Webview_SetHtmlParams params);
+
+  @JsonNotification("window/didChangeContext")
+  void window_didChangeContext(Window_DidChangeContextParams params);
 }

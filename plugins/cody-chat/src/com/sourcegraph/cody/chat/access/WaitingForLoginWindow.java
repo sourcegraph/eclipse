@@ -31,7 +31,7 @@ public class WaitingForLoginWindow extends Window {
     composite.setLayout(new GridLayout());
 
     var label = new Label(composite, SWT.NONE);
-    label.setText("Loging in...");
+    label.setText("Logging in...");
     new ProgressBar(composite, SWT.INDETERMINATE);
 
     addCancelButton(composite);

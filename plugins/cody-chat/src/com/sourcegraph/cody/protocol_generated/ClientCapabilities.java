@@ -14,6 +14,9 @@ public final class ClientCapabilities {
   public IgnoreEnum ignore; // Oneof: none, enabled
   public CodeActionsEnum codeActions; // Oneof: none, enabled
   public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
+  public GlobalStateEnum globalState; // Oneof: stateless, server-managed, client-managed
+  public WebviewEnum webview; // Oneof: agentic, native
+  public WebviewNativeConfigParams webviewNativeConfig;
 
   public enum CompletionsEnum {
     @com.google.gson.annotations.SerializedName("none")
@@ -102,5 +105,21 @@ public final class ClientCapabilities {
     Object_encoded,
     @com.google.gson.annotations.SerializedName("string-encoded")
     String_encoded,
+  }
+
+  public enum GlobalStateEnum {
+    @com.google.gson.annotations.SerializedName("stateless")
+    Stateless,
+    @com.google.gson.annotations.SerializedName("server-managed")
+    Server_managed,
+    @com.google.gson.annotations.SerializedName("client-managed")
+    Client_managed,
+  }
+
+  public enum WebviewEnum {
+    @com.google.gson.annotations.SerializedName("agentic")
+    Agentic,
+    @com.google.gson.annotations.SerializedName("native")
+    Native,
   }
 }

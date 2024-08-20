@@ -43,8 +43,8 @@ public final class EditorState {
       var lineOffset = getDocument().getLineOffset(line);
       var character = offset - lineOffset;
       var position = new Position();
-      position.line = line;
-      position.character = character;
+      position.line = (long) line;
+      position.character = (long) character;
       return position;
     } catch (BadLocationException e) {
       throw new WrappedRuntimeException(e);

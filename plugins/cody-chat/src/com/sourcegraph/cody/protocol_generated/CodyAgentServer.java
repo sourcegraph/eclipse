@@ -21,6 +21,9 @@ public interface CodyAgentServer {
   @JsonRequest("chat/web/new")
   CompletableFuture<Chat_Web_NewResult> chat_web_new(Void params);
 
+  @JsonRequest("chat/sidebar/new")
+  CompletableFuture<Chat_Sidebar_NewResult> chat_sidebar_new(Void params);
+
   @JsonRequest("chat/delete")
   CompletableFuture<java.util.List<ChatExportResult>> chat_delete(Chat_DeleteParams params);
 
@@ -35,12 +38,6 @@ public interface CodyAgentServer {
 
   @JsonRequest("chat/remoteRepos")
   CompletableFuture<Chat_RemoteReposResult> chat_remoteRepos(Chat_RemoteReposParams params);
-
-  @JsonRequest("chat/submitMessage")
-  CompletableFuture<ExtensionMessage> chat_submitMessage(Chat_SubmitMessageParams params);
-
-  @JsonRequest("chat/editMessage")
-  CompletableFuture<ExtensionMessage> chat_editMessage(Chat_EditMessageParams params);
 
   @JsonRequest("commands/explain")
   CompletableFuture<String> commands_explain(Void params);
@@ -74,6 +71,12 @@ public interface CodyAgentServer {
 
   @JsonRequest("editTask/cancel")
   CompletableFuture<Void> editTask_cancel(EditTask_CancelParams params);
+
+  @JsonRequest("editTask/retry")
+  CompletableFuture<EditTask> editTask_retry(EditTask_RetryParams params);
+
+  @JsonRequest("editTask/getTaskDetails")
+  CompletableFuture<EditTask> editTask_getTaskDetails(EditTask_GetTaskDetailsParams params);
 
   @JsonRequest("editTask/getFoldingRanges")
   CompletableFuture<GetFoldingRangeResult> editTask_getFoldingRanges(GetFoldingRangeParams params);
@@ -126,8 +129,8 @@ public interface CodyAgentServer {
   @JsonRequest("webview/didDispose")
   CompletableFuture<Void> webview_didDispose(Webview_DidDisposeParams params);
 
-  @JsonRequest("webview/receiveMessage")
-  CompletableFuture<Void> webview_receiveMessage(Webview_ReceiveMessageParams params);
+  @JsonRequest("webview/resolveWebviewView")
+  CompletableFuture<Void> webview_resolveWebviewView(Webview_ResolveWebviewViewParams params);
 
   @JsonRequest("webview/receiveMessageStringEncoded")
   CompletableFuture<Void> webview_receiveMessageStringEncoded(
@@ -169,11 +172,18 @@ public interface CodyAgentServer {
   @JsonRequest("testing/reset")
   CompletableFuture<Void> testing_reset(Void params);
 
+  @JsonRequest("testing/autocomplete/completionEvent")
+  CompletableFuture<CompletionBookkeepingEvent> testing_autocomplete_completionEvent(
+      CompletionItemParams params);
+
   @JsonRequest("extensionConfiguration/change")
   CompletableFuture<AuthStatus> extensionConfiguration_change(ExtensionConfiguration params);
 
   @JsonRequest("extensionConfiguration/status")
   CompletableFuture<AuthStatus> extensionConfiguration_status(Void params);
+
+  @JsonRequest("extensionConfiguration/getSettingsSchema")
+  CompletableFuture<String> extensionConfiguration_getSettingsSchema(Void params);
 
   @JsonRequest("textDocument/change")
   CompletableFuture<TextDocument_ChangeResult> textDocument_change(ProtocolTextDocument params);
@@ -204,6 +214,9 @@ public interface CodyAgentServer {
 
   @JsonNotification("extensionConfiguration/didChange")
   void extensionConfiguration_didChange(ExtensionConfiguration params);
+
+  @JsonNotification("workspaceFolder/didChange")
+  void workspaceFolder_didChange(WorkspaceFolder_DidChangeParams params);
 
   @JsonNotification("textDocument/didOpen")
   void textDocument_didOpen(ProtocolTextDocument params);
@@ -243,4 +256,7 @@ public interface CodyAgentServer {
 
   @JsonNotification("progress/cancel")
   void progress_cancel(Progress_CancelParams params);
+
+  @JsonNotification("webview/didDisposeNative")
+  void webview_didDisposeNative(Webview_DidDisposeNativeParams params);
 }
