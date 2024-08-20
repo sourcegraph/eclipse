@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.logging;
 
+import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
@@ -23,6 +24,10 @@ public class CodyLogger {
 
   public CodyLogger(Class<?> clazz) {
     this.delegate = Platform.getLog(clazz);
+  }
+
+  public static void onConfigChange(ExtensionConfiguration config) {
+    INSTANCE.setConnectedInstance(config.serverEndpoint);
   }
 
   public void error(String message) {
@@ -78,6 +83,9 @@ public class CodyLogger {
 
     private int currentSize = 0;
 
+    private String connectedInstance;
+    private static final String CONNECTED_INSTANCE_PREFIX = "Connected to: ";
+
     Internal() {
       var bundle = FrameworkUtil.getBundle(getClass());
       var version = bundle.getVersion().toString();
@@ -96,6 +104,27 @@ public class CodyLogger {
               System.getProperty("os.version"),
               System.getProperty("os.arch"));
       environment.add(new LogMessage(LogMessage.Kind.INFO, system, LocalDateTime.now()));
+
+      addConnectedInstanceMsg();
+    }
+
+    private void setConnectedInstance(String instance) {
+      this.connectedInstance = instance;
+      for (var msg : environment) {
+        if (msg.message.startsWith(CONNECTED_INSTANCE_PREFIX)) {
+          environment.remove(msg);
+          break;
+        }
+      }
+      addConnectedInstanceMsg();
+    }
+
+    private void addConnectedInstanceMsg() {
+      if (connectedInstance == null) {
+        return;
+      }
+      var msg = CONNECTED_INSTANCE_PREFIX + connectedInstance;
+      environment.add(new LogMessage(LogMessage.Kind.INFO, msg, LocalDateTime.now()));
     }
 
     public void log(LogMessage message) {

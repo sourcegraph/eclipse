@@ -61,6 +61,7 @@ public class CodyManager {
 
   public void onConfigChange(ExtensionConfiguration config) {
     this.config = config;
+    CodyLogger.onConfigChange(config);
     if (agentHolder.get() != null) {
       // Notify agent about config change
       withAgent(OnFailure.LOG, agent -> agent.server.extensionConfiguration_didChange(config));

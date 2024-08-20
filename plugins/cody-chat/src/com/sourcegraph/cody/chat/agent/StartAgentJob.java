@@ -124,7 +124,7 @@ public class StartAgentJob extends Job {
 
   private MessageConsumer logMessages(MessageConsumer consumer) {
     return message -> {
-      log.sent(message.toString());
+      log.sent("start agent: " + message.toString());
       consumer.consume(message);
     };
   }
