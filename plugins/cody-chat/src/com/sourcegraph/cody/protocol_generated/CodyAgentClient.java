@@ -13,7 +13,7 @@ public interface CodyAgentClient {
   CompletableFuture<String> window_showMessage(ShowWindowMessageParams params);
 
   @JsonRequest("window/showSaveDialog")
-  CompletableFuture<String> window_showSaveDialog(Void params);
+  CompletableFuture<String> window_showSaveDialog(SaveDialogOptionsParams params);
 
   @JsonRequest("textDocument/edit")
   CompletableFuture<Boolean> textDocument_edit(TextDocumentEditParams params);

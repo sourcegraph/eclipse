@@ -14,6 +14,11 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
+  public CompletableFuture<String> window_showSaveDialog(Void params) {
+    return null;
+  }
+
+  @Override
   public CompletableFuture<Boolean> textDocument_edit(TextDocumentEditParams params) {
 
     return null;
