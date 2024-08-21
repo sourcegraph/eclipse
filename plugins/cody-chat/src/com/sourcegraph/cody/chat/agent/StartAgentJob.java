@@ -124,7 +124,11 @@ public class StartAgentJob extends Job {
 
   private MessageConsumer logMessages(MessageConsumer consumer) {
     return message -> {
-      log.sent(message.toString());
+      // Only log non-transcript messages
+      var stringifiedMsg = message.toString();
+      if (!stringifiedMsg.contains("\\\"type\\\":\\\"transcript\\\"")) {
+        log.sent(message.toString());
+      }
       consumer.consume(message);
     };
   }
