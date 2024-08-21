@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.WebviewServer;
+import com.sourcegraph.cody.logging.CodyLogger;
 import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
@@ -9,7 +10,7 @@ public class StartWebserverJob extends Job {
   private final CodyManager codyManager;
   private final CompletableFuture<Integer> webserverPort;
 
-  private final ILog log = Platform.getLog(getClass());
+  private final CodyLogger log = new CodyLogger(getClass());
 
   public StartWebserverJob(CodyManager codyManager, CompletableFuture<Integer> webserverPort) {
     super("Starting Cody...");

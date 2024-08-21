@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTextDocument;
 import com.sourcegraph.cody.protocol_generated.Range;
@@ -9,8 +10,6 @@ import com.sourcegraph.cody.workspace.WorkbenchListener;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 
 public class CodyAgent implements Disposable {
 
@@ -22,7 +21,7 @@ public class CodyAgent implements Disposable {
   private final CodyManager manager;
   private final WorkbenchListener workbenchListener;
 
-  private final ILog log = Platform.getLog(getClass());
+  private final CodyLogger log = new CodyLogger(getClass());
 
   CodyAgent(
       Future<Void> listening,

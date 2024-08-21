@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;
@@ -8,8 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.di.annotations.Creatable;
 
 @Creatable
@@ -24,7 +23,7 @@ public class CodyManager {
   private AtomicReference<CompletableFuture<Integer>> webserverPortHolder =
       new AtomicReference<>(null);
 
-  private final ILog log = Platform.getLog(getClass());
+  private final CodyLogger log = new CodyLogger(getClass());
 
   /**
    * This method assures that actions are run only when the webserver is running and the agent is
@@ -37,6 +36,7 @@ public class CodyManager {
   public void withAgent(OnFailure onFailure, Consumer<CodyAgent> action) {
     // Check if there is a webserver running or starting
     if (webserverPortHolder.compareAndSet(null, new CompletableFuture<>())) {
+      log.info("No asset webserver, starting a new one");
       // start webserver
       new StartWebserverJob(this, webserverPortHolder.get()).schedule();
       // dispose old agent to restart it
@@ -48,6 +48,7 @@ public class CodyManager {
 
     // Check if there is an agent running or starting
     if (agentHolder.compareAndSet(null, new CompletableFuture<>())) {
+      log.info("No Cody agent, starting a new one");
       new StartAgentJob(this, agentHolder.get(), webserverPortHolder.get()).schedule();
     }
 
@@ -60,6 +61,7 @@ public class CodyManager {
 
   public void onConfigChange(ExtensionConfiguration config) {
     this.config = config;
+    CodyLogger.onConfigChange(config);
     if (agentHolder.get() != null) {
       // Notify agent about config change
       withAgent(OnFailure.LOG, agent -> agent.server.extensionConfiguration_didChange(config));

@@ -9,6 +9,4 @@ format:
 	python scripts/format.py # need to seemingly run twice
 bindings: build-bindings format
 clean:
-	rm -r plugins/cody-chat/resources/dist/
-	rm -r ~/AppData/Roaming/Sourcegraph/CodyEclipse
-	rm -r ~/AppData/Roaming/Cody-nodejs/Config/dist/webviews
+	./scripts/clean.sh

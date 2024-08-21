@@ -1,12 +1,11 @@
 package com.sourcegraph.cody;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
+import com.sourcegraph.cody.logging.CodyLogger;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 
 class DebugWorkspaceListener implements IPartListener2 {
-  private ILog log = Platform.getLog(getClass());
+  private CodyLogger log = new CodyLogger(getClass());
 
   @Override
   public void partActivated(IWorkbenchPartReference iWorkbenchPartReference) {
