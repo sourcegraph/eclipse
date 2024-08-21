@@ -8,3 +8,5 @@ format:
 	python scripts/format.py
 	python scripts/format.py # need to seemingly run twice
 bindings: build-bindings format
+clean:
+	./scripts/clean.sh

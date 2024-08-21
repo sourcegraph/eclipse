@@ -18,7 +18,7 @@ public class LogMessage {
 
   public LogMessage(Kind kind, String message, LocalDateTime timestamp) {
     this.kind = kind;
-    this.message = message;
+    this.message = message.replace("\n", "").replace("\\n", "");
     this.timestamp = timestamp;
   }
 

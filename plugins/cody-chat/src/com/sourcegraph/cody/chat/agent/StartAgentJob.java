@@ -124,7 +124,7 @@ public class StartAgentJob extends Job {
 
   private MessageConsumer logMessages(MessageConsumer consumer) {
     return message -> {
-      log.sent("start agent: " + message.toString());
+      log.sent(message.toString());
       consumer.consume(message);
     };
   }
@@ -150,7 +150,7 @@ public class StartAgentJob extends Job {
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = manager.resources.getWebviewPath().toString();
+    webviewConfig.rootDir = manager.resources.getWebviewPath().toUri().toString();
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;

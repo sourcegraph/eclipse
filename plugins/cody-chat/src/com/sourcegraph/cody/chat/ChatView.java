@@ -128,7 +128,7 @@ public class ChatView extends ViewPart {
     display.asyncExec(
         () -> {
           String stringifiedMessage = gson.toJson(message);
-          log.sent("chatview" + stringifiedMessage);
+          log.sent(stringifiedMessage);
           browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
         });
   }

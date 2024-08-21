@@ -16,7 +16,7 @@ import org.osgi.framework.FrameworkUtil;
 
 public class CodyLogger {
 
-  private static final int MAX_SIZE = 1024 * 1024; // 1MB of text
+  private static final int MAX_SIZE = 1024 * 1024 * 20; // 20MB of text
 
   static final Internal INSTANCE = new Internal();
 
@@ -78,6 +78,7 @@ public class CodyLogger {
 
     // circular buffer of actual log messages, capped at MAX_SIZE of text
     final Deque<LogMessage> backlog = new java.util.ArrayDeque<>();
+    private LogMessage lastMessage;
 
     private final Set<Consumer<LogMessage>> listeners = new HashSet<>();
 
@@ -85,6 +86,7 @@ public class CodyLogger {
 
     private String connectedInstance;
     private static final String CONNECTED_INSTANCE_PREFIX = "Connected to: ";
+    private static final String TRANSCRIPT_MESSAGE_PATTERN = "\\\"type\\\":\\\"transcript\\\"";
 
     Internal() {
       var bundle = FrameworkUtil.getBundle(getClass());
@@ -128,6 +130,10 @@ public class CodyLogger {
     }
 
     public void log(LogMessage message) {
+      if (isLikelyTranscriptUpdate(message)) {
+        backlog.remove(lastMessage);
+      }
+      lastMessage = message;
       backlog.addLast(message);
       currentSize += message.message.length();
       while (currentSize > MAX_SIZE) {
@@ -136,6 +142,42 @@ public class CodyLogger {
       for (var listener : listeners) {
         listener.accept(message);
       }
+    }
+
+    // Uses a heuristic to determine if the message is likely a transcript update, i.e.
+    // a message that is being streamed by the extension. If this is the case,
+    // we can remove the previous message and replace it with the new one, or else we'll have a wall of text
+    private boolean isLikelyTranscriptUpdate(LogMessage message) {
+      if (lastMessage == null) {
+        return false;
+      }
+
+      // Only consider transcript messages
+      if (!isTranscriptMessage(message) || !isTranscriptMessage(lastMessage)) {
+          return false;
+      }
+      // If this message is shorter than the last message, it can't be a transcript update
+      if (message.message.length() < lastMessage.message.length()) {
+          return false;
+      }
+      // If this message is more than 5% longer than the last message, it probably isn't a transcript update
+      if ((float) lastMessage.message.length() / message.message.length() < 0.95) {
+        return false;
+      }
+
+      // Otherwise check if the transcripts have the same start and assume it's an update if they do
+      var msg1 = getTranscriptSnippet(message.message);
+      var msg2 = getTranscriptSnippet(lastMessage.message);
+      return msg1.equals(msg2);
+    }
+
+    private boolean isTranscriptMessage(LogMessage message) {
+      return message.message.contains(TRANSCRIPT_MESSAGE_PATTERN);
+    }
+
+    private String getTranscriptSnippet(String message) {
+      var transcriptIndex = message.indexOf(TRANSCRIPT_MESSAGE_PATTERN);
+      return message.substring(transcriptIndex, Math.min(message.length(), transcriptIndex + 100));
     }
 
     public void clear() {
