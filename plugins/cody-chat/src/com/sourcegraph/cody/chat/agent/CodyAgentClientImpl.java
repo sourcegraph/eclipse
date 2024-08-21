@@ -14,7 +14,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public CompletableFuture<String> window_showSaveDialog(Void params) {
+  public CompletableFuture<String> window_showSaveDialog(SaveDialogOptionsParams params) {
     return null;
   }
 
@@ -44,9 +44,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {
-    System.out.println(params.channel + ": " + params.message);
-  }
+  public void debug_message(DebugMessage params) {}
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
