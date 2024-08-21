@@ -12,6 +12,10 @@ function fire(message) {
 // Implemented in Java:
 // function eclipse_receiveMessage(message) { ... }
 
+window.onerror = function(msg, url, line) {
+	eclipse_logError("Webview error: " + msg + "\n" + url + " : " + line)
+};
+
 globalThis.acquireVsCodeApi = (function () {
   let acquired = false;
   let state = undefined;

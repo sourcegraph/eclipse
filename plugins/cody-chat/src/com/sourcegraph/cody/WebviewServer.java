@@ -17,7 +17,7 @@ public class WebviewServer implements Disposable {
   private final Server server;
   private final ServerConnector connector;
   private final CodyManager codyManager;
-  ;
+
   private static final Map<String, String> MIME_TYPES = new HashMap<>();
 
   static {
