@@ -130,7 +130,7 @@ public class ChatView extends ViewPart {
           String stringifiedMessage = gson.toJson(message);
           // Only log non-transcript messages
           if (!stringifiedMessage.contains("\\\"type\\\":\\\"transcript\\\"")) {
-              log.sent(stringifiedMessage);
+            log.sent(stringifiedMessage);
           }
           browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
         });
