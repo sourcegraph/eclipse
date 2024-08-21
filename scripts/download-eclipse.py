@@ -6,7 +6,6 @@ from io import BytesIO
 def download_and_extract_eclipse():
     # We always download the distribution for Windows even on macOS because we are only using Bazel to build the plugin for now, not actually run tests.
     # This file is a manually created mirror of the official Eclipse distribution. The GitHub URL is faster to download from,
-    # and we run this in CI on every PR so it's nice for this to run moderately quickly.
     url = "https://github.com/sourcegraph/eclipse/releases/download/v0.3.0/eclipse-committers-2024-03-R-win32-x86_64.zip"
     output_dir = "eclipse-platforms/eclipse-2024-03-jars"
     eclipse_zip_file = os.environ.get('ECLIPSE_ZIP_FILE')
