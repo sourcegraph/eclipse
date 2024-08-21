@@ -1,55 +1,73 @@
-load("@rules_java//java:defs.bzl", "java_library", "java_import")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
 
 package(default_visibility = ["//visibility:public"])
 
-java_library(
-  name = "cody_eclipse_2024_03",
-  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
-  deps = [
-    ":eclipse_2024_03",
-    ":custom_jars",
+# New targets for release automation
+
+exports_files(["version.txt"])
+
+# Generate feature.xml
+write_file(
+  name = "generate_feature_xml",
+  out = "feature.xml",
+  content = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<feature',
+      '      id="cody_feature"',
+      '      label="Cody"',
+      '      version="VERSION"',
+      '      provider-name="Sourcegraph Inc">',
+      '   <description url="https://github.com/sourcegraph/eclipse">',
+      '      Ship code faster with Cody, the AI coding assistant. Cody uses advanced search and codebase context to help you write and fix code.',
+      '      This plugin allows you to use Cody inside the Eclipse IDE. For now, this plugin is only available for Eclipse 2024-03.',
+      '   </description>',
+      '   <copyright url="https://github.com/sourcegraph/eclipse/blob/main/LICENSE">',
+      '      Copyright Sourcegraph, Inc.',
+      '   </copyright>',
+      '   <license url="https://github.com/sourcegraph/eclipse/blob/main/LICENSE">',
+      '      Apache License 2.0',
+      '   </license>',
+      '   <url>',
+      '      <update label="Sourcegraph Cody" url="https://sourcegraph.github.io/eclipse"/>',
+      '   </url>',
+      '   <plugin',
+      '         id="cody-chat"',
+      '         version="VERSION"/>',
+      '</feature>',
   ],
 )
 
-java_library(
-  name = "cody_eclipse_2019_12",
-  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
-  deps = [
-    ":eclipse_2019_12",
-    ":custom_jars",
+# Generate site.xml
+write_file(
+  name = "generate_site_xml",
+  out = "site.xml",
+  content = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<site>',
+      '   <feature url="features/cody_feature_VERSION.jar" id="cody_feature" version="VERSION"/>',
+      '</site>',
   ],
 )
 
-java_library(
-  name = "cody_eclipse_2022_12",
-  srcs = glob(["plugins/cody-chat/src/**/*.java"]),
-  deps = [
-    ":eclipse_2022_12",
-    ":custom_jars",
-  ],
+
+py_binary(
+    name = "create_release_zip",
+    srcs = ["create_release_zip.py"],
+    visibility = ["//visibility:public"],
 )
 
-java_import(
-    name = "custom_jars",
-    jars = glob(["plugins/cody-chat/lib/*.jar"]),
+genrule(
+    name = "eclipse_update_site",
+    srcs = [
+        "//plugins/cody-chat:version.txt",
+        ":generate_site_xml",
+        ":generate_feature_xml",
+        "//plugins/cody-chat:cody_eclipse_2024_03",
+    ],
+    outs = ["eclipse_update_site.zip"],
+    cmd = """
+        $(location :create_release_zip) $@ $(location :generate_site_xml) $(location :generate_feature_xml) $(location //plugins/cody-chat:cody_eclipse_2024_03) $(location //plugins/cody-chat:version.txt)
+    """,
+    tools = [":create_release_zip"],
 )
-
-java_import(
-    name = "eclipse_2024_03",
-    jars = glob(["eclipse-platforms/eclipse-2024-03-jars/*.jar"]),
-    srcjar = "eclipse-platforms/eclipse-2024-03-jars-sources.jar",
-)
-
-java_import(
-    name = "eclipse_2022_12",
-    jars = glob(["eclipse-platforms/eclipse-2022-12-jars/*.jar"]),
-    srcjar = "eclipse-platforms/eclipse-2022-12-jars-sources.jar",
-)
-
-java_import(
-    name = "eclipse_2019_12",
-    jars = glob(["eclipse-platforms/eclipse-2019-12-jars/*.jar"]),
-    srcjar = "eclipse-platforms/eclipse-2019-12-jars-sources.jar",
-)
-
 

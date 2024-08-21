@@ -14,3 +14,16 @@ jobs:
       - uses: actions/checkout@v3
       - run: python scripts/format.py
       - run: git diff --exit-code
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Bazel
+        uses: bazelbuild/setup-bazelisk@v2
+      - name: Download Eclipse
+        run: python scripts/download-eclipse.py
+      - name: Build Eclipse update site
+        run: bazel build //:eclipse_update_site
+

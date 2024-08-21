@@ -2,7 +2,7 @@
 <feature
       id="cody_feature"
       label="Cody"
-      version="0.3.0.qualifier"
+      version="0.4.0.qualifier"
       provider-name="Sourcegraph Inc">
 
    <description url="https://github.com/sourcegraph/eclipse">
@@ -24,6 +24,6 @@
 
    <plugin
          id="cody-chat"
-         version="0.3.0.qualifier"/>
+         version="0.4.0.qualifier"/>
 
 </feature>
