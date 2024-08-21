@@ -24,26 +24,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: bazelbuild/setup-bazelisk@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: make prepare-ci
+      - run: make all
+      - run: bazel build //:eclipse_update_site
+      - run: unzip bazel-bin/eclipse_update_site.zip -d update-site
 
-      - name: Set up Bazel
-        uses: bazelbuild/setup-bazelisk@v2
-
-      - name: Download Eclipse
-        run: python scripts/download-eclipse.py
-
-      - name: Build Eclipse update site
-        run: bazel build //:eclipse_update_site
-
-      - name: Unzip update site
-        run: unzip bazel-bin/eclipse_update_site.zip -d update-site
-
-      - name: Deploy to GitHub Pages
+      - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './update-site'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

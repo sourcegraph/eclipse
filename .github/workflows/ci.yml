@@ -20,10 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Bazel
-        uses: bazelbuild/setup-bazelisk@v2
-      - name: Download Eclipse
-        run: python scripts/download-eclipse.py
-      - name: Build Eclipse update site
-        run: bazel build //:eclipse_update_site
+      - uses: bazelbuild/setup-bazelisk@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: make prepare-ci
+      - run: make all
+      - run: bazel build //:eclipse_update_site
 
