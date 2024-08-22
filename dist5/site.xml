@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/cody_feature_0.4.5.build2.jar" id="cody_feature" version="0.4.5.build2"/>
+</site>
