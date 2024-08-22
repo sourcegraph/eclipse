@@ -19,10 +19,10 @@ if ! git diff-index --quiet HEAD --; then
 fi
 
 
-echo $VERSION > plugins/cody-chat/version.txt
+echo "$VERSION" > plugins/cody-chat/version.txt
 git add .
 git commit -am "Release $TAG"
 git push origin main
-git tag -af $TAG -m "New Cody Eclipse release"
-git push -f origin $TAG
+git tag -af "$TAG" -m "New Cody Eclipse release"
+git push -f origin "$TAG"
 

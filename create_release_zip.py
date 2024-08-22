@@ -31,13 +31,16 @@ def create_release_zip(
             with zipfile.ZipFile(
                 os.path.join(tmp_dir, f"plugins/cody-chat_{version}.jar"), "w"
             ) as dest_zip:
-                manifest_found = False
+                first_manifest_skipped = False
                 for item in src_zip.infolist():
-                    if item.filename == "META-INF/MANIFEST.MF":
-                        if not manifest_found:
-                            manifest_found = True
-                            continue
                     buffer = src_zip.read(item.filename)
+                    if item.filename == "META-INF/MANIFEST.MF":
+                        if not first_manifest_skipped:
+                            # Skip the first MANIFEST.MF file that is generated
+                            # by Bazel. We only want to include the one from the
+                            # Eclipse plugin.
+                            first_manifest_skipped = True
+                            continue
                     dest_zip.writestr(item, buffer)
 
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
