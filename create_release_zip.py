@@ -41,6 +41,13 @@ def create_release_zip(
                             # Eclipse plugin.
                             first_manifest_skipped = True
                             continue
+                        else:
+                            buffer_str = buffer.decode("utf-8")
+                            buffer_str = buffer_str.replace(
+                                "Bundle-Version: 0.100.0.qualifier",
+                                f"Bundle-Version: {version}",
+                            )
+                            buffer = buffer_str.encode("utf-8")
                     dest_zip.writestr(item, buffer)
 
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
