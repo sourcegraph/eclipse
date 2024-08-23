@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.Platform;
 
 public class CodyResources {
 
-  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/dist/webviews");
-  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/dist/cody-agent");
-  private static final ResourcePath NODE_BINARIES_PATH = ResourcePath.of("/node-binaries");
+  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/resources/dist/webviews");
+  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/resources/dist/cody-agent");
+  private static final ResourcePath NODE_BINARIES_PATH = ResourcePath.of("/resources/node-binaries");
   private final Destinations destinations;
 
   private static byte[] indexHTML;
