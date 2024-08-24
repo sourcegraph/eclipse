@@ -6,4 +6,3 @@ public final class SaveDialogOptionsParams {
   public java.util.Map<String, java.util.List<String>> filters;
   public String title;
 }
-

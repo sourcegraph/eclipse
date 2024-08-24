@@ -36,11 +36,11 @@ public class CodyLogger {
   }
 
   public void error(String message, Throwable t) {
-    var stackTrace = new PrintWriter(new StringWriter());
-    t.printStackTrace(stackTrace);
-    delegate.error(message, t);
+    var stackTrace = new StringWriter();
+    t.printStackTrace(new PrintWriter(stackTrace));
+    delegate.error(message + "\n" + stackTrace, t);
     INSTANCE.log(
-        new LogMessage(LogMessage.Kind.ERROR, message + "\n" + stackTrace, LocalDateTime.now()));
+        new LogMessage(LogMessage.Kind.ERROR, message + ": " + stackTrace, LocalDateTime.now()));
   }
 
   public void warn(String message) {
@@ -49,11 +49,11 @@ public class CodyLogger {
   }
 
   public void warn(String message, Throwable t) {
-    var stackTrace = new PrintWriter(new StringWriter());
-    t.printStackTrace(stackTrace);
+    var stackTrace = new StringWriter();
+    t.printStackTrace(new PrintWriter(stackTrace));
     delegate.warn(message, t);
     INSTANCE.log(
-        new LogMessage(LogMessage.Kind.WARNING, message + "\n" + stackTrace, LocalDateTime.now()));
+        new LogMessage(LogMessage.Kind.WARNING, message + ": " + stackTrace, LocalDateTime.now()));
   }
 
   public void info(String message) {

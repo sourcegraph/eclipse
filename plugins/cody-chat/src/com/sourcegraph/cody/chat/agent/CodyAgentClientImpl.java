@@ -100,9 +100,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {
-    System.out.println(params.channel + ": " + params.message);
-  }
+  public void debug_message(DebugMessage params) {}
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -143,7 +141,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {
-    System.out.println("Opening external: " + params.uri);
     // TODO Auto-generated method stub
     return null;
   }

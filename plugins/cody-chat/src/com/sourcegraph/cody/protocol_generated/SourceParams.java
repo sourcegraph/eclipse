@@ -4,4 +4,3 @@ public final class SourceParams {
   public String client;
   public String clientVersion;
 }
-

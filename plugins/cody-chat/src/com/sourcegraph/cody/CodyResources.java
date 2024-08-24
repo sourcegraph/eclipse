@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.EnumSet;
-
 import org.eclipse.core.runtime.Platform;
 
 public class CodyResources {
@@ -76,22 +75,21 @@ public class CodyResources {
     if (!nodeExecutableName.isEmpty()) {
       var finalPath = destinations.node.resolve(nodeExecutableName);
       if (Files.isExecutable(finalPath)) {
-          return finalPath;
+        return finalPath;
       }
       try {
-          copyResourcePath(NODE_BINARIES_PATH.resolve(nodeExecutableName), finalPath);
-          markFileAsExecutable(finalPath);
+        copyResourcePath(NODE_BINARIES_PATH.resolve(nodeExecutableName), finalPath);
+        markFileAsExecutable(finalPath);
       } catch (IOException e) {
-          throw new MessageOnlyException("failed to copy node binary", e);
+        throw new MessageOnlyException("failed to copy node binary", e);
       }
       return finalPath;
     }
 
     throw new IllegalStateException(
-            "Unable to infer the location of a Node.js installation. To fix this problem, set the VM"
-                    + " argument -Dcody.nodejs-executable and restart Eclipse.");
+        "Unable to infer the location of a Node.js installation. To fix this problem, set the VM"
+            + " argument -Dcody.nodejs-executable and restart Eclipse.");
   }
-
 
   public Path getAgentEntry() {
     return destinations.agent.resolve("index.js");
@@ -128,7 +126,7 @@ public class CodyResources {
       Path path = Paths.get(userProvidedNode);
       if (!Files.isExecutable(path)) {
         throw new IllegalArgumentException(
-                "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
+            "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
       }
       return path;
     }
@@ -158,11 +156,11 @@ public class CodyResources {
   }
 
   private static void markFileAsExecutable(Path path) throws IOException {
-      if (Platform.getOS().equals(Platform.OS_WIN32)) {
-          // Windows doesn't have an executable bit.
-          return;
-      }
-      Files.setPosixFilePermissions(path, EnumSet.of(PosixFilePermission.OWNER_EXECUTE));
+    if (Platform.getOS().equals(Platform.OS_WIN32)) {
+      // Windows doesn't have an executable bit.
+      return;
+    }
+    Files.setPosixFilePermissions(path, EnumSet.of(PosixFilePermission.OWNER_EXECUTE));
   }
 
   public static class Destinations {

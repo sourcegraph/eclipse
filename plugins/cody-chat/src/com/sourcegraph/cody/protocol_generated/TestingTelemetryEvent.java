@@ -7,4 +7,3 @@ public final class TestingTelemetryEvent {
   public String timestamp;
   public String testOnlyAnonymousUserID;
 }
-
