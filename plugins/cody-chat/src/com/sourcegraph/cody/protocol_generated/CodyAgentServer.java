@@ -142,6 +142,10 @@ public interface CodyAgentServer {
   @JsonRequest("testing/progress")
   CompletableFuture<Testing_ProgressResult> testing_progress(Testing_ProgressParams params);
 
+  @JsonRequest("testing/exportedTelemetryEvents")
+  CompletableFuture<Testing_ExportedTelemetryEventsResult> testing_exportedTelemetryEvents(
+      Void params);
+
   @JsonRequest("testing/networkRequests")
   CompletableFuture<Testing_NetworkRequestsResult> testing_networkRequests(Void params);
 

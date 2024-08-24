@@ -12,7 +12,6 @@ public final class Constants {
   public static final String Invoke = "Invoke";
   public static final String Pending = "Pending";
   public static final String Working = "Working";
-  public static final String accuracy = "accuracy";
   public static final String agentic = "agentic";
   public static final String ask = "ask";
   public static final String assistant = "assistant";
@@ -62,6 +61,7 @@ public final class Constants {
   public static final String ollama = "ollama";
   public static final String openctx = "openctx";
   public static final String paused = "paused";
+  public static final String power = "power";
   public static final String pro = "pro";
   public static final String recently_used = "recently used";
   public static final String recommended = "recommended";

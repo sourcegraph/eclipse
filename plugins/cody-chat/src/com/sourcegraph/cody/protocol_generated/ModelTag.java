@@ -1,8 +1,8 @@
 package com.sourcegraph.cody.protocol_generated;
 
 public enum ModelTag {
-  @com.google.gson.annotations.SerializedName("accuracy")
-  Accuracy,
+  @com.google.gson.annotations.SerializedName("power")
+  Power,
   @com.google.gson.annotations.SerializedName("speed")
   Speed,
   @com.google.gson.annotations.SerializedName("balanced")
