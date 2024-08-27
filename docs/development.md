@@ -102,3 +102,20 @@ cp plugins/cody-chat/META-INF/MANIFEST.MF plugins/cody-chat/META-INF/MANIFEST.MF
 mv MANIFEST.MF plugins/cody-chat/META-INF/MANIFEST.MF
 # Manually edit the generated manifest to use version 0.100.0.qualifier
 ```
+
+
+## Fixing secret storage errors on macOS
+
+When running the plugin on macOS, you may hit on this error here
+```
+Secure storage was unable to retrieve the master password from the OS keyring. Make sure that this application has access to the OS keyring. If the error persists, the password recovery feature could be used, or secure storage can be deleted and re-created.
+```
+
+Here is [one relevant result](https://www.eclipse.org/forums/index.php/t/1098516/) showing the fix for this problem.
+The short fix:
+
+* Quit Eclipse
+* Run `codesign -f -s - /Applications/Eclipse.app/Contents/MacOS/eclipse`
+* Run `rm -rf ~/.eclipse/org.eclipse.equinox.security/secure_storage`
+* Start Eclipse again
+
