@@ -4,7 +4,9 @@ import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.webview_protocol.*;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
@@ -97,6 +99,28 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   public CompletableFuture<Boolean> workspace_edit(WorkspaceEditParams params) {
 
     return null;
+  }
+
+  @Override
+  public CompletableFuture<Uri_ReadUTF8Result> uri_readUTF8(Uri_ReadUTF8Params params) {
+    var webviewProtocol = Constants.webviewasset + ":";
+    if (!params.uri.startsWith(webviewProtocol)) {
+      throw new RuntimeException(
+          "Invalid URI. Only " + webviewProtocol + " is supported. Received: " + params.uri);
+    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          var trimmedName = params.uri.replace(webviewProtocol, "");
+          try {
+            var resource = CodyResources.loadWebviewBytes(trimmedName);
+            var result = new Uri_ReadUTF8Result();
+            result.text = new String(resource, StandardCharsets.UTF_8);
+            return result;
+          } catch (IOException e) {
+            log.error("Error loading webview asset", e);
+            return null;
+          }
+        });
   }
 
   @Override

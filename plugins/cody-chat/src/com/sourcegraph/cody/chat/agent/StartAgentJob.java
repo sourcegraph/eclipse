@@ -3,11 +3,7 @@ package com.sourcegraph.cody.chat.agent;
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
+import com.sourcegraph.cody.protocol_generated.*;
 import dev.dirs.ProjectDirectories;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -76,11 +72,7 @@ public class StartAgentJob extends Job {
     // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
     manager.resources =
         new CodyResources(
-            new CodyResources.DestinationsBuilder()
-                .withAgent(dataDir)
-                .withWebviews(dataDir.resolve("webviews"))
-                .withNode(dataDir)
-                .build());
+            new CodyResources.DestinationsBuilder().withAgent(dataDir).withNode(dataDir).build());
 
     ArrayList<String> arguments = new ArrayList<>();
     arguments.add(manager.resources.getNodeJSLocation().toString());
@@ -155,11 +147,12 @@ public class StartAgentJob extends Job {
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = manager.resources.getWebviewPath().toUri().toString();
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
+    webviewConfig.assetLoader = WebviewNativeConfigParams.AssetLoaderEnum.Webviewasset;
     capabilities.webviewNativeConfig = webviewConfig;
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
+    capabilities.uriSchemeLoaders = List.of(Constants.webviewasset);
     clientInfo.capabilities = capabilities;
 
     clientInfo.extensionConfiguration = manager.config; // TODO is that needed?

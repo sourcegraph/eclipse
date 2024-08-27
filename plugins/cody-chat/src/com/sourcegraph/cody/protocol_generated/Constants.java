@@ -40,6 +40,7 @@ public final class Constants {
   public static final String fetching = "fetching";
   public static final String file = "file";
   public static final String free = "free";
+  public static final String fs = "fs";
   public static final String function = "function";
   public static final String gateway = "gateway";
   public static final String history = "history";
@@ -88,5 +89,6 @@ public final class Constants {
   public static final String use = "use";
   public static final String user = "user";
   public static final String warning = "warning";
+  public static final String webviewasset = "webviewasset";
   public static final String workspace = "workspace";
 }

@@ -3,4 +3,5 @@ targets:
   //eclipse-platforms:eclipse_2024_03
 directories:
   plugins/cody-chat/src
+  plugins/cody-chat/resources/
   scripts

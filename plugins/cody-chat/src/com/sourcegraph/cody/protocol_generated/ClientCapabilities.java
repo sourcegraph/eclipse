@@ -16,6 +16,7 @@ public final class ClientCapabilities {
   public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
   public GlobalStateEnum globalState; // Oneof: stateless, server-managed, client-managed
   public WebviewEnum webview; // Oneof: agentic, native
+  public java.util.List<String> uriSchemeLoaders;
   public WebviewNativeConfigParams webviewNativeConfig;
 
   public enum CompletionsEnum {

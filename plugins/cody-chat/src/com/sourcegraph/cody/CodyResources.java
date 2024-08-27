@@ -42,6 +42,10 @@ public class CodyResources {
     return new String(loadResourceBytes(path), StandardCharsets.UTF_8);
   }
 
+  public static byte[] loadResourceBytes(ResourcePath path) {
+    return loadResourceBytes(path.toString());
+  }
+
   public static byte[] loadResourceBytes(String path) {
     try (var stream = CodyResources.class.getResourceAsStream(path)) {
       return stream.readAllBytes();
@@ -50,17 +54,11 @@ public class CodyResources {
     }
   }
 
-  public byte[] loadWebviewBytes(String path) throws IOException {
+  public static byte[] loadWebviewBytes(String path) throws IOException {
     if (path.equals("index.html") && indexHTML != null) {
       return indexHTML;
     }
-    // We can't join a path that starts with a /, because Path thinks
-    // those are absolute paths
-    if (path.startsWith("/")) {
-      path = path.substring(1);
-    }
-    Path resolvedPath = destinations.webviews.resolve(path);
-    return Files.readAllBytes(resolvedPath);
+    return loadResourceBytes(WEBVIEW_ASSETS.resolve(path));
   }
 
   // Returns the path to the node binary. This first checks for a user-provided
@@ -95,17 +93,12 @@ public class CodyResources {
     return destinations.agent.resolve("index.js");
   }
 
-  public Path getWebviewPath() {
-    return destinations.webviews;
-  }
-
   public static void setIndexHTML(byte[] indexHTML) {
     CodyResources.indexHTML = indexHTML;
   }
 
   public static void copyAssetsTo(Destinations destinations) {
     try {
-      copyFromAssetFile(destinations.webviews, WEBVIEW_ASSETS);
       copyFromAssetFile(destinations.agent, AGENT_ASSETS);
     } catch (IOException e) {
       throw new MessageOnlyException("failed to copy assets", e);
@@ -167,7 +160,6 @@ public class CodyResources {
     private Destinations() {}
 
     private Path agent;
-    private Path webviews;
     private Path node;
   }
 
@@ -179,11 +171,6 @@ public class CodyResources {
       return this;
     }
 
-    public DestinationsBuilder withWebviews(Path webviews) {
-      this.paths.webviews = webviews;
-      return this;
-    }
-
     public DestinationsBuilder withNode(Path node) {
       this.paths.node = node;
       return this;
@@ -192,9 +179,6 @@ public class CodyResources {
     public Destinations build() {
       if (this.paths.agent == null) {
         throw new IllegalStateException("agent must be set");
-      }
-      if (this.paths.webviews == null) {
-        throw new IllegalStateException("webviews must be set");
       }
       if (this.paths.node == null) {
         throw new IllegalStateException("node must be set");

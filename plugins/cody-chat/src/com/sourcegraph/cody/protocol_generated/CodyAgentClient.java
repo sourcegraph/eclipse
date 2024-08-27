@@ -28,6 +28,9 @@ public interface CodyAgentClient {
   @JsonRequest("workspace/edit")
   CompletableFuture<Boolean> workspace_edit(WorkspaceEditParams params);
 
+  @JsonRequest("uri/readUTF8")
+  CompletableFuture<Uri_ReadUTF8Result> uri_readUTF8(Uri_ReadUTF8Params params);
+
   @JsonRequest("env/openExternal")
   CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params);
 
