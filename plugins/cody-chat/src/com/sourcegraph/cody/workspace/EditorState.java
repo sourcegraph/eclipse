@@ -12,6 +12,9 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import java.net.URI;
+import java.nio.file.Paths;
+
 public final class EditorState {
   public final IFile file;
   public final String uri;
@@ -20,10 +23,20 @@ public final class EditorState {
 
   private static CodyLogger log = new CodyLogger(EditorState.class);
 
-  private EditorState(IFile file, String uri, ITextEditor editor) {
+  private EditorState(IFile file, ITextEditor editor) {
     this.file = file;
-    this.uri = uri;
+    this.uri = EditorState.getUri(file);
     this.editor = editor;
+  }
+
+  private static String getUri(IFile file) {
+    URI uri = file.getLocationURI();
+    if (uri.getScheme().equals("file")) {
+      // Fixes CODY-3513
+      return Paths.get(uri).toUri().toString();
+    }
+
+    return uri.toString();
   }
 
   public String readContents() {
@@ -71,6 +84,6 @@ public final class EditorState {
       return null;
     }
     var file1 = ((FileEditorInput) input).getFile();
-    return new EditorState(file1, file1.getLocationURI().toString(), editor1);
+    return new EditorState(file1, editor1);
   }
 }
