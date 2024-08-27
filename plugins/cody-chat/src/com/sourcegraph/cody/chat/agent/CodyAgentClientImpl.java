@@ -1,15 +1,35 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
 import com.sourcegraph.cody.webview_protocol.*;
+import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CodyAgentClientImpl implements CodyAgentClient {
+  private final CodyLogger log = new CodyLogger(getClass());
+
   @Override
   public CompletableFuture<String> window_showMessage(ShowWindowMessageParams params) {
 
+    return null;
+  }
+
+  @Override
+  public CompletableFuture<String> window_showSaveDialog(SaveDialogOptionsParams params) {
     return null;
   }
 
@@ -28,8 +48,49 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public CompletableFuture<Boolean> textDocument_show(TextDocument_ShowParams params) {
+    CompletableFuture<Boolean> result = new CompletableFuture<>();
+    Display.getDefault()
+        .asyncExec(
+            () -> {
+              IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+              if (window != null) {
+                IWorkbenchPage page = window.getActivePage();
+                if (page != null) {
+                  try {
+                    // Construct a URI from the params.uri string
+                    IFileStore fileStore = EFS.getStore(new URI(params.uri));
+                    var editor = IDE.openEditorOnFileStore(page, fileStore);
+                    if (editor instanceof ITextEditor
+                        && params.options != null
+                        && params.options.selection != null) {
+                      ITextEditor textEditor = (ITextEditor) editor;
+                      IDocument document =
+                          textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
 
-    return null;
+                      TextSelection selection =
+                          new TextSelection(
+                              document,
+                              getOffset(document, params.options.selection.start),
+                              getOffset(document, params.options.selection.end)
+                                  - getOffset(document, params.options.selection.start));
+
+                      textEditor.selectAndReveal(selection.getOffset(), selection.getLength());
+                    }
+                    result.complete(true);
+                  } catch (Exception e) {
+                    // Handle other potential exceptions
+                    log.error("Error opening file", e);
+                    result.complete(false);
+                  }
+                }
+              }
+            });
+    return result;
+  }
+
+  private int getOffset(IDocument document, Position pos) throws BadLocationException {
+    // Convert line and column to offset
+    return document.getLineOffset(pos.line.intValue()) + pos.character.intValue();
   }
 
   @Override
@@ -39,9 +100,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {
-    System.out.println(params.channel + ": " + params.message);
-  }
+  public void debug_message(DebugMessage params) {}
 
   @Override
   public void editTask_didUpdate(EditTask params) {}

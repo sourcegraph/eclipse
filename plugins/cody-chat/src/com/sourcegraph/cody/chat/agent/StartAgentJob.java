@@ -147,6 +147,7 @@ public class StartAgentJob extends Job {
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
+    capabilities.showDocument = ClientCapabilities.ShowDocumentEnum.Enabled;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
