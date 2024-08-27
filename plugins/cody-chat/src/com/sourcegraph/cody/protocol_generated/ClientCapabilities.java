@@ -17,7 +17,7 @@ public final class ClientCapabilities {
   public GlobalStateEnum globalState; // Oneof: stateless, server-managed, client-managed
   public WebviewEnum webview; // Oneof: agentic, native
   public java.util.List<String> uriSchemeLoaders;
-  public WebviewNativeConfigParams webviewNativeConfig;
+  public WebviewNativeConfig webviewNativeConfig;
 
   public enum CompletionsEnum {
     @com.google.gson.annotations.SerializedName("none")

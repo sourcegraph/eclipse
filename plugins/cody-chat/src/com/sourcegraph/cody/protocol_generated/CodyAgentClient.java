@@ -64,6 +64,9 @@ public interface CodyAgentClient {
   @JsonNotification("progress/end")
   void progress_end(Progress_EndParams params);
 
+  @JsonNotification("uri/readUTF8")
+  void uri_readUTF8(Uri_ReadUTF8Params params);
+
   @JsonNotification("remoteRepo/didChange")
   void remoteRepo_didChange(Void params);
 

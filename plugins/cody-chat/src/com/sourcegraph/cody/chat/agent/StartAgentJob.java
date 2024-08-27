@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -143,13 +144,13 @@ public class StartAgentJob extends Job {
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
-    WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
+    var webviewConfig = new WebviewNativeConfig();
     webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
-    webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
+    webviewConfig.view = WebviewNativeConfig.ViewEnum.Single;
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
-    webviewConfig.assetLoader = WebviewNativeConfigParams.AssetLoaderEnum.Webviewasset;
+    webviewConfig.assetLoader = WebviewNativeConfig.AssetLoaderEnum.Webviewasset;
     capabilities.webviewNativeConfig = webviewConfig;
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     capabilities.uriSchemeLoaders = List.of(Constants.webviewasset);
