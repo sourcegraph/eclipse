@@ -263,4 +263,7 @@ public interface CodyAgentServer {
 
   @JsonNotification("webview/didDisposeNative")
   void webview_didDisposeNative(Webview_DidDisposeNativeParams params);
+
+  @JsonNotification("secrets/didChange")
+  void secrets_didChange(Secrets_DidChangeParams params);
 }

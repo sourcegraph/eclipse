@@ -28,6 +28,15 @@ public interface CodyAgentClient {
   @JsonRequest("workspace/edit")
   CompletableFuture<Boolean> workspace_edit(WorkspaceEditParams params);
 
+  @JsonRequest("secrets/get")
+  CompletableFuture<String> secrets_get(Secrets_GetParams params);
+
+  @JsonRequest("secrets/set")
+  CompletableFuture<Void> secrets_set(Secrets_SetParams params);
+
+  @JsonRequest("secrets/delete")
+  CompletableFuture<Void> secrets_delete(Secrets_DeleteParams params);
+
   @JsonRequest("env/openExternal")
   CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params);
 

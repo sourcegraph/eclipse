@@ -15,6 +15,7 @@ public final class ClientCapabilities {
   public CodeActionsEnum codeActions; // Oneof: none, enabled
   public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
   public GlobalStateEnum globalState; // Oneof: stateless, server-managed, client-managed
+  public SecretsEnum secrets; // Oneof: stateless, client-managed
   public WebviewEnum webview; // Oneof: agentic, native
   public WebviewNativeConfigParams webviewNativeConfig;
 
@@ -112,6 +113,13 @@ public final class ClientCapabilities {
     Stateless,
     @com.google.gson.annotations.SerializedName("server-managed")
     Server_managed,
+    @com.google.gson.annotations.SerializedName("client-managed")
+    Client_managed,
+  }
+
+  public enum SecretsEnum {
+    @com.google.gson.annotations.SerializedName("stateless")
+    Stateless,
     @com.google.gson.annotations.SerializedName("client-managed")
     Client_managed,
   }
