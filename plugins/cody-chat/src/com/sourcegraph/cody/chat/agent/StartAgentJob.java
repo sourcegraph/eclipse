@@ -42,7 +42,7 @@ public class StartAgentJob extends Job {
       CodyManager manager,
       CompletableFuture<CodyAgent> agent,
       CompletableFuture<Integer> webserverPort) {
-    super("Starting Cody Agent...");
+    super("Starting Cody...");
     this.manager = manager;
     this.agent = agent;
     this.webserverPort = webserverPort;
@@ -224,17 +224,21 @@ public class StartAgentJob extends Job {
   private PrintWriter traceWriter() {
     String tracePath = System.getProperty("cody-agent.trace-path", "");
 
-    if (!tracePath.isEmpty()) {
-      Path trace = Paths.get(tracePath);
-      try {
-        Files.createDirectories(trace.getParent());
-        return new PrintWriter(
-            Files.newOutputStream(
-                trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
-      } catch (IOException e) {
-        log.error("Cannot create a trace", e);
-      }
+    if (tracePath.isEmpty()) {
+      return null;
     }
-    return null;
+
+    log.info("Trace path: " + tracePath);
+
+    Path trace = Paths.get(tracePath);
+    try {
+      Files.createDirectories(trace.getParent());
+      return new PrintWriter(
+          Files.newOutputStream(
+              trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+    } catch (IOException e) {
+      log.error("Cannot create a trace", e);
+      return null;
+    }
   }
 }

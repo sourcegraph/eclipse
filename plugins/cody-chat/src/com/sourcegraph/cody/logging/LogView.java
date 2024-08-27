@@ -105,11 +105,11 @@ public class LogView extends ViewPart {
       searchBar.setMessage("filter...");
       searchBar.addModifyListener(e -> viewer.refresh());
 
-      Button errorCheckBox = createCheckbox("Errors", icons.error);
-      Button warnCheckBox = createCheckbox("Warnings", icons.warn);
-      Button infoCheckBox = createCheckbox("Info", icons.info);
-      Button receivedCheckBox = createCheckbox("Received messages", icons.received);
-      Button sentCheckBox = createCheckbox("Sent messages", icons.sent);
+      Button errorCheckBox = createCheckbox("Errors", icons.error, true);
+      Button warnCheckBox = createCheckbox("Warnings", icons.warn, true);
+      Button infoCheckBox = createCheckbox("Info", icons.info, true);
+      Button receivedCheckBox = createCheckbox("Received messages", icons.received, false);
+      Button sentCheckBox = createCheckbox("Sent messages", icons.sent, false);
 
       filter =
           new ViewerFilter() {
@@ -139,11 +139,11 @@ public class LogView extends ViewPart {
           };
     }
 
-    private Button createCheckbox(String text, Image icon) {
+    private Button createCheckbox(String text, Image icon, boolean selected) {
       var checkbox = new Button(this, SWT.CHECK);
       checkbox.setImage(icon);
       checkbox.setText(text);
-      checkbox.setSelection(true);
+      checkbox.setSelection(selected);
       checkbox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
       checkbox.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> viewer.refresh()));
       return checkbox;
