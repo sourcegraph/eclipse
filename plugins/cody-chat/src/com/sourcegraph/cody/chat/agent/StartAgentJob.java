@@ -9,6 +9,7 @@ import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
 import dev.dirs.ProjectDirectories;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -22,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -224,17 +226,21 @@ public class StartAgentJob extends Job {
   private PrintWriter traceWriter() {
     String tracePath = System.getProperty("cody-agent.trace-path", "");
 
-    if (!tracePath.isEmpty()) {
-      Path trace = Paths.get(tracePath);
-      try {
-        Files.createDirectories(trace.getParent());
-        return new PrintWriter(
-            Files.newOutputStream(
-                trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
-      } catch (IOException e) {
-        log.error("Cannot create a trace", e);
-      }
+    if (tracePath.isEmpty()) {
+      return null;
     }
-    return null;
+
+    log.info("Trace path: " + tracePath);
+
+    Path trace = Paths.get(tracePath);
+    try {
+      Files.createDirectories(trace.getParent());
+      return new PrintWriter(
+          Files.newOutputStream(
+              trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+    } catch (IOException e) {
+      log.error("Cannot create a trace", e);
+      return null;
+    }
   }
 }
