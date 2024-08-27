@@ -4,6 +4,8 @@ import com.sourcegraph.cody.WrappedRuntimeException;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.Position;
 import com.sourcegraph.cody.protocol_generated.Range;
+import java.net.URI;
+import java.nio.file.Paths;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
@@ -11,9 +13,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import java.net.URI;
-import java.nio.file.Paths;
 
 public final class EditorState {
   public final IFile file;
