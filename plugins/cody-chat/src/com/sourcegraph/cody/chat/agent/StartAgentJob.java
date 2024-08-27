@@ -42,7 +42,7 @@ public class StartAgentJob extends Job {
       CodyManager manager,
       CompletableFuture<CodyAgent> agent,
       CompletableFuture<Integer> webserverPort) {
-    super("Starting Cody Agent...");
+    super("Starting Cody...");
     this.manager = manager;
     this.agent = agent;
     this.webserverPort = webserverPort;
