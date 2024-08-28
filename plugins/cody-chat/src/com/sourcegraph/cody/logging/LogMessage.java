@@ -8,8 +8,6 @@ public class LogMessage {
     ERROR,
     WARNING,
     INFO,
-    RECEIVED,
-    SENT
   }
 
   public final Kind kind;

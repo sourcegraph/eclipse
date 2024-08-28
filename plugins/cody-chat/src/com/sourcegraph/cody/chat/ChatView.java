@@ -80,15 +80,7 @@ public class ChatView extends ViewPart {
   }
 
   private void doPostMessage(Browser browser, String message) {
-    display.asyncExec(
-        () -> {
-          String stringifiedMessage = gson.toJson(message);
-          // Only log non-transcript messages
-          if (!stringifiedMessage.contains("\\\"type\\\":\\\"transcript\\\"")) {
-            log.sent(stringifiedMessage);
-          }
-          browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
-        });
+    display.asyncExec(() -> browser.execute("eclipse_postMessage(" + gson.toJson(message) + ");"));
   }
 
   private void connectWebviewToBrowser(Browser browser) {
@@ -165,7 +157,6 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_interceptMessage") {
       @Override
       public Object function(Object[] arguments) {
-        log.received(arguments[0].toString() + " (Intercepted)");
         if (chatId.isEmpty()) {
           log.warn("No chat ID");
           return null;
@@ -186,7 +177,6 @@ public class ChatView extends ViewPart {
     new BrowserFunction(browser, "eclipse_receiveMessage") {
       @Override
       public Object function(Object[] arguments) {
-        log.received(arguments[0].toString());
         if (chatId.isEmpty()) {
           log.warn("No chat ID");
           return null;
