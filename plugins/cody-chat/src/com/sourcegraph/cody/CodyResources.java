@@ -7,13 +7,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.EnumSet;
 import org.eclipse.core.runtime.Platform;
 
 public class CodyResources {
 
-  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/dist/webviews");
-  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/dist/cody-agent");
-  private static final ResourcePath NODE_BINARIES_PATH = ResourcePath.of("/node-binaries");
+  private static final ResourcePath WEBVIEW_ASSETS = ResourcePath.of("/resources/dist/webviews");
+  private static final ResourcePath AGENT_ASSETS = ResourcePath.of("/resources/dist/cody-agent");
+  private static final ResourcePath NODE_BINARIES_PATH =
+      ResourcePath.of("/resources/node-binaries");
   private final Destinations destinations;
 
   private static byte[] indexHTML;
@@ -60,19 +63,27 @@ public class CodyResources {
     return Files.readAllBytes(resolvedPath);
   }
 
+  // Returns the path to the node binary. This first checks for a user-provided
+  // node binary, then checks for a platform-specific binary provided in the resources.
+  // The first time this is run, it will copy the node binary from the resources to the
+  // destination directory.
   public Path getNodeJSLocation() {
-    String userProvidedNode = System.getProperty("cody.nodejs-executable");
-    if (userProvidedNode != null) {
-      var path = Paths.get(userProvidedNode);
-      if (!Files.isExecutable(path)) {
-        throw new IllegalArgumentException(
-            "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
+    Path userPath = getUserProvidedNodePath();
+    if (userPath != null) return userPath;
+
+    String nodeExecutableName = getNodeExecutableName();
+    if (!nodeExecutableName.isEmpty()) {
+      var finalPath = destinations.node.resolve(nodeExecutableName);
+      if (Files.isExecutable(finalPath)) {
+        return finalPath;
       }
-      return path;
-    }
-    if (Platform.getOS().equals(Platform.OS_WIN32)) {
-      String nodeExecutableName = "node-win-x64.exe";
-      return destinations.node.resolve(nodeExecutableName);
+      try {
+        copyResourcePath(NODE_BINARIES_PATH.resolve(nodeExecutableName), finalPath);
+        markFileAsExecutable(finalPath);
+      } catch (IOException e) {
+        throw new MessageOnlyException("failed to copy node binary", e);
+      }
+      return finalPath;
     }
 
     throw new IllegalStateException(
@@ -96,7 +107,6 @@ public class CodyResources {
     try {
       copyFromAssetFile(destinations.webviews, WEBVIEW_ASSETS);
       copyFromAssetFile(destinations.agent, AGENT_ASSETS);
-      copyNodeBinaries(destinations.node);
     } catch (IOException e) {
       throw new MessageOnlyException("failed to copy assets", e);
     }
@@ -110,18 +120,7 @@ public class CodyResources {
     }
   }
 
-  /**
-   * Returns the path to a Node.js executable to run the agent.
-   *
-   * <p>We are bundling the correct version of Node.js with the agent on Windows. It is used by
-   * default. Users can provide the location through the system property code.nodejs-executable.
-   * Down the road, we may consider publishing separate plugin jars for each OS (cody-win.jar,
-   * cody-macos.jar, etc).
-   *
-   * <p>Importantly, we don't try to just shell out to "node". While this may work in some cases, we
-   * have no guarantee what Node version this gives us (and the agent requires Node >=v17).
-   */
-  private static void copyNodeBinaries(Path dir) throws IOException {
+  private static Path getUserProvidedNodePath() {
     String userProvidedNode = System.getProperty("cody.nodejs-executable");
     if (userProvidedNode != null) {
       Path path = Paths.get(userProvidedNode);
@@ -129,21 +128,18 @@ public class CodyResources {
         throw new IllegalArgumentException(
             "not executable: -Dcody.nodejs-executable=" + userProvidedNode);
       }
-      return;
+      return path;
     }
-    // We only support Windows at this time. The binary for Node.js is included in the plugin JAR.
-    if (Platform.getOS().equals(Platform.OS_WIN32)) {
-      String nodeExecutableName = "node-win-x64.exe";
-      Path path = dir.resolve(nodeExecutableName);
-      if (!Files.isRegularFile(path)) {
-        copyResourcePath(NODE_BINARIES_PATH.resolve(nodeExecutableName), path);
-      }
-      return;
-    }
+    return null;
+  }
 
-    throw new IllegalStateException(
-        "Unable to infer the location of a Node.js installation. To fix this problem, set the VM"
-            + " argument -Dcody.nodejs-executable and restart Eclipse.");
+  private static String getNodeExecutableName() {
+    if (Platform.getOS().equals(Platform.OS_WIN32)) {
+      return "node-win-x64.exe";
+    } else if (Platform.OS.isMac() && Platform.getOSArch().equals(Platform.ARCH_AARCH64)) {
+      return "node-macos-arm64";
+    }
+    return "";
   }
 
   private static void copyResourcePath(ResourcePath path, Path target) throws IOException {
@@ -157,6 +153,14 @@ public class CodyResources {
       }
       Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
     }
+  }
+
+  private static void markFileAsExecutable(Path path) throws IOException {
+    if (Platform.getOS().equals(Platform.OS_WIN32)) {
+      // Windows doesn't have an executable bit.
+      return;
+    }
+    Files.setPosixFilePermissions(path, EnumSet.of(PosixFilePermission.OWNER_EXECUTE));
   }
 
   public static class Destinations {

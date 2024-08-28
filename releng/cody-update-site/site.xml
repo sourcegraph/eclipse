@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/cody_feature_0.1.0.202407041638.jar" id="cody_feature" version="0.1.0.202407041638"/>
-   <feature url="features/cody_feature_0.2.1.202407051552.jar" id="cody_feature" version="0.2.1.202407051552"/>
+   <feature url="features/cody_feature_0.4.4.202408211642.jar" id="cody_feature" version="0.4.4.202408211642"/>
+   <feature url="features/cody_feature_0.4.5.202408221751.jar" id="cody_feature" version="0.4.5.202408221751"/>
+   <feature url="features/cody_feature_0.4.5.qualifier.jar" id="cody_feature" version="0.4.5.qualifier"/>
+   <feature url="features/cody_feature_0.100.0.202408271306.jar" id="cody_feature" version="0.100.0.202408271306"/>
 </site>

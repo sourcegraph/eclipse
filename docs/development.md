@@ -78,3 +78,44 @@ follows:
 6. Select the workspace directory.
 7. Select the "Import project view" option and select the file
    "2024-03.bazelproject". ![Import project view](img/import_project_view.png)
+
+## Updating MANIFEST.MF
+
+We use Bazel to automate releases. The motivation for this is that we couldn't
+figure out how to build the plugin outside the Eclipse GUI otherwise. There
+exists maven-tycho, but we're not using it for a variety of reasons (including
+the lack of IntelliJ support).
+
+Long-story short, mostly everything works with Bazel-built releases **except**
+how we handle `MANIFEST.MF`. When you need to update `MANIFEST.MF`, you need to
+do this proces
+
+```sh
+# Copy the original MANIFEST.MF
+cp plugins/cody-chat/META-INF/MANIFEST.MF.original plugins/cody-chat/META-INF/MANIFEST.MF
+# Make the change on the original manifest
+# Build the plugin manually in the Eclipse GUI via `site.xml`, "synchronze", "add feature", "build"
+unzip -j unzip -j releng/cody-update-site/plugins/cody-chat_0.100.0.*.jar META-INF/MANIFEST.MF
+# Make a backup copy of the original manifest
+cp plugins/cody-chat/META-INF/MANIFEST.MF plugins/cody-chat/META-INF/MANIFEST.MF.original
+# Move the generated manifest into the official location
+mv MANIFEST.MF plugins/cody-chat/META-INF/MANIFEST.MF
+# Manually edit the generated manifest to use version 0.100.0.qualifier
+```
+
+
+## Fixing secret storage errors on macOS
+
+When running the plugin on macOS, you may hit on this error here
+```
+Secure storage was unable to retrieve the master password from the OS keyring. Make sure that this application has access to the OS keyring. If the error persists, the password recovery feature could be used, or secure storage can be deleted and re-created.
+```
+
+Here is [one relevant result](https://www.eclipse.org/forums/index.php/t/1098516/) showing the fix for this problem.
+The short fix:
+
+* Quit Eclipse
+* Run `codesign -f -s - /Applications/Eclipse.app/Contents/MacOS/eclipse`
+* Run `rm -rf ~/.eclipse/org.eclipse.equinox.security/secure_storage`
+* Start Eclipse again
+

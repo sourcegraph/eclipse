@@ -1,8 +1,10 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +19,8 @@ public class CodyManager {
   public ExecutorService executorService = Executors.newCachedThreadPool();
   public ExtensionConfiguration config;
   public CodyResources resources;
+
+  @Inject private TokenStorage tokenStorage;
 
   // null when not started, pending CompletableFuture when starting, completed when started
   private AtomicReference<CompletableFuture<CodyAgent>> agentHolder = new AtomicReference<>(null);
@@ -49,7 +53,8 @@ public class CodyManager {
     // Check if there is an agent running or starting
     if (agentHolder.compareAndSet(null, new CompletableFuture<>())) {
       log.info("No Cody agent, starting a new one");
-      new StartAgentJob(this, agentHolder.get(), webserverPortHolder.get()).schedule();
+      new StartAgentJob(this, agentHolder.get(), webserverPortHolder.get(), tokenStorage)
+          .schedule();
     }
 
     agentHolder.get().thenAccept((agent) -> agent.runChecked(onFailure, action));

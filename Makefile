@@ -10,3 +10,6 @@ format:
 bindings: build-bindings format
 clean:
 	./scripts/clean.sh
+prepare-ci:
+	git clone https://github.com/sourcegraph/cody ../cody
+	python scripts/download-eclipse.py

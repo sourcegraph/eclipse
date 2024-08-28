@@ -2,6 +2,7 @@ package com.sourcegraph.cody.chat.agent;
 
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
 import com.sourcegraph.cody.protocol_generated.ClientInfo;
@@ -35,17 +36,20 @@ public class StartAgentJob extends Job {
   private final CodyManager manager;
   private final CompletableFuture<CodyAgent> agent;
   private final CompletableFuture<Integer> webserverPort;
+  private final TokenStorage tokenStorage;
 
   private final CodyLogger log = new CodyLogger(getClass());
 
   public StartAgentJob(
       CodyManager manager,
       CompletableFuture<CodyAgent> agent,
-      CompletableFuture<Integer> webserverPort) {
-    super("Starting Cody Agent...");
+      CompletableFuture<Integer> webserverPort,
+      TokenStorage tokenStorage) {
+    super("Starting Cody...");
     this.manager = manager;
     this.agent = agent;
     this.webserverPort = webserverPort;
+    this.tokenStorage = tokenStorage;
   }
 
   @Override
@@ -98,7 +102,7 @@ public class StartAgentJob extends Job {
       processBuilder.environment().put("CODY_AGENT_TRACE_PATH", agentTracePath);
     }
 
-    CodyAgentClientImpl client = new CodyAgentClientImpl();
+    CodyAgentClientImpl client = new CodyAgentClientImpl(tokenStorage);
     Process process = processBuilder.start();
 
     Launcher<CodyAgentServer> launcher =
@@ -147,7 +151,9 @@ public class StartAgentJob extends Job {
     clientInfo.version = "5.5.21-eclipse"; // Needs to be greater than 5.5.8
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
+    capabilities.secrets = ClientCapabilities.SecretsEnum.Client_managed;
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
+    capabilities.showDocument = ClientCapabilities.ShowDocumentEnum.Enabled;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
@@ -224,17 +230,21 @@ public class StartAgentJob extends Job {
   private PrintWriter traceWriter() {
     String tracePath = System.getProperty("cody-agent.trace-path", "");
 
-    if (!tracePath.isEmpty()) {
-      Path trace = Paths.get(tracePath);
-      try {
-        Files.createDirectories(trace.getParent());
-        return new PrintWriter(
-            Files.newOutputStream(
-                trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
-      } catch (IOException e) {
-        log.error("Cannot create a trace", e);
-      }
+    if (tracePath.isEmpty()) {
+      return null;
     }
-    return null;
+
+    log.info("Trace path: " + tracePath);
+
+    Path trace = Paths.get(tracePath);
+    try {
+      Files.createDirectories(trace.getParent());
+      return new PrintWriter(
+          Files.newOutputStream(
+              trace, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+    } catch (IOException e) {
+      log.error("Cannot create a trace", e);
+      return null;
+    }
   }
 }

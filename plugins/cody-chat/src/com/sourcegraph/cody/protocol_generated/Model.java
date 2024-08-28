@@ -1,7 +1,7 @@
 package com.sourcegraph.cody.protocol_generated;
 
 public final class Model {
-  public String model;
+  public String id;
   public java.util.List<ModelUsage> usage;
   public ModelContextWindow contextWindow;
   public ClientSideConfig clientSideConfig;

@@ -2,9 +2,6 @@ package com.sourcegraph.cody.chat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sourcegraph.cody.chat.access.AddProfileAction;
-import com.sourcegraph.cody.chat.access.TokenSelectionView;
-import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.chat.agent.CodyAgent;
 import com.sourcegraph.cody.chat.agent.CodyManager;
 import com.sourcegraph.cody.handlers.MessageHandlers;
@@ -19,21 +16,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
@@ -41,12 +31,6 @@ public class ChatView extends ViewPart {
   public static final String ID = "com.sourcegraph.cody.chat.ChatView";
 
   @Inject private Display display;
-
-  @Inject private TokenStorage tokenStorage;
-
-  @Inject private IWorkbenchPage page;
-
-  @Inject private IEclipseContext context;
 
   @Inject private MessageHandlers handlers;
 
@@ -75,45 +59,11 @@ public class ChatView extends ViewPart {
   @Override
   public void createPartControl(Composite parent) {
     try {
-      addLogInAction();
       addRestartCodyAction();
-      if (tokenStorage.getActiveProfileName().isPresent()) {
-        tokenStorage.updateCodyAgentConfiguration();
-        addWebview(parent);
-      } else {
-        addLoginButton(parent);
-      }
+      addWebview(parent);
     } catch (Exception e) {
       log.error("Cannot create chat view", e);
     }
-  }
-
-  public void addLoginButton(Composite parent) {
-    var button = new Button(parent, SWT.NONE);
-    button.setText("Log in");
-    button.setToolTipText("Log into your Cody account");
-    button.addSelectionListener(
-        new SelectionAdapter() {
-          @Override
-          public void widgetSelected(SelectionEvent e) {
-            var isDone = new AtomicBoolean(false);
-            tokenStorage.addCallback(
-                () -> {
-                  display.asyncExec(
-                      () -> {
-                        if (!tokenStorage.getActiveProfileName().orElse("").isEmpty()
-                            && isDone.compareAndSet(false, true)) {
-
-                          tokenStorage.updateCodyAgentConfiguration();
-                          button.dispose();
-                          addWebview(parent);
-                        }
-                      });
-                });
-            var action = new AddProfileAction(context);
-            action.run();
-          }
-        });
   }
 
   public void addWebview(Composite parent) {
@@ -257,41 +207,12 @@ public class ChatView extends ViewPart {
         return null;
       }
     };
-
-    new BrowserFunction(browser, "eclipse_getToken") {
-      @Override
-      public Object function(Object[] arguments) {
-        return tokenStorage.getActiveProfileName().map(tokenStorage::getToken).orElse("");
-      }
-    };
   }
 
   private IToolBarManager addActionToToolbar(Action action) {
     var toolBar = getViewSite().getActionBars().getToolBarManager();
     toolBar.add(action);
     return toolBar;
-  }
-
-  private void addLogInAction() {
-    var action =
-        new Action() {
-          @Override
-          public void run() {
-            try {
-              page.showView(TokenSelectionView.ID);
-            } catch (PartInitException e) {
-              log.error("Cannot open token selection view", e);
-            }
-          }
-        };
-
-    action.setText("Open Cody Settings");
-    action.setToolTipText("Open Cody Settings");
-    action.setImageDescriptor(
-        PlatformUI.getWorkbench()
-            .getSharedImages()
-            .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
-    addActionToToolbar(action);
   }
 
   private void addStartNewChatAction() {
@@ -315,6 +236,8 @@ public class ChatView extends ViewPart {
   }
 
   private void addRestartCodyAction() {
+    // This is disabled by default because it doesn't work correctly. When you restart, the
+    // webview gets stuck in a loading state.
     if (!"true".equals(System.getProperty("cody-agent.restart-button", "false"))) {
       return;
     }

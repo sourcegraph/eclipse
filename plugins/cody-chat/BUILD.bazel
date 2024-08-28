@@ -1,0 +1,74 @@
+load("@rules_java//java:defs.bzl", "java_library", "java_import")
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "cody_chat_file_deps",
+    srcs = [
+        "META-INF/MANIFEST.MF",
+        "lib/directories-26.jar",
+        "plugin.xml",
+    ],
+)
+
+exports_files(["version.txt"])
+
+filegroup(
+    name = "cody_chat_icons",
+    srcs = glob(["icons/**"]),
+)
+
+filegroup(
+    name = "cody_chat_resources",
+    srcs = glob(["resources/**"]),
+)
+
+java_library(
+    name = "cody_eclipse_2024_03",
+    srcs = glob(["src/**/*.java"]),
+    resources = [
+        ":version.txt",
+        ":cody_chat_icons",
+        ":cody_chat_resources",
+        ":cody_chat_file_deps",
+    ],
+    resource_strip_prefix = "plugins/cody-chat",
+    deps = [
+        ":custom_jars",
+        "//eclipse-platforms:eclipse_2024_03",
+    ],
+)
+
+java_import(
+    name = "custom_jars",
+    jars = glob(["lib/*.jar"]),
+)
+
+java_library(
+    name = "cody_eclipse_2019_12",
+    srcs = glob(["src/**/*.java"]),
+    resources = [
+        ":version.txt",
+        ":cody_chat_icons",
+        ":cody_chat_resources",
+    ],
+    resource_strip_prefix = "plugins/cody-chat",
+    deps = [
+        ":custom_jars",
+        "//eclipse-platforms:eclipse_2019_12",
+    ],
+)
+
+java_library(
+    name = "cody_eclipse_2022_12",
+    srcs = glob(["src/**/*.java"]),
+    resources = [
+        ":version.txt",
+        ":cody_chat_icons",
+        ":cody_chat_resources",
+    ],
+    resource_strip_prefix = "plugins/cody-chat",
+    deps = [
+        ":custom_jars",
+        "//eclipse-platforms:eclipse_2022_12",
+    ],
+)
