@@ -21,9 +21,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CodyAgentClientImpl implements CodyAgentClient {
   private final TokenStorage secretsStorage;
+  private final Consumer<String> extensionMessageConsumer;
 
-  public CodyAgentClientImpl(TokenStorage tokenStorage) {
+  public CodyAgentClientImpl(TokenStorage tokenStorage, Consumer<String> extensionMessageConsumer) {
     this.secretsStorage = tokenStorage;
+    this.extensionMessageConsumer = extensionMessageConsumer;
   }
 
   private final CodyLogger log = new CodyLogger(getClass());
@@ -156,7 +158,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params) {
-
     if (extensionMessageConsumer != null && params.stringEncodedMessage != null) {
       extensionMessageConsumer.accept(params.stringEncodedMessage);
     }
@@ -176,8 +177,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
-
-  public Consumer<String> extensionMessageConsumer;
 
   @Override
   public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {

@@ -22,6 +22,8 @@ public class CodyManager {
 
   @Inject private TokenStorage tokenStorage;
 
+  public MultiConsumer<String> webviewConsumer = new MultiConsumer<>();
+
   // null when not started, pending CompletableFuture when starting, completed when started
   private AtomicReference<CompletableFuture<CodyAgent>> agentHolder = new AtomicReference<>(null);
   private AtomicReference<CompletableFuture<Integer>> webserverPortHolder =
@@ -53,7 +55,8 @@ public class CodyManager {
     // Check if there is an agent running or starting
     if (agentHolder.compareAndSet(null, new CompletableFuture<>())) {
       log.info("No Cody agent, starting a new one");
-      new StartAgentJob(this, agentHolder.get(), webserverPortHolder.get(), tokenStorage)
+      new StartAgentJob(
+              this, agentHolder.get(), webserverPortHolder.get(), tokenStorage, webviewConsumer)
           .schedule();
     }
 
@@ -62,15 +65,6 @@ public class CodyManager {
 
   public void withAgent(Consumer<CodyAgent> action) {
     withAgent(OnFailure.LOG, action);
-  }
-
-  public void onConfigChange(ExtensionConfiguration config) {
-    this.config = config;
-    CodyLogger.onConfigChange(config);
-    if (agentHolder.get() != null) {
-      // Notify agent about config change
-      withAgent(OnFailure.LOG, agent -> agent.server.extensionConfiguration_didChange(config));
-    }
   }
 
   public void webserverDisposed() {
