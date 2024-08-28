@@ -1,9 +1,9 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
-import com.sourcegraph.cody.webview_protocol.*;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -20,6 +20,12 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CodyAgentClientImpl implements CodyAgentClient {
+  private final TokenStorage secretsStorage;
+
+  public CodyAgentClientImpl(TokenStorage tokenStorage) {
+    this.secretsStorage = tokenStorage;
+  }
+
   private final CodyLogger log = new CodyLogger(getClass());
 
   @Override
@@ -97,6 +103,38 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   public CompletableFuture<Boolean> workspace_edit(WorkspaceEditParams params) {
 
     return null;
+  }
+
+  @Override
+  public CompletableFuture<String> secrets_get(Secrets_GetParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(() -> secretsStorage.getAgentSecret(params.key));
+  }
+
+  @Override
+  public CompletableFuture<Void> secrets_store(Secrets_StoreParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          secretsStorage.setAgentSecret(params.key, params.value);
+          return null;
+        });
+  }
+
+  @Override
+  public CompletableFuture<Void> secrets_delete(Secrets_DeleteParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          secretsStorage.deleteAgentSecret(params.key);
+          return null;
+        });
   }
 
   @Override

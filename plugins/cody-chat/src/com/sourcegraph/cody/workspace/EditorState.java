@@ -71,7 +71,10 @@ public final class EditorState {
   }
 
   @Nullable
-  public static EditorState from(IWorkbenchPartReference partReference) {
+  public static EditorState from(@Nullable IWorkbenchPartReference partReference) {
+    if (partReference == null) {
+      return null;
+    }
     var part = partReference.getPart(false);
     if (!(part instanceof ITextEditor)) {
       return null;
