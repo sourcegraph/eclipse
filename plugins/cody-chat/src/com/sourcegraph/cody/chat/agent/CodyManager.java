@@ -17,7 +17,6 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 @Singleton
 public class CodyManager {
   public ExecutorService executorService = Executors.newCachedThreadPool();
-  public ExtensionConfiguration config;
   public CodyResources resources;
 
   @Inject private TokenStorage tokenStorage;

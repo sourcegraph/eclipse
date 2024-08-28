@@ -170,8 +170,8 @@ public class StartAgentJob extends Job {
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;
 
-    clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
-    server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    CodyLogger.onEndpointChange(serverInfo.authStatus.endpoint);
     server.initialized(null);
   }
 

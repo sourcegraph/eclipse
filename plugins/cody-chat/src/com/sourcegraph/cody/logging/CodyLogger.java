@@ -26,8 +26,8 @@ public class CodyLogger {
     this.delegate = Platform.getLog(clazz);
   }
 
-  public static void onConfigChange(ExtensionConfiguration config) {
-    INSTANCE.setConnectedInstance(config.serverEndpoint);
+  public static void onEndpointChange(String endpoint) {
+    INSTANCE.setConnectedInstance(endpoint);
   }
 
   public void error(String message) {
