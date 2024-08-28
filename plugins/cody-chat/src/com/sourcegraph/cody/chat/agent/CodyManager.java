@@ -3,7 +3,6 @@ package com.sourcegraph.cody.chat.agent;
 import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;

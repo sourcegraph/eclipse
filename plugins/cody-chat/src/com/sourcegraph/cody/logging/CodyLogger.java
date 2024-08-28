@@ -1,6 +1,5 @@
 package com.sourcegraph.cody.logging;
 
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
