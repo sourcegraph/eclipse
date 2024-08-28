@@ -24,7 +24,7 @@
             icon="icons/sample.png"
             id="com.sourcegraph.cody.logging.LogView"
             inject="true"
-            name="Cody Log"
+            name="Cody Logs"
             restorable="true">
       </view>
    </extension>
