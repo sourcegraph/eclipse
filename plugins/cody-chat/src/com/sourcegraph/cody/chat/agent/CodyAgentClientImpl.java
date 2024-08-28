@@ -138,7 +138,9 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public void debug_message(DebugMessage params) {
+    log.info(String.format("%s: %s", params.channel, params.message));
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
