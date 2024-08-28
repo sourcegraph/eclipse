@@ -71,14 +71,14 @@ public class StartAgentJob extends Job {
     var dataDir = getDataDirectory();
     // Copy all necessary resources to data directory. By default this will be
     // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
-    manager.resources =
+    var resources =
         new CodyResources(
             new CodyResources.DestinationsBuilder().withAgent(dataDir).withNode(dataDir).build());
 
     ArrayList<String> arguments = new ArrayList<>();
-    arguments.add(manager.resources.getNodeJSLocation().toString());
+    arguments.add(resources.getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
-    arguments.add(agentScript().toString());
+    arguments.add(agentScript(resources).toString());
     arguments.add("api");
     arguments.add("jsonrpc-stdio");
     ProcessBuilder processBuilder =
@@ -161,12 +161,12 @@ public class StartAgentJob extends Job {
     server.initialized(null);
   }
 
-  private Path agentScript() throws IOException {
+  private Path agentScript(CodyResources resources) throws IOException {
     String userProvidedAgentScript = System.getProperty("cody.agent-script-path");
     if (userProvidedAgentScript != null) {
       return Paths.get(userProvidedAgentScript);
     }
-    return manager.resources.getAgentEntry();
+    return resources.getAgentEntry();
   }
 
   private Path getDataDirectory() {
