@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
@@ -27,6 +27,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+@SuppressWarnings("unused")
 public class ChatView extends ViewPart {
   public static final String ID = "com.sourcegraph.cody.chat.ChatView";
 
@@ -44,7 +45,8 @@ public class ChatView extends ViewPart {
   private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
       new ConcurrentLinkedQueue<>();
 
-  public static Gson gson = ChatView.createGson();
+  public static Gson gson = createGson();
+  private Consumer<String> webviewMessagesConsumer;
 
   private static Gson createGson() {
     GsonBuilder builder = new GsonBuilder();
@@ -69,9 +71,12 @@ public class ChatView extends ViewPart {
   public void addWebview(Composite parent) {
     final Browser browser = new Browser(parent, SWT.EDGE);
     this.browserField = browser;
-    restartWebviewProtocol(browser);
-    addStartNewChatAction();
-    onStartNewChat(browser);
+    manager.withAgent(agent -> newWebview(browser, agent));
+  }
+
+  private void newWebview(Browser browser, CodyAgent agent) {
+    connectWebviewToBrowser(browser);
+    onStartNewChat(browser, agent);
   }
 
   private void doPostMessage(Browser browser, String message) {
@@ -86,47 +91,46 @@ public class ChatView extends ViewPart {
         });
   }
 
-  private void restartWebviewProtocol(Browser browser) {
+  private void connectWebviewToBrowser(Browser browser) {
     pendingExtensionMessages.clear();
     webviewInitialized = new CompletableFuture<>();
     webviewInitialized.thenRun(() -> flushPendingMessages(browser));
-    manager.withAgent(
-        agent -> {
-          agent.client.extensionMessageConsumer =
-              (message) -> {
-                if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
-                  doPostMessage(browser, message);
-                } else {
-                  pendingExtensionMessages.add(message);
-                }
-              };
-        });
+    Consumer<String> oldConsumer = this.webviewMessagesConsumer;
+    this.webviewMessagesConsumer =
+        message -> {
+          if (webviewInitialized.isDone() && pendingExtensionMessages.isEmpty()) {
+            doPostMessage(browser, message);
+          } else {
+            pendingExtensionMessages.add(message);
+          }
+        };
+    if (oldConsumer != null) {
+      manager.webviewConsumer.removeListener(oldConsumer);
+    }
+    manager.webviewConsumer.addListener(webviewMessagesConsumer);
   }
 
-  private void onStartNewChat(Browser browser) {
-    manager.withAgent(
-        agent -> {
-          try {
-            // Resolve the native webview with the pre-defined view IDs.
-            chatId = "eclipse-sidebar";
-            Webview_ResolveWebviewViewParams viewParams = new Webview_ResolveWebviewViewParams();
-            viewParams.viewId = "cody.chat";
-            viewParams.webviewHandle = chatId;
-            agent.server.webview_resolveWebviewView(viewParams).get(5, TimeUnit.SECONDS);
+  private void onStartNewChat(Browser browser, CodyAgent agent) {
+    try {
+      // Resolve the native webview with the pre-defined view IDs.
+      chatId = "eclipse-sidebar";
+      Webview_ResolveWebviewViewParams viewParams = new Webview_ResolveWebviewViewParams();
+      viewParams.viewId = "cody.chat";
+      viewParams.webviewHandle = chatId;
+      agent.server.webview_resolveWebviewView(viewParams).get(5, TimeUnit.SECONDS);
 
-          } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log.error("Cannot create new chat", e);
-            return; // TODO: display error message to the user
-          }
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      log.error("Cannot create new chat", e);
+      return; // TODO: display error message to the user
+    }
 
-          // We have the chat ID, let's update the browser URL.
-          display.asyncExec(
-              () -> {
-                createCallbacks(browser, agent);
-                var url = String.format("http://localhost:%d", agent.webviewPort);
-                browser.setUrl(url);
-                browser.getParent().layout();
-              });
+    // We have the chat ID, let's update the browser URL.
+    display.asyncExec(
+        () -> {
+          createCallbacks(browser, agent);
+          var url = String.format("http://localhost:%d", agent.webviewPort);
+          browser.setUrl(url);
+          browser.getParent().layout();
         });
   }
 
@@ -209,30 +213,8 @@ public class ChatView extends ViewPart {
     };
   }
 
-  private IToolBarManager addActionToToolbar(Action action) {
-    var toolBar = getViewSite().getActionBars().getToolBarManager();
-    toolBar.add(action);
-    return toolBar;
-  }
-
-  private void addStartNewChatAction() {
-    var action =
-        new Action() {
-          @Override
-          public void run() {
-            if (browserField != null) {
-              onStartNewChat(browserField);
-            }
-          }
-        };
-
-    action.setText("Start new chat");
-    action.setToolTipText("Start new chat session");
-    action.setImageDescriptor(
-        PlatformUI.getWorkbench()
-            .getSharedImages()
-            .getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
-    addActionToToolbar(action).update(true);
+  private void addActionToToolbar(Action action) {
+    getViewSite().getActionBars().getToolBarManager().add(action);
   }
 
   private void addRestartCodyAction() {
@@ -246,7 +228,12 @@ public class ChatView extends ViewPart {
           @Override
           public void run() {
             manager.withAgent(CodyAgent::dispose);
-            manager.withAgent(a -> log.info("Agent restarted successfully"));
+            manager.withAgent(
+                agent -> {
+                  log.info("Agent restarted successfully");
+                  browserField.refresh();
+                  newWebview(browserField, agent);
+                });
           }
         };
 

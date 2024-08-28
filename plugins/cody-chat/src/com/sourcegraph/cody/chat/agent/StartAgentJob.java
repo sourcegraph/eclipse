@@ -37,6 +37,7 @@ public class StartAgentJob extends Job {
   private final CompletableFuture<CodyAgent> agent;
   private final CompletableFuture<Integer> webserverPort;
   private final TokenStorage tokenStorage;
+  private final MultiConsumer<String> webviewConsumer;
 
   private final CodyLogger log = new CodyLogger(getClass());
 
@@ -44,12 +45,14 @@ public class StartAgentJob extends Job {
       CodyManager manager,
       CompletableFuture<CodyAgent> agent,
       CompletableFuture<Integer> webserverPort,
-      TokenStorage tokenStorage) {
+      TokenStorage tokenStorage,
+      MultiConsumer<String> webviewConsumer) {
     super("Starting Cody...");
     this.manager = manager;
     this.agent = agent;
     this.webserverPort = webserverPort;
     this.tokenStorage = tokenStorage;
+    this.webviewConsumer = webviewConsumer;
   }
 
   @Override
@@ -102,7 +105,7 @@ public class StartAgentJob extends Job {
       processBuilder.environment().put("CODY_AGENT_TRACE_PATH", agentTracePath);
     }
 
-    CodyAgentClientImpl client = new CodyAgentClientImpl(tokenStorage);
+    CodyAgentClientImpl client = new CodyAgentClientImpl(tokenStorage, webviewConsumer);
     Process process = processBuilder.start();
 
     Launcher<CodyAgentServer> launcher =
@@ -167,8 +170,8 @@ public class StartAgentJob extends Job {
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;
 
-    clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
-    server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    CodyLogger.onEndpointChange(serverInfo.authStatus.endpoint);
     server.initialized(null);
   }
 
