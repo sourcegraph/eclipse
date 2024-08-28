@@ -1,11 +1,9 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.logging.CodyLogger;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import java.util.ArrayList;
 
 /** A consumer that broadcasts events to multiple listeners. */
 public class MultiConsumer<T> implements Consumer<T> {
