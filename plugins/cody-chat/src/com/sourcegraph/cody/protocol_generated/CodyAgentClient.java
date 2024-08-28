@@ -31,8 +31,8 @@ public interface CodyAgentClient {
   @JsonRequest("secrets/get")
   CompletableFuture<String> secrets_get(Secrets_GetParams params);
 
-  @JsonRequest("secrets/set")
-  CompletableFuture<Void> secrets_set(Secrets_SetParams params);
+  @JsonRequest("secrets/store")
+  CompletableFuture<Void> secrets_store(Secrets_StoreParams params);
 
   @JsonRequest("secrets/delete")
   CompletableFuture<Void> secrets_delete(Secrets_DeleteParams params);

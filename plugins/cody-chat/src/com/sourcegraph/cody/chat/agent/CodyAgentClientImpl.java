@@ -111,13 +111,11 @@ public class CodyAgentClientImpl implements CodyAgentClient {
       throw new UnsupportedOperationException("TokenStorage is not defined");
     }
     return CompletableFuture.supplyAsync(
-        () -> {
-          return secretsStorage.getAgentSecret(params.key);
-        });
+        () -> secretsStorage.getAgentSecret(params.key));
   }
 
   @Override
-  public CompletableFuture<Void> secrets_set(Secrets_SetParams params) {
+  public CompletableFuture<Void> secrets_store(Secrets_StoreParams params) {
     if (secretsStorage == null) {
       throw new UnsupportedOperationException("TokenStorage is not defined");
     }
