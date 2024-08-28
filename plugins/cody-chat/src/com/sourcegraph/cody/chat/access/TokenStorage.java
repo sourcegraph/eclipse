@@ -39,6 +39,11 @@ public class TokenStorage {
   }
 
   public void deleteAgentSecret(String key) {
-    agentSecureStorage.remove(key);
+    try {
+      agentSecureStorage.remove(key);
+      agentSecureStorage.flush();
+    } catch (IOException e) {
+      throw new WrappedRuntimeException(e); // Escalating unlikely exceptions
+    }
   }
 }
