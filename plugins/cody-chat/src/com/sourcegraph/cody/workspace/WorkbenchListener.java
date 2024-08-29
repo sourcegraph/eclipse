@@ -89,9 +89,16 @@ public class WorkbenchListener implements IPartListener2, CodyListener {
 
   @Override
   public void dispose() {
-    for (var child : children) {
-      child.dispose();
-    }
-    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().removePartListener(this);
+    Display.getDefault()
+        .execute(
+            () -> {
+              for (var child : children) {
+                child.dispose();
+              }
+              PlatformUI.getWorkbench()
+                  .getActiveWorkbenchWindow()
+                  .getPartService()
+                  .removePartListener(this);
+            });
   }
 }

@@ -23,8 +23,6 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 @SuppressWarnings("unused")
@@ -61,7 +59,6 @@ public class ChatView extends ViewPart {
   @Override
   public void createPartControl(Composite parent) {
     try {
-      addRestartCodyAction();
       addWebview(parent);
     } catch (Exception e) {
       log.error("Cannot create chat view", e);
@@ -127,7 +124,7 @@ public class ChatView extends ViewPart {
     // We have the chat ID, let's update the browser URL.
     display.asyncExec(
         () -> {
-          createCallbacks(browser, agent);
+          createCallbacks(browser);
           var url = String.format("http://localhost:%d", agent.webviewPort);
           browser.setUrl(url);
           browser.getParent().layout();
@@ -145,7 +142,7 @@ public class ChatView extends ViewPart {
     }
   }
 
-  private void createCallbacks(Browser browser, CodyAgent agent) {
+  private void createCallbacks(Browser browser) {
     if (browser == null) {
       return;
     }
@@ -198,7 +195,7 @@ public class ChatView extends ViewPart {
                   new Webview_ReceiveMessageStringEncodedParams();
               params.id = chatId;
               params.messageStringEncoded = messageJson;
-              agent.server.webview_receiveMessageStringEncoded(params);
+              manager.withAgent(agent -> agent.server.webview_receiveMessageStringEncoded(params));
             });
         return null;
       }
@@ -217,34 +214,14 @@ public class ChatView extends ViewPart {
     getViewSite().getActionBars().getToolBarManager().add(action);
   }
 
-  private void addRestartCodyAction() {
-    // This is disabled by default because it doesn't work correctly. When you restart, the
-    // webview gets stuck in a loading state.
-    if (!"true".equals(System.getProperty("cody-agent.restart-button", "false"))) {
-      return;
-    }
-    var action =
-        new Action() {
-          @Override
-          public void run() {
-            manager.withAgent(CodyAgent::dispose);
-            manager.withAgent(
-                agent -> {
-                  log.info("Agent restarted successfully");
-                  browserField.refresh();
-                  newWebview(browserField, agent);
-                });
-          }
-        };
-
-    action.setText("Restart Cody");
-    action.setToolTipText("Restart Cody Agent");
-    action.setImageDescriptor(
-        PlatformUI.getWorkbench()
-            .getSharedImages()
-            .getImageDescriptor(ISharedImages.IMG_ELCL_SYNCED));
-
-    addActionToToolbar(action);
+  public void reload() {
+    manager.withAgent(CodyAgent::dispose);
+    manager.withAgent(
+        agent -> {
+          log.info("Agent restarted successfully");
+          Display.getDefault().asyncExec(() -> browserField.refresh());
+          newWebview(browserField, agent);
+        });
   }
 
   @Override

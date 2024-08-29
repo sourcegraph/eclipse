@@ -57,8 +57,8 @@ public class CodyAgent implements Disposable {
       case IGNORE:
         break;
       case LOG:
-        dispose();
         log.error("Error running agent action", failure);
+        dispose();
         break;
       case THROW:
         dispose();
@@ -115,8 +115,8 @@ public class CodyAgent implements Disposable {
   }
 
   public void dispose() {
-    workbenchListener.dispose();
     try {
+      workbenchListener.dispose();
       server.shutdown(null).get(1, TimeUnit.SECONDS);
       server.exit(null);
       listening.cancel(true);
