@@ -108,8 +108,6 @@ public class LogView extends ViewPart {
       Button errorCheckBox = createCheckbox("Errors", icons.error, true);
       Button warnCheckBox = createCheckbox("Warnings", icons.warn, true);
       Button infoCheckBox = createCheckbox("Info", icons.info, true);
-      Button receivedCheckBox = createCheckbox("Received messages", icons.received, false);
-      Button sentCheckBox = createCheckbox("Sent messages", icons.sent, false);
 
       filter =
           new ViewerFilter() {
@@ -129,10 +127,6 @@ public class LogView extends ViewPart {
                   return warnCheckBox.getSelection();
                 case INFO:
                   return infoCheckBox.getSelection();
-                case RECEIVED:
-                  return receivedCheckBox.getSelection();
-                case SENT:
-                  return sentCheckBox.getSelection();
               }
               return true;
             }

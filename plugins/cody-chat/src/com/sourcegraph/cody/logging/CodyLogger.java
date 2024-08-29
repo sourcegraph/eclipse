@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.logging;
 
+import com.sourcegraph.cody.CodyPaths;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
@@ -60,14 +61,6 @@ public class CodyLogger {
     INSTANCE.log(new LogMessage(LogMessage.Kind.INFO, message, LocalDateTime.now()));
   }
 
-  public void received(String message) {
-    INSTANCE.log(new LogMessage(LogMessage.Kind.RECEIVED, message, LocalDateTime.now()));
-  }
-
-  public void sent(String message) {
-    INSTANCE.log(new LogMessage(LogMessage.Kind.SENT, message, LocalDateTime.now()));
-  }
-
   static class Internal {
 
     // plugin version, os, architecture and similar info
@@ -101,6 +94,13 @@ public class CodyLogger {
               System.getProperty("os.version"),
               System.getProperty("os.arch"));
       environment.add(new LogMessage(LogMessage.Kind.INFO, system, LocalDateTime.now()));
+
+      var traceFiles =
+          "Cody agent client trace file: "
+              + CodyPaths.clientTracePath()
+              + ", server trace path:"
+              + CodyPaths.serverTracePath();
+      environment.add(new LogMessage(LogMessage.Kind.INFO, traceFiles, LocalDateTime.now()));
 
       addConnectedInstanceMsg();
     }

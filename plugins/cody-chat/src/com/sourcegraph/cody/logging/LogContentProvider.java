@@ -65,10 +65,6 @@ public class LogContentProvider extends LabelProvider
         return icons.warn;
       case INFO:
         return icons.info;
-      case RECEIVED:
-        return icons.received;
-      case SENT:
-        return icons.sent;
       default:
         return null;
     }

@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.google.gson.GsonBuilder;
+import com.sourcegraph.cody.CodyPaths;
 import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
@@ -9,7 +10,6 @@ import com.sourcegraph.cody.protocol_generated.ClientInfo;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
 import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
-import dev.dirs.ProjectDirectories;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
-import org.eclipse.lsp4j.jsonrpc.MessageConsumer;
 
 public class StartAgentJob extends Job {
   private final CodyManager manager;
@@ -78,7 +77,7 @@ public class StartAgentJob extends Job {
           TimeoutException {
 
     Path workspaceRoot = getWorkspaceRoot();
-    var dataDir = getDataDirectory();
+    var dataDir = CodyPaths.dataDir();
     // Copy all necessary resources to data directory. By default this will be
     // ~/AppData/Roaming/Sourcegraph/CodyEclipse/data on Windows.
     manager.resources =
@@ -92,18 +91,15 @@ public class StartAgentJob extends Job {
     ArrayList<String> arguments = new ArrayList<>();
     arguments.add(manager.resources.getNodeJSLocation().toString());
     arguments.add("--enable-source-maps");
-    arguments.add(agentScript().toString());
+    arguments.add(CodyPaths.agentScript(manager.resources).toString());
     arguments.add("api");
     arguments.add("jsonrpc-stdio");
     ProcessBuilder processBuilder =
         new ProcessBuilder(arguments)
             .directory(workspaceRoot.toFile())
             .redirectError(ProcessBuilder.Redirect.INHERIT);
-    String agentTracePath = System.getProperty("cody.debug-trace-path");
 
-    if (agentTracePath != null) {
-      processBuilder.environment().put("CODY_AGENT_TRACE_PATH", agentTracePath);
-    }
+    processBuilder.environment().put("CODY_AGENT_TRACE_PATH", CodyPaths.serverTracePath());
 
     CodyAgentClientImpl client = new CodyAgentClientImpl(tokenStorage, webviewConsumer);
     Process process = processBuilder.start();
@@ -111,7 +107,6 @@ public class StartAgentJob extends Job {
     Launcher<CodyAgentServer> launcher =
         new Launcher.Builder<CodyAgentServer>()
             .setRemoteInterface(CodyAgentServer.class)
-            .wrapMessages(this::logMessages)
             .traceMessages(traceWriter())
             .setExecutorService(manager.executorService)
             .setInput(process.getInputStream())
@@ -127,17 +122,6 @@ public class StartAgentJob extends Job {
     var instance = new CodyAgent(listening, server, port, client, process, manager);
     instance.postCreate();
     return instance;
-  }
-
-  private MessageConsumer logMessages(MessageConsumer consumer) {
-    return message -> {
-      // Only log non-transcript messages
-      var stringifiedMsg = message.toString();
-      if (!stringifiedMsg.contains("\\\"type\\\":\\\"transcript\\\"")) {
-        log.sent(message.toString());
-      }
-      consumer.consume(message);
-    };
   }
 
   private void initialize(CodyAgentServer server, Path workspaceRoot)
@@ -174,20 +158,6 @@ public class StartAgentJob extends Job {
     var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
     CodyLogger.onEndpointChange(serverInfo.authStatus.endpoint);
     server.initialized(null);
-  }
-
-  private Path agentScript() throws IOException {
-    String userProvidedAgentScript = System.getProperty("cody.agent-script-path");
-    if (userProvidedAgentScript != null) {
-      return Paths.get(userProvidedAgentScript);
-    }
-    return manager.resources.getAgentEntry();
-  }
-
-  private Path getDataDirectory() {
-    ProjectDirectories dirs =
-        ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
-    return Paths.get(dirs.dataDir);
   }
 
   private Path getWorkspaceRoot() throws URISyntaxException {
@@ -231,15 +201,7 @@ public class StartAgentJob extends Job {
   }
 
   private PrintWriter traceWriter() {
-    String tracePath = System.getProperty("cody-agent.trace-path", "");
-
-    if (tracePath.isEmpty()) {
-      return null;
-    }
-
-    log.info("Trace path: " + tracePath);
-
-    Path trace = Paths.get(tracePath);
+    Path trace = Paths.get(CodyPaths.clientTracePath());
     try {
       Files.createDirectories(trace.getParent());
       return new PrintWriter(
