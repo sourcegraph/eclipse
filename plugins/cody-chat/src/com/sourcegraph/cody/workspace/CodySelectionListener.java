@@ -4,6 +4,7 @@ import com.sourcegraph.cody.chat.agent.CodyAgent;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.widgets.Display;
 
 public class CodySelectionListener implements CodyListener, ISelectionChangedListener {
   private final CodyAgent agent;
@@ -33,6 +34,6 @@ public class CodySelectionListener implements CodyListener, ISelectionChangedLis
 
   @Override
   public void dispose() {
-    editorState.editor.getSelectionProvider().removeSelectionChangedListener(this);
+    Display.getDefault().execute(() -> editorState.editor.getSelectionProvider().removeSelectionChangedListener(this));
   }
 }

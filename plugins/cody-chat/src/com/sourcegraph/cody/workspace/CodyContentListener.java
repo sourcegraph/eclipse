@@ -3,6 +3,7 @@ package com.sourcegraph.cody.workspace;
 import com.sourcegraph.cody.chat.agent.CodyAgent;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.swt.widgets.Display;
 
 public class CodyContentListener implements CodyListener, IDocumentListener {
   private final CodyAgent agent;
@@ -21,7 +22,7 @@ public class CodyContentListener implements CodyListener, IDocumentListener {
 
   @Override
   public void dispose() {
-    editorState.getDocument().removeDocumentListener(this);
+    Display.getDefault().execute(() -> editorState.getDocument().removeDocumentListener(this));
   }
 
   @Override
