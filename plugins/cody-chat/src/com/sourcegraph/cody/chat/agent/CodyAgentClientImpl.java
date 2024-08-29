@@ -1,10 +1,9 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
-import com.sourcegraph.cody.webview_protocol.*;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +21,14 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CodyAgentClientImpl implements CodyAgentClient {
+  private final TokenStorage secretsStorage;
+  private final Consumer<String> extensionMessageConsumer;
+
+  public CodyAgentClientImpl(TokenStorage tokenStorage, Consumer<String> extensionMessageConsumer) {
+    this.secretsStorage = tokenStorage;
+    this.extensionMessageConsumer = extensionMessageConsumer;
+  }
+
   private final CodyLogger log = new CodyLogger(getClass());
 
   @Override
@@ -120,11 +127,43 @@ public class CodyAgentClientImpl implements CodyAgentClient {
             log.error("Error loading webview asset", e);
             return null;
           }
+
+  @Override
+  public CompletableFuture<String> secrets_get(Secrets_GetParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(() -> secretsStorage.getAgentSecret(params.key));
+  }
+
+  @Override
+  public CompletableFuture<Void> secrets_store(Secrets_StoreParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          secretsStorage.setAgentSecret(params.key, params.value);
+          return null;
         });
   }
 
   @Override
-  public void debug_message(DebugMessage params) {}
+  public CompletableFuture<Void> secrets_delete(Secrets_DeleteParams params) {
+    if (secretsStorage == null) {
+      throw new UnsupportedOperationException("TokenStorage is not defined");
+    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          secretsStorage.deleteAgentSecret(params.key);
+          return null;
+        });
+  }
+
+  @Override
+  public void debug_message(DebugMessage params) {
+    log.info(String.format("%s: %s", params.channel, params.message));
+  }
 
   @Override
   public void editTask_didUpdate(EditTask params) {}
@@ -140,7 +179,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_postMessageStringEncoded(Webview_PostMessageStringEncodedParams params) {
-
     if (extensionMessageConsumer != null && params.stringEncodedMessage != null) {
       extensionMessageConsumer.accept(params.stringEncodedMessage);
     }
@@ -160,8 +198,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
-
-  public Consumer<String> extensionMessageConsumer;
 
   @Override
   public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {

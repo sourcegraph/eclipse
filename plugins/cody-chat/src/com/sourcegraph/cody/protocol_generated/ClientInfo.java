@@ -9,4 +9,5 @@ public final class ClientInfo {
   public String workspaceRootPath;
   public ExtensionConfiguration extensionConfiguration;
   public ClientCapabilities capabilities;
+  public String legacyNameForServerIdentification;
 }

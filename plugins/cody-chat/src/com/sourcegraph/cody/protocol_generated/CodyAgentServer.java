@@ -36,6 +36,9 @@ public interface CodyAgentServer {
   @JsonRequest("chat/export")
   CompletableFuture<java.util.List<ChatExportResult>> chat_export(Chat_ExportParams params);
 
+  @JsonRequest("chat/import")
+  CompletableFuture<Void> chat_import(Chat_ImportParams params);
+
   @JsonRequest("chat/remoteRepos")
   CompletableFuture<Chat_RemoteReposResult> chat_remoteRepos(Chat_RemoteReposParams params);
 
@@ -263,4 +266,7 @@ public interface CodyAgentServer {
 
   @JsonNotification("webview/didDisposeNative")
   void webview_didDisposeNative(Webview_DidDisposeNativeParams params);
+
+  @JsonNotification("secrets/didChange")
+  void secrets_didChange(Secrets_DidChangeParams params);
 }

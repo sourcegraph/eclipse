@@ -1,6 +1,5 @@
 package com.sourcegraph.cody.logging;
 
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
@@ -26,8 +25,8 @@ public class CodyLogger {
     this.delegate = Platform.getLog(clazz);
   }
 
-  public static void onConfigChange(ExtensionConfiguration config) {
-    INSTANCE.setConnectedInstance(config.serverEndpoint);
+  public static void onEndpointChange(String endpoint) {
+    INSTANCE.setConnectedInstance(endpoint);
   }
 
   public void error(String message) {

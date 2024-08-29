@@ -2,6 +2,7 @@ package com.sourcegraph.cody.chat.agent;
 
 import com.google.gson.GsonBuilder;
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
 import dev.dirs.ProjectDirectories;
@@ -32,17 +33,23 @@ public class StartAgentJob extends Job {
   private final CodyManager manager;
   private final CompletableFuture<CodyAgent> agent;
   private final CompletableFuture<Integer> webserverPort;
+  private final TokenStorage tokenStorage;
+  private final MultiConsumer<String> webviewConsumer;
 
   private final CodyLogger log = new CodyLogger(getClass());
 
   public StartAgentJob(
       CodyManager manager,
       CompletableFuture<CodyAgent> agent,
-      CompletableFuture<Integer> webserverPort) {
+      CompletableFuture<Integer> webserverPort,
+      TokenStorage tokenStorage,
+      MultiConsumer<String> webviewConsumer) {
     super("Starting Cody...");
     this.manager = manager;
     this.agent = agent;
     this.webserverPort = webserverPort;
+    this.tokenStorage = tokenStorage;
+    this.webviewConsumer = webviewConsumer;
   }
 
   @Override
@@ -91,7 +98,7 @@ public class StartAgentJob extends Job {
       processBuilder.environment().put("CODY_AGENT_TRACE_PATH", agentTracePath);
     }
 
-    CodyAgentClientImpl client = new CodyAgentClientImpl();
+    CodyAgentClientImpl client = new CodyAgentClientImpl(tokenStorage, webviewConsumer);
     Process process = processBuilder.start();
 
     Launcher<CodyAgentServer> launcher =
@@ -135,10 +142,12 @@ public class StartAgentJob extends Job {
     // explanation is that
     // we need to wait for enterprise customers to upgrade to a new version that includes the fix
     // from this PR here https://github.com/sourcegraph/sourcegraph/pull/63855.
-    clientInfo.name = "jetbrains";
+    clientInfo.name = "eclipse";
+    clientInfo.legacyNameForServerIdentification = "jetbrains";
     clientInfo.version = "5.5.21-eclipse"; // Needs to be greater than 5.5.8
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
+    capabilities.secrets = ClientCapabilities.SecretsEnum.Client_managed;
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     capabilities.showDocument = ClientCapabilities.ShowDocumentEnum.Enabled;
     // Enable string-encoding for webview messages.
@@ -156,8 +165,8 @@ public class StartAgentJob extends Job {
     capabilities.uriSchemeLoaders = List.of(Constants.webviewasset);
     clientInfo.capabilities = capabilities;
 
-    clientInfo.extensionConfiguration = manager.config; // TODO is that needed?
-    server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
+    CodyLogger.onEndpointChange(serverInfo.authStatus.endpoint);
     server.initialized(null);
   }
 

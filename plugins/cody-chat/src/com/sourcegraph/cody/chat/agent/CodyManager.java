@@ -1,8 +1,9 @@
 package com.sourcegraph.cody.chat.agent;
 
 import com.sourcegraph.cody.CodyResources;
+import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.ExtensionConfiguration;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +16,11 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 @Singleton
 public class CodyManager {
   public ExecutorService executorService = Executors.newCachedThreadPool();
-  public ExtensionConfiguration config;
+  public CodyResources resources;
+
+  @Inject private TokenStorage tokenStorage;
+
+  public MultiConsumer<String> webviewConsumer = new MultiConsumer<>();
 
   // null when not started, pending CompletableFuture when starting, completed when started
   private AtomicReference<CompletableFuture<CodyAgent>> agentHolder = new AtomicReference<>(null);
@@ -48,7 +53,9 @@ public class CodyManager {
     // Check if there is an agent running or starting
     if (agentHolder.compareAndSet(null, new CompletableFuture<>())) {
       log.info("No Cody agent, starting a new one");
-      new StartAgentJob(this, agentHolder.get(), webserverPortHolder.get()).schedule();
+      new StartAgentJob(
+              this, agentHolder.get(), webserverPortHolder.get(), tokenStorage, webviewConsumer)
+          .schedule();
     }
 
     agentHolder.get().thenAccept((agent) -> agent.runChecked(onFailure, action));
@@ -56,15 +63,6 @@ public class CodyManager {
 
   public void withAgent(Consumer<CodyAgent> action) {
     withAgent(OnFailure.LOG, action);
-  }
-
-  public void onConfigChange(ExtensionConfiguration config) {
-    this.config = config;
-    CodyLogger.onConfigChange(config);
-    if (agentHolder.get() != null) {
-      // Notify agent about config change
-      withAgent(OnFailure.LOG, agent -> agent.server.extensionConfiguration_didChange(config));
-    }
   }
 
   public void webserverDisposed() {

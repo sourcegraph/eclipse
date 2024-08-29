@@ -31,6 +31,15 @@ public interface CodyAgentClient {
   @JsonRequest("uri/readUTF8")
   CompletableFuture<Uri_ReadUTF8Result> uri_readUTF8(Uri_ReadUTF8Params params);
 
+  @JsonRequest("secrets/get")
+  CompletableFuture<String> secrets_get(Secrets_GetParams params);
+
+  @JsonRequest("secrets/store")
+  CompletableFuture<Void> secrets_store(Secrets_StoreParams params);
+
+  @JsonRequest("secrets/delete")
+  CompletableFuture<Void> secrets_delete(Secrets_DeleteParams params);
+
   @JsonRequest("env/openExternal")
   CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params);
 
