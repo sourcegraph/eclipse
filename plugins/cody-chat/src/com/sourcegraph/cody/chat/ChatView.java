@@ -37,7 +37,7 @@ public class ChatView extends ViewPart {
 
   private final CodyLogger log = new CodyLogger(getClass());
 
-  private Browser browserField;
+  private DisableableBrowser browserField;
   private volatile String chatId = "";
   private CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
   private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
@@ -66,17 +66,17 @@ public class ChatView extends ViewPart {
   }
 
   public void addWebview(Composite parent) {
-    final Browser browser = new Browser(parent, SWT.EDGE);
+    var browser = new DisableableBrowser(parent, SWT.EDGE);
     this.browserField = browser;
     manager.withAgent(agent -> newWebview(browser, agent));
   }
 
-  private void newWebview(Browser browser, CodyAgent agent) {
+  private void newWebview(DisableableBrowser browser, CodyAgent agent) {
     connectWebviewToBrowser(browser);
     onStartNewChat(browser, agent);
   }
 
-  private void doPostMessage(Browser browser, String message) {
+  private void doPostMessage(DisableableBrowser browser, String message) {
     display.asyncExec(
         () -> {
           String stringifiedMessage = gson.toJson(message);
@@ -84,11 +84,11 @@ public class ChatView extends ViewPart {
           if (!stringifiedMessage.contains("\\\"type\\\":\\\"transcript\\\"")) {
             log.sent(stringifiedMessage);
           }
-          browser.execute("eclipse_postMessage(" + stringifiedMessage + ");");
+          browser.getBrowser().execute("eclipse_postMessage(" + stringifiedMessage + ");");
         });
   }
 
-  private void connectWebviewToBrowser(Browser browser) {
+  private void connectWebviewToBrowser(DisableableBrowser browser) {
     pendingExtensionMessages.clear();
     webviewInitialized = new CompletableFuture<>();
     webviewInitialized.thenRun(() -> flushPendingMessages(browser));
@@ -107,7 +107,7 @@ public class ChatView extends ViewPart {
     manager.webviewConsumer.addListener(webviewMessagesConsumer);
   }
 
-  private void onStartNewChat(Browser browser, CodyAgent agent) {
+  private void onStartNewChat(DisableableBrowser browser, CodyAgent agent) {
     try {
       // Resolve the native webview with the pre-defined view IDs.
       chatId = "eclipse-sidebar";
@@ -124,14 +124,14 @@ public class ChatView extends ViewPart {
     // We have the chat ID, let's update the browser URL.
     display.asyncExec(
         () -> {
-          createCallbacks(browser);
+          createCallbacks(browser.getBrowser());
           var url = String.format("http://localhost:%d", agent.webviewPort);
-          browser.setUrl(url);
+          browser.getBrowser().setUrl(url);
           browser.getParent().layout();
         });
   }
 
-  private void flushPendingMessages(Browser browser) {
+  private void flushPendingMessages(DisableableBrowser browser) {
     try {
       String message;
       while ((message = pendingExtensionMessages.poll()) != null) {
@@ -219,7 +219,7 @@ public class ChatView extends ViewPart {
     manager.withAgent(
         agent -> {
           log.info("Agent restarted successfully");
-          Display.getDefault().asyncExec(() -> browserField.refresh());
+          Display.getDefault().asyncExec(() -> browserField.getBrowser().refresh());
           newWebview(browserField, agent);
         });
   }
