@@ -1,11 +1,9 @@
 package com.sourcegraph.cody.workspace;
 
 import com.sourcegraph.cody.chat.agent.CodyAgent;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
-
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;

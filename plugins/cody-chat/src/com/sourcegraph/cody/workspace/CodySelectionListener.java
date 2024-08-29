@@ -34,6 +34,8 @@ public class CodySelectionListener implements CodyListener, ISelectionChangedLis
 
   @Override
   public void dispose() {
-    Display.getDefault().execute(() -> editorState.editor.getSelectionProvider().removeSelectionChangedListener(this));
+    Display.getDefault()
+        .execute(
+            () -> editorState.editor.getSelectionProvider().removeSelectionChangedListener(this));
   }
 }

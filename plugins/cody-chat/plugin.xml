@@ -52,5 +52,13 @@
             message="com.sourcegraph.cody.webview_protocol.WebviewMessage$InsertWebviewMessage">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.sourcegraph.cody.chat.agent.ReloadHandler"
+            id="com.sourcegraph.cody.chat.agent.reload"
+            name="Restart Cody Agent">
+      </command>
+   </extension>
 
 </plugin>
