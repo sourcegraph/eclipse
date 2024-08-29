@@ -4,6 +4,7 @@ import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.*;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
@@ -115,6 +116,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
       throw new RuntimeException(
           "Invalid URI. Only " + webviewProtocol + " is supported. Received: " + params.uri);
     }
+    log.info("Loading webview asset: " + params.uri);
     return CompletableFuture.supplyAsync(
         () -> {
           var trimmedName = params.uri.replace(webviewProtocol, "");
@@ -127,6 +129,8 @@ public class CodyAgentClientImpl implements CodyAgentClient {
             log.error("Error loading webview asset", e);
             return null;
           }
+        });
+  }
 
   @Override
   public CompletableFuture<String> secrets_get(Secrets_GetParams params) {
