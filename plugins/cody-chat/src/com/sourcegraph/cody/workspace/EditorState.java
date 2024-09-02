@@ -7,6 +7,7 @@ import com.sourcegraph.cody.protocol_generated.Range;
 import java.net.URI;
 import java.nio.file.Paths;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -17,6 +18,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public final class EditorState {
   public final IFile file;
   public final String uri;
+  public final String projectUri;
   public final ITextEditor editor;
   @Nullable private IDocument document = null;
 
@@ -25,17 +27,8 @@ public final class EditorState {
   private EditorState(IFile file, ITextEditor editor) {
     this.file = file;
     this.uri = EditorState.getUri(file);
+    this.projectUri = EditorState.getUri(file.getProject());
     this.editor = editor;
-  }
-
-  private static String getUri(IFile file) {
-    URI uri = file.getLocationURI();
-    if (uri.getScheme().equals("file")) {
-      // Fixes CODY-3513
-      return Paths.get(uri).toUri().toString();
-    }
-
-    return uri.toString();
   }
 
   public String readContents() {
@@ -87,5 +80,15 @@ public final class EditorState {
     }
     var file1 = ((FileEditorInput) input).getFile();
     return new EditorState(file1, editor1);
+  }
+
+  static String getUri(IResource file) {
+    URI uri = file.getLocationURI();
+    if (uri.getScheme().equals("file")) {
+      // Fixes CODY-3513
+      return Paths.get(uri).toUri().toString();
+    }
+
+    return uri.toString();
   }
 }
