@@ -5,11 +5,15 @@ import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTextDocument;
 import com.sourcegraph.cody.protocol_generated.Range;
 import com.sourcegraph.cody.protocol_generated.TextDocument_DidFocusParams;
+import com.sourcegraph.cody.protocol_generated.WorkspaceFolder_DidChangeParams;
 import com.sourcegraph.cody.workspace.EditorState;
 import com.sourcegraph.cody.workspace.WorkbenchListener;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import org.eclipse.jdt.annotation.Nullable;
 
 public class CodyAgent implements Disposable {
 
@@ -20,6 +24,8 @@ public class CodyAgent implements Disposable {
   private final Process process;
   private final CodyManager manager;
   private final WorkbenchListener workbenchListener;
+
+  @Nullable private String projectUriCache = null;
 
   private final CodyLogger log = new CodyLogger(getClass());
 
@@ -85,6 +91,10 @@ public class CodyAgent implements Disposable {
     if (!listening.isDone()) {
       server.textDocument_didFocus(params);
     }
+
+    if (!Objects.equals(projectUriCache, state.projectUri)) {
+      projectChanged(state.projectUri);
+    }
   }
 
   public void fileOpened(EditorState state) {
@@ -93,6 +103,14 @@ public class CodyAgent implements Disposable {
     params.content = state.readContents();
     if (!listening.isDone()) {
       server.textDocument_didOpen(params);
+    }
+  }
+
+  public void fileClosed(EditorState state) {
+    var params = new ProtocolTextDocument();
+    params.uri = state.uri;
+    if (!listening.isDone()) {
+      server.textDocument_didClose(params);
     }
   }
 
@@ -111,6 +129,15 @@ public class CodyAgent implements Disposable {
     params.content = state.readContents();
     if (!listening.isDone()) {
       server.textDocument_didChange(params);
+    }
+  }
+
+  public void projectChanged(String uri) {
+    var params = new WorkspaceFolder_DidChangeParams();
+    params.uris = Collections.singletonList(uri);
+    projectUriCache = uri;
+    if (!listening.isDone()) {
+      server.workspaceFolder_didChange(params);
     }
   }
 

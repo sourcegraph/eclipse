@@ -61,6 +61,9 @@ public class WorkbenchListener implements IPartListener2, CodyListener {
                   .getPartService()
                   .addPartListener(this);
             });
+    var projectCreationListener = new ProjectCreationListener(agent);
+    projectCreationListener.install();
+    children.add(projectCreationListener);
   }
 
   @Override
@@ -84,6 +87,14 @@ public class WorkbenchListener implements IPartListener2, CodyListener {
       selectionListener.install();
 
       agent.focusChanged(state);
+    }
+  }
+
+  @Override
+  public void partClosed(IWorkbenchPartReference partReference) {
+    var state = EditorState.from(partReference);
+    if (state != null) {
+      agent.fileClosed(state);
     }
   }
 
