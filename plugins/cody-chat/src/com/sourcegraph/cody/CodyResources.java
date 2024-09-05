@@ -138,6 +138,8 @@ public class CodyResources {
       return "node-win-x64.exe";
     } else if (Platform.OS.isMac() && Platform.getOSArch().equals(Platform.ARCH_AARCH64)) {
       return "node-macos-arm64";
+    } else if (Platform.OS.isLinux() && Platform.getOSArch().equals(Platform.ARCH_X86_64)) {
+      return "node-linux-x64";
     }
     return "";
   }
