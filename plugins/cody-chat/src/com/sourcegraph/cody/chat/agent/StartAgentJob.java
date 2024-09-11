@@ -153,6 +153,8 @@ public class StartAgentJob extends Job {
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
+    capabilities.editWorkspace = ClientCapabilities.EditWorkspaceEnum.Enabled;
+    capabilities.edit = ClientCapabilities.EditEnum.Enabled;
     clientInfo.capabilities = capabilities;
 
     var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);

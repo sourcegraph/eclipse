@@ -1,5 +1,6 @@
 package com.sourcegraph.cody.chat.agent;
 
+import com.sourcegraph.cody.edits.EditManager;
 import com.sourcegraph.cody.logging.CodyLogger;
 import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
 import com.sourcegraph.cody.protocol_generated.ProtocolTextDocument;
@@ -17,6 +18,8 @@ public class CodyAgent implements Disposable {
   public final CodyAgentServer server;
   public final int webviewPort;
   public final CodyAgentClientImpl client;
+  public final EditManager editManager;
+
   private final Process process;
   private final CodyManager manager;
   private final WorkbenchListener workbenchListener;
@@ -37,6 +40,7 @@ public class CodyAgent implements Disposable {
     this.process = process;
     this.manager = manager;
     workbenchListener = new WorkbenchListener(this);
+    editManager = new EditManager();
   }
 
   public void runChecked(OnFailure onFailure, Consumer<CodyAgent> action) {

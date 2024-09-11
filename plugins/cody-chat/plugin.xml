@@ -59,6 +59,11 @@
             id="com.sourcegraph.cody.chat.agent.reload"
             name="Restart Cody Agent">
       </command>
+      <command
+            defaultHandler="com.sourcegraph.cody.workspace.LensDebugHandler"
+            id="com.sourcegraph.cody.chat.agent.lens"
+            name="Test Edits">
+      </command>
    </extension>
 
 </plugin>
