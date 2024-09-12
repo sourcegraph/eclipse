@@ -5,11 +5,7 @@ import com.sourcegraph.cody.CodyPaths;
 import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
+import com.sourcegraph.cody.protocol_generated.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -144,10 +140,10 @@ public class StartAgentJob extends Job {
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
-    WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
+    WebviewNativeConfig webviewConfig = new WebviewNativeConfig();
     webviewConfig.cspSource = "'self'";
-    webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.webviewBundleServingPrefix = CodyPaths.codyDir().resolve("dist").toUri().toString();
+    webviewConfig.view = WebviewNativeConfig.ViewEnum.Single;
+    webviewConfig.skipResourceRelativization = true;
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;

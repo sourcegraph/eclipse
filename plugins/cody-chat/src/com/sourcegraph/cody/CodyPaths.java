@@ -28,7 +28,7 @@ public class CodyPaths {
   }
 
   public static Path codyDir() {
-      return Paths.get(ProjectDirectories.from("", "", "Cody-nodejs").preferenceDir);
+    return Paths.get(ProjectDirectories.from("", "", "Cody-nodejs").preferenceDir);
   }
 
   public static Path dataDir() {

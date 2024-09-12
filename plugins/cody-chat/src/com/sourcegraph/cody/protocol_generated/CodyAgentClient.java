@@ -70,12 +70,6 @@ public interface CodyAgentClient {
   @JsonNotification("progress/end")
   void progress_end(Progress_EndParams params);
 
-  @JsonNotification("remoteRepo/didChange")
-  void remoteRepo_didChange(Void params);
-
-  @JsonNotification("remoteRepo/didChangeState")
-  void remoteRepo_didChangeState(RemoteRepoFetchState params);
-
   @JsonNotification("webview/registerWebviewViewProvider")
   void webview_registerWebviewViewProvider(Webview_RegisterWebviewViewProviderParams params);
 
@@ -102,4 +96,7 @@ public interface CodyAgentClient {
 
   @JsonNotification("window/didChangeContext")
   void window_didChangeContext(Window_DidChangeContextParams params);
+
+  @JsonNotification("window/focusSidebar")
+  void window_focusSidebar(Void params);
 }

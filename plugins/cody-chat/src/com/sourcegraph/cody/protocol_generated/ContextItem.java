@@ -32,7 +32,7 @@ public abstract class ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // uri, history
+    // history
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -59,7 +59,7 @@ public abstract class ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // uri, history
+    // history
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -86,7 +86,7 @@ public abstract class ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // uri, history
+    // history
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -114,7 +114,7 @@ public abstract class ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // uri, history
+    // history
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -143,7 +143,7 @@ public abstract class ContextItem {
     public String description;
     public ContextItemSource
         source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // uri, history
+    // history
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;

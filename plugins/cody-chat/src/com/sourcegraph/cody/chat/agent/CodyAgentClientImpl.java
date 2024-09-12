@@ -173,12 +173,6 @@ public class CodyAgentClientImpl implements CodyAgentClient {
   public void progress_end(Progress_EndParams params) {}
 
   @Override
-  public void remoteRepo_didChange(Void params) {}
-
-  @Override
-  public void remoteRepo_didChangeState(RemoteRepoFetchState params) {}
-
-  @Override
   public CompletableFuture<Boolean> env_openExternal(Env_OpenExternalParams params) {
     // TODO Auto-generated method stub
     return null;
@@ -235,4 +229,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void window_didChangeContext(Window_DidChangeContextParams params) {}
+
+  @Override
+  public void window_focusSidebar(Void params) {}
 }

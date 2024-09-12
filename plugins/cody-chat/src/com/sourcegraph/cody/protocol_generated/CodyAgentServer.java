@@ -39,8 +39,8 @@ public interface CodyAgentServer {
   @JsonRequest("chat/import")
   CompletableFuture<Void> chat_import(Chat_ImportParams params);
 
-  @JsonRequest("chat/remoteRepos")
-  CompletableFuture<Chat_RemoteReposResult> chat_remoteRepos(Chat_RemoteReposParams params);
+  @JsonRequest("chat/setModel")
+  CompletableFuture<Void> chat_setModel(Chat_SetModelParams params);
 
   @JsonRequest("commands/explain")
   CompletableFuture<String> commands_explain(Void params);
@@ -203,12 +203,6 @@ public interface CodyAgentServer {
 
   @JsonRequest("testing/ignore/overridePolicy")
   CompletableFuture<Void> testing_ignore_overridePolicy(ContextFilters params);
-
-  @JsonRequest("remoteRepo/has")
-  CompletableFuture<RemoteRepo_HasResult> remoteRepo_has(RemoteRepo_HasParams params);
-
-  @JsonRequest("remoteRepo/list")
-  CompletableFuture<RemoteRepo_ListResult> remoteRepo_list(RemoteRepo_ListParams params);
 
   // =============
   // Notifications

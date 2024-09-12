@@ -33,8 +33,6 @@ public abstract class ExtensionMessage {
           return context.deserialize(element, Enhanced_contextExtensionMessage.class);
         case "attribution":
           return context.deserialize(element, AttributionExtensionMessage.class);
-        case "context/remote-repos":
-          return context.deserialize(element, Context_remote_reposExtensionMessage.class);
         case "setConfigFeatures":
           return context.deserialize(element, SetConfigFeaturesExtensionMessage.class);
         case "allMentionProvidersMetadata":
@@ -179,16 +177,6 @@ public abstract class ExtensionMessage {
     public enum TypeEnum {
       @com.google.gson.annotations.SerializedName("attribution")
       Attribution,
-    }
-  }
-
-  public static final class Context_remote_reposExtensionMessage extends ExtensionMessage {
-    public TypeEnum type; // Oneof: context/remote-repos
-    public java.util.List<Repo> repos;
-
-    public enum TypeEnum {
-      @com.google.gson.annotations.SerializedName("context/remote-repos")
-      Context_remote_repos,
     }
   }
 

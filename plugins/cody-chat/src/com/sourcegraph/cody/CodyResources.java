@@ -26,13 +26,12 @@ public class CodyResources {
     copyAssetsTo(destinations);
   }
 
-
   public static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
   }
 
   public static String loadInjectedCSS() {
-      return loadResourceString("/resources/injected-styles.css");
+    return loadResourceString("/resources/injected-styles.css");
   }
 
   public static String loadResourceString(ResourcePath path) {
@@ -45,8 +44,8 @@ public class CodyResources {
 
   public static byte[] loadResourceBytes(String path) {
     try (var stream = CodyResources.class.getResourceAsStream(path)) {
-        assert stream != null;
-        return stream.readAllBytes();
+      assert stream != null;
+      return stream.readAllBytes();
     } catch (IOException e) {
       throw new MessageOnlyException("failed to load resource " + path, e);
     }

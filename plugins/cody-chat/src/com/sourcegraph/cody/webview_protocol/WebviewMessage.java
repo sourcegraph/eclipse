@@ -41,9 +41,6 @@ public abstract class WebviewMessage {
           return context.deserialize(element, EditWebviewMessage.class);
         case "context/get-remote-search-repos":
           return context.deserialize(element, Context_get_remote_search_reposWebviewMessage.class);
-        case "context/choose-remote-search-repo":
-          return context.deserialize(
-              element, Context_choose_remote_search_repoWebviewMessage.class);
         case "context/remove-remote-search-repo":
           return context.deserialize(
               element, Context_remove_remote_search_repoWebviewMessage.class);
@@ -264,16 +261,6 @@ public abstract class WebviewMessage {
     public enum CommandEnum {
       @com.google.gson.annotations.SerializedName("context/get-remote-search-repos")
       Context_get_remote_search_repos,
-    }
-  }
-
-  public static final class Context_choose_remote_search_repoWebviewMessage extends WebviewMessage {
-    public CommandEnum command; // Oneof: context/choose-remote-search-repo
-    public java.util.List<Repo> explicitRepos;
-
-    public enum CommandEnum {
-      @com.google.gson.annotations.SerializedName("context/choose-remote-search-repo")
-      Context_choose_remote_search_repo,
     }
   }
 
