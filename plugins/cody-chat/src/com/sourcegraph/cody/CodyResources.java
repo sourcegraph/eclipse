@@ -26,12 +26,16 @@ public class CodyResources {
     copyAssetsTo(destinations);
   }
 
+  public static String injectedJSName() {
+      return "/resources/injected-script.js";
+  }
+
   public static String loadInjectedJS() {
     return loadResourceString("/resources/injected-script.js");
   }
 
-  public static String loadInjectedCSS() {
-    return loadResourceString("/resources/injected-styles.css");
+  public static String injectedCSSName() {
+      return "/resources/injected-styles.css";
   }
 
   public static String loadResourceString(ResourcePath path) {
@@ -53,6 +57,9 @@ public class CodyResources {
   public byte[] loadWebviewBytes(String path) throws IOException {
     if (path.equals("index.html") && indexHTML != null) {
       return indexHTML;
+    }
+    if (path.equals(injectedCSSName()) || path.equals(injectedJSName())) {
+        return loadResourceBytes(path);
     }
     // We can't join a path that starts with a /, because Path thinks
     // those are absolute paths

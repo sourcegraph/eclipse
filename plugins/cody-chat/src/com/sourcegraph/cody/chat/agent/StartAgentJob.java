@@ -149,8 +149,8 @@ public class StartAgentJob extends Job {
     webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
     webviewConfig.rootDir = manager.resources.getWebviewPath().toUri().toString();
-    webviewConfig.injectScript = CodyResources.loadInjectedJS();
-    webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
+    webviewConfig.injectScript = CodyResources.injectedJSName();
+    webviewConfig.injectStyle = CodyResources.injectedCSSName();
     capabilities.webviewNativeConfig = webviewConfig;
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;

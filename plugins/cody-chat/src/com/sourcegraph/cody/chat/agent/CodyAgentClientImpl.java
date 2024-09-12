@@ -229,6 +229,7 @@ public class CodyAgentClientImpl implements CodyAgentClient {
 
   @Override
   public void webview_setHtml(Webview_SetHtmlParams params) {
+    System.out.println("Setting HTML: " + params.html);
     CodyResources.setIndexHTML(params.html.getBytes());
   }
 
