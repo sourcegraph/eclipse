@@ -84,7 +84,7 @@ public class StartAgentJob extends Job {
         new CodyResources(
             new CodyResources.DestinationsBuilder()
                 .withAgent(dataDir)
-                .withWebviews(dataDir.resolve("webviews"))
+                .withWebviews(CodyPaths.codyDir())
                 .withNode(dataDir)
                 .build());
 
@@ -145,12 +145,11 @@ public class StartAgentJob extends Job {
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
     WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
-    webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
-    webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
+    webviewConfig.cspSource = "'self'";
     webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = manager.resources.getWebviewPath().toUri().toString();
-    webviewConfig.injectScript = CodyResources.injectedJSName();
-    webviewConfig.injectStyle = CodyResources.injectedCSSName();
+    webviewConfig.webviewBundleServingPrefix = CodyPaths.codyDir().resolve("dist").toUri().toString();
+    webviewConfig.injectScript = CodyResources.loadInjectedJS();
+    webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;
     capabilities.globalState = ClientCapabilities.GlobalStateEnum.Server_managed;
     clientInfo.capabilities = capabilities;

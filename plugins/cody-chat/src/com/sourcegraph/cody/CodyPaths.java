@@ -27,6 +27,10 @@ public class CodyPaths {
     return ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
   }
 
+  public static Path codyDir() {
+      return Paths.get(ProjectDirectories.from("", "", "Cody-nodejs").preferenceDir);
+  }
+
   public static Path dataDir() {
     return Paths.get(projectDirectories().dataDir);
   }
