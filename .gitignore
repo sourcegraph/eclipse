@@ -4,6 +4,7 @@ dist/
 /.ijwb/
 /eclipse-plugins-sources/
 /eclipse-plugins/
+/eclipse-platforms/
 .metals/
 *.jar
 .vscode/

@@ -39,7 +39,7 @@ public class ChatView extends ViewPart {
 
   private Browser browserField;
   private volatile String chatId = "";
-  private CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<Boolean>();
+  private CompletableFuture<Boolean> webviewInitialized = new CompletableFuture<>();
   private final ConcurrentLinkedQueue<String> pendingExtensionMessages =
       new ConcurrentLinkedQueue<>();
 

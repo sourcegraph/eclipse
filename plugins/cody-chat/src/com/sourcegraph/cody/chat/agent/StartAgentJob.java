@@ -5,11 +5,7 @@ import com.sourcegraph.cody.CodyPaths;
 import com.sourcegraph.cody.CodyResources;
 import com.sourcegraph.cody.chat.access.TokenStorage;
 import com.sourcegraph.cody.logging.CodyLogger;
-import com.sourcegraph.cody.protocol_generated.ClientCapabilities;
-import com.sourcegraph.cody.protocol_generated.ClientInfo;
-import com.sourcegraph.cody.protocol_generated.CodyAgentServer;
-import com.sourcegraph.cody.protocol_generated.ProtocolTypeAdapters;
-import com.sourcegraph.cody.protocol_generated.WebviewNativeConfigParams;
+import com.sourcegraph.cody.protocol_generated.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -84,7 +80,7 @@ public class StartAgentJob extends Job {
         new CodyResources(
             new CodyResources.DestinationsBuilder()
                 .withAgent(dataDir)
-                .withWebviews(dataDir.resolve("webviews"))
+                .withWebview(CodyPaths.codyWebviewDir())
                 .withNode(dataDir)
                 .build());
 
@@ -138,17 +134,17 @@ public class StartAgentJob extends Job {
     clientInfo.version = "5.5.21-eclipse"; // Needs to be greater than 5.5.8
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
+    capabilities.authentication = ClientCapabilities.AuthenticationEnum.Enabled;
     capabilities.secrets = ClientCapabilities.SecretsEnum.Client_managed;
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     capabilities.showDocument = ClientCapabilities.ShowDocumentEnum.Enabled;
     // Enable string-encoding for webview messages.
     capabilities.webviewMessages = ClientCapabilities.WebviewMessagesEnum.String_encoded;
     capabilities.webview = ClientCapabilities.WebviewEnum.Native;
-    WebviewNativeConfigParams webviewConfig = new WebviewNativeConfigParams();
-    webviewConfig.cspSource = "'self' https://*.sourcegraphstatic.com";
-    webviewConfig.webviewBundleServingPrefix = "https://eclipse.sourcegraphstatic.com";
-    webviewConfig.view = WebviewNativeConfigParams.ViewEnum.Single;
-    webviewConfig.rootDir = manager.resources.getWebviewPath().toUri().toString();
+    WebviewNativeConfig webviewConfig = new WebviewNativeConfig();
+    webviewConfig.cspSource = "'self'";
+    webviewConfig.view = WebviewNativeConfig.ViewEnum.Single;
+    webviewConfig.skipResourceRelativization = true;
     webviewConfig.injectScript = CodyResources.loadInjectedJS();
     webviewConfig.injectStyle = CodyResources.loadInjectedCSS();
     capabilities.webviewNativeConfig = webviewConfig;

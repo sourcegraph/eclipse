@@ -21,7 +21,6 @@ public final class Constants {
   public static final String chat = "chat";
   public static final String class_ = "class";
   public static final String client_managed = "client-managed";
-  public static final String complete = "complete";
   public static final String create_file = "create-file";
   public static final String default_ = "default";
   public static final String delete = "delete";
@@ -35,9 +34,7 @@ public final class Constants {
   public static final String enabled = "enabled";
   public static final String enterprise = "enterprise";
   public static final String error = "error";
-  public static final String errored = "errored";
   public static final String experimental = "experimental";
-  public static final String fetching = "fetching";
   public static final String file = "file";
   public static final String free = "free";
   public static final String function = "function";
@@ -60,7 +57,6 @@ public final class Constants {
   public static final String object_encoded = "object-encoded";
   public static final String ollama = "ollama";
   public static final String openctx = "openctx";
-  public static final String paused = "paused";
   public static final String power = "power";
   public static final String pro = "pro";
   public static final String recently_used = "recently used";
@@ -84,7 +80,6 @@ public final class Constants {
   public static final String tree = "tree";
   public static final String tree_sitter = "tree-sitter";
   public static final String unified = "unified";
-  public static final String uri = "uri";
   public static final String use = "use";
   public static final String user = "user";
   public static final String warning = "warning";

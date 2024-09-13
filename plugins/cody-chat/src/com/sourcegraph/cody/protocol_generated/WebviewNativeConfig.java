@@ -1,10 +1,10 @@
 package com.sourcegraph.cody.protocol_generated;
 
-public final class WebviewNativeConfigParams {
+public final class WebviewNativeConfig {
   public ViewEnum view; // Oneof: multiple, single
   public String cspSource;
   public String webviewBundleServingPrefix;
-  public String rootDir;
+  public Boolean skipResourceRelativization;
   public String injectScript;
   public String injectStyle;
 

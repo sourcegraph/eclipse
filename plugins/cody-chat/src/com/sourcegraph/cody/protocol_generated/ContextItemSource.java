@@ -17,8 +17,6 @@ public enum ContextItemSource {
   Selection,
   @com.google.gson.annotations.SerializedName("terminal")
   Terminal,
-  @com.google.gson.annotations.SerializedName("uri")
-  Uri,
   @com.google.gson.annotations.SerializedName("history")
   History,
 }

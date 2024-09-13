@@ -42,25 +42,24 @@ public class CodyResources {
     return new String(loadResourceBytes(path), StandardCharsets.UTF_8);
   }
 
+  public static byte[] loadResourceBytes(ResourcePath path) {
+    return loadResourceBytes(path.toString());
+  }
+
   public static byte[] loadResourceBytes(String path) {
     try (var stream = CodyResources.class.getResourceAsStream(path)) {
+      assert stream != null;
       return stream.readAllBytes();
     } catch (IOException e) {
       throw new MessageOnlyException("failed to load resource " + path, e);
     }
   }
 
-  public byte[] loadWebviewBytes(String path) throws IOException {
+  public static byte[] loadWebviewBytes(String path) throws IOException {
     if (path.equals("index.html") && indexHTML != null) {
       return indexHTML;
     }
-    // We can't join a path that starts with a /, because Path thinks
-    // those are absolute paths
-    if (path.startsWith("/")) {
-      path = path.substring(1);
-    }
-    Path resolvedPath = destinations.webviews.resolve(path);
-    return Files.readAllBytes(resolvedPath);
+    return loadResourceBytes(WEBVIEW_ASSETS.resolve(path));
   }
 
   // Returns the path to the node binary. This first checks for a user-provided
@@ -95,28 +94,26 @@ public class CodyResources {
     return destinations.agent.resolve("index.js");
   }
 
-  public Path getWebviewPath() {
-    return destinations.webviews;
-  }
-
   public static void setIndexHTML(byte[] indexHTML) {
     CodyResources.indexHTML = indexHTML;
   }
 
   public static void copyAssetsTo(Destinations destinations) {
     try {
-      copyFromAssetFile(destinations.webviews, WEBVIEW_ASSETS);
-      copyFromAssetFile(destinations.agent, AGENT_ASSETS);
+      // Copy all agent assets to the agent directory
+      String assets = CodyResources.loadResourceString(AGENT_ASSETS.resolve("assets.txt"));
+      Files.createDirectories(destinations.agent);
+      for (String asset : assets.split("\n")) {
+        copyResourcePath(AGENT_ASSETS.resolve(asset), destinations.agent.resolve(asset));
+      }
+
+      // Copy just the webview index.html file to the directory that the agent will expect
+      // to read it from
+      Files.createDirectories(destinations.webview);
+      copyResourcePath(
+          WEBVIEW_ASSETS.resolve("index.html"), destinations.webview.resolve("index.html"));
     } catch (IOException e) {
       throw new MessageOnlyException("failed to copy assets", e);
-    }
-  }
-
-  private static void copyFromAssetFile(Path dir, ResourcePath assetsDir) throws IOException {
-    String assets = CodyResources.loadResourceString(assetsDir.resolve("assets.txt"));
-    Files.createDirectories(dir);
-    for (String asset : assets.split("\n")) {
-      copyResourcePath(assetsDir.resolve(asset), dir.resolve(asset));
     }
   }
 
@@ -169,7 +166,7 @@ public class CodyResources {
     private Destinations() {}
 
     private Path agent;
-    private Path webviews;
+    private Path webview;
     private Path node;
   }
 
@@ -181,8 +178,8 @@ public class CodyResources {
       return this;
     }
 
-    public DestinationsBuilder withWebviews(Path webviews) {
-      this.paths.webviews = webviews;
+    public DestinationsBuilder withWebview(Path webview) {
+      this.paths.webview = webview;
       return this;
     }
 
@@ -195,8 +192,8 @@ public class CodyResources {
       if (this.paths.agent == null) {
         throw new IllegalStateException("agent must be set");
       }
-      if (this.paths.webviews == null) {
-        throw new IllegalStateException("webviews must be set");
+      if (this.paths.webview == null) {
+        throw new IllegalStateException("webview must be set");
       }
       if (this.paths.node == null) {
         throw new IllegalStateException("node must be set");

@@ -1,6 +1,7 @@
 package com.sourcegraph.cody.protocol_generated;
 
 public final class ClientCapabilities {
+  public AuthenticationEnum authentication; // Oneof: enabled, none
   public CompletionsEnum completions; // Oneof: none
   public ChatEnum chat; // Oneof: none, streaming
   public GitEnum git; // Oneof: none, enabled
@@ -13,11 +14,19 @@ public final class ClientCapabilities {
   public ShowWindowMessageEnum showWindowMessage; // Oneof: notification, request
   public IgnoreEnum ignore; // Oneof: none, enabled
   public CodeActionsEnum codeActions; // Oneof: none, enabled
+  public java.util.List<ContextMentionProviderID> disabledMentionsProviders;
   public WebviewMessagesEnum webviewMessages; // Oneof: object-encoded, string-encoded
   public GlobalStateEnum globalState; // Oneof: stateless, server-managed, client-managed
   public SecretsEnum secrets; // Oneof: stateless, client-managed
   public WebviewEnum webview; // Oneof: agentic, native
-  public WebviewNativeConfigParams webviewNativeConfig;
+  public WebviewNativeConfig webviewNativeConfig;
+
+  public enum AuthenticationEnum {
+    @com.google.gson.annotations.SerializedName("enabled")
+    Enabled,
+    @com.google.gson.annotations.SerializedName("none")
+    None,
+  }
 
   public enum CompletionsEnum {
     @com.google.gson.annotations.SerializedName("none")
