@@ -80,7 +80,7 @@ public class StartAgentJob extends Job {
         new CodyResources(
             new CodyResources.DestinationsBuilder()
                 .withAgent(dataDir)
-                .withWebviews(CodyPaths.codyDir())
+                .withWebview(CodyPaths.codyWebviewDir())
                 .withNode(dataDir)
                 .build());
 
@@ -134,6 +134,7 @@ public class StartAgentJob extends Job {
     clientInfo.version = "5.5.21-eclipse"; // Needs to be greater than 5.5.8
     clientInfo.workspaceRootUri = workspaceRoot.toUri().toString();
     ClientCapabilities capabilities = new ClientCapabilities();
+    capabilities.authentication = ClientCapabilities.AuthenticationEnum.Enabled;
     capabilities.secrets = ClientCapabilities.SecretsEnum.Client_managed;
     capabilities.chat = ClientCapabilities.ChatEnum.Streaming;
     capabilities.showDocument = ClientCapabilities.ShowDocumentEnum.Enabled;

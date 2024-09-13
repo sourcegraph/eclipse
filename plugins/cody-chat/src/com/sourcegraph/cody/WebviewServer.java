@@ -49,7 +49,7 @@ public class WebviewServer implements Disposable {
             if (path.isEmpty() || path.equals("/")) {
               path = "index.html";
             }
-            var resource = codyManager.resources.loadWebviewBytes(path);
+            var resource = CodyResources.loadWebviewBytes(path);
             String extension = getFileExtension(path);
             String mimeType = MIME_TYPES.getOrDefault(extension, "application/octet-stream");
             response.getHeaders().add("Content-Type", mimeType);

@@ -27,8 +27,13 @@ public class CodyPaths {
     return ProjectDirectories.from("com.sourcegraph", "Sourcegraph", "CodyEclipse");
   }
 
+  // The project directory that the cody app (agent) uses for its config files
   public static Path codyDir() {
     return Paths.get(ProjectDirectories.from("", "", "Cody-nodejs").preferenceDir);
+  }
+
+  public static Path codyWebviewDir() {
+    return codyDir().resolve("dist").resolve("webview");
   }
 
   public static Path dataDir() {
