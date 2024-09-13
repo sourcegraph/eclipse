@@ -4,4 +4,3 @@ public final class Chat_SetModelParams {
   public String id;
   public String model;
 }
-

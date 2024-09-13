@@ -9,8 +9,9 @@ public final class WebviewNativeConfig {
   public String injectStyle;
 
   public enum ViewEnum {
-    @com.google.gson.annotations.SerializedName("multiple") Multiple,
-    @com.google.gson.annotations.SerializedName("single") Single,
+    @com.google.gson.annotations.SerializedName("multiple")
+    Multiple,
+    @com.google.gson.annotations.SerializedName("single")
+    Single,
   }
 }
-

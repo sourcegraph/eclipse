@@ -110,7 +110,8 @@ public class CodyResources {
       // Copy just the webview index.html file to the directory that the agent will expect
       // to read it from
       Files.createDirectories(destinations.webview);
-      copyResourcePath(WEBVIEW_ASSETS.resolve("index.html"), destinations.webview.resolve("index.html"));
+      copyResourcePath(
+          WEBVIEW_ASSETS.resolve("index.html"), destinations.webview.resolve("index.html"));
     } catch (IOException e) {
       throw new MessageOnlyException("failed to copy assets", e);
     }
