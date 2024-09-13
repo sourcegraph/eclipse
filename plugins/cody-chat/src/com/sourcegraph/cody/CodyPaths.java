@@ -33,7 +33,7 @@ public class CodyPaths {
   }
 
   public static Path codyWebviewDir() {
-    return codyDir().resolve("dist").resolve("webview");
+    return codyDir().resolve("dist").resolve("webviews");
   }
 
   public static Path dataDir() {
