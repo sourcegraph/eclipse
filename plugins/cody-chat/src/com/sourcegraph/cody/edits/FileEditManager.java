@@ -22,7 +22,6 @@ import org.eclipse.jface.text.codemining.ICodeMiningProvider;
 import org.eclipse.jface.text.codemining.LineHeaderCodeMining;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension5;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextLineSpacingProvider;
 import org.eclipse.swt.events.MouseEvent;
@@ -105,6 +104,7 @@ public class FileEditManager
 
     backgroundRed.dispose();
     backgroundGreen.dispose();
+
     edits.forEach(this::disposeEditUi);
     viewer.getTextWidget().setLineSpacingProvider(null);
     viewerExtension.setCodeMiningProviders(new ICodeMiningProvider[] {});
@@ -141,25 +141,18 @@ public class FileEditManager
                     .dropWhile(String::isBlank)
                     .collect(Collectors.joining("\n"))
                     .stripTrailing();
-            var lines = (int) cleanedText.lines().count();
-            lineSpacings.put(endLine - 1, lines);
+            var addedLines = (int) cleanedText.lines().count();
+            lineSpacings.put(endLine - 1, addedLines);
 
-            StyleRange range = new StyleRange();
-            Display.getDefault()
-                .asyncExec(
-                    () -> {
-                      range.start = startOffset;
-                      range.length = afterEndOffset - startOffset;
-                      range.background = backgroundRed;
-                      viewer.getTextWidget().setStyleRange(range);
-                    });
+            var removedText = document.get(startOffset, afterEndOffset - startOffset);
+            var removedLines = (int) removedText.lines().count();
 
             var minings =
                 List.of(
                     createIconMining(position, manager.codyIcon),
                     createButtonMining(position, "Accept", e -> accept(edit)),
                     createButtonMining(position, "Reject", e -> reject(edit)),
-                    createAdded(endPosition, cleanedText, lines));
+                    createAdded(endPosition, cleanedText, addedLines, removedText, removedLines));
 
             // We are rejecting edits of the part marked for removal, because it is easier than
             // keeping track of ranges during editing. If we want to change that in the future, we
@@ -176,7 +169,7 @@ public class FileEditManager
             Display.getDefault()
                 .asyncExec(() -> viewer.getTextWidget().addVerifyListener(listener));
 
-            return new FileEditUi(minings, endLine - 1, listener, range);
+            return new FileEditUi(minings, endLine - 1, listener);
           } catch (BadLocationException e) {
             throw new WrappedRuntimeException(e);
           }
@@ -215,24 +208,31 @@ public class FileEditManager
     }
   }
 
-  private ICodeMining createAdded(Position endPosition, String text, int addedLines) {
+  private ICodeMining createAdded(
+      Position endPosition,
+      String addedText,
+      int addedLines,
+      String removedText,
+      int removedLines) {
     var mining =
         new AbstractCodeMining(endPosition, this, null) {
           @Override
           public Point draw(GC gc, StyledText textWidget, Color color, int x, int y) {
             var lineHeight = textWidget.getLineHeight();
+            var width = textWidget.getBounds().width;
+            var addedHeight = lineHeight * addedLines;
+            var removedHeight = lineHeight * removedLines;
+
+            gc.setBackground(backgroundRed);
+            gc.fillRectangle(0, y - removedHeight - addedHeight, width, removedHeight);
+            gc.drawText(
+                removedText,
+                textWidget.getLeftMargin(),
+                y - (addedLines + removedLines) * lineHeight);
 
             gc.setBackground(backgroundGreen);
-
-            // Uncommenting lines below will color the entire added line. It looks
-            // better, but I wasn't able to replicate the effect for removed lines, so leaving it
-            // out for the sake of consistency.
-
-            // var width = textWidget.getBounds().width;
-            // var height = lineHeight * addedLines;
-            // gc.fillRectangle(0, y - lineHeight, width, height);
-
-            gc.drawText(text, textWidget.getLeftMargin(), y - addedLines * lineHeight);
+            gc.fillRectangle(0, y - addedHeight, width, addedHeight);
+            gc.drawText(addedText, textWidget.getLeftMargin(), y - addedHeight);
 
             // This annotation is not taking any space from the editor (line spacing already handles
             // that)
@@ -261,13 +261,6 @@ public class FileEditManager
     lineSpacings.remove(editUi.shiftedLine);
     edits.remove(edit);
     viewer.getTextWidget().removeVerifyListener(editUi.verifyListener);
-
-    // Reset style of the range. Styled ranges without setting overrides are garbage collected.
-    var range = editUi.range;
-    range.background = null;
-    range.foreground = null;
-    viewer.getTextWidget().setStyleRange(range);
-
     viewerExtension.updateCodeMinings();
   }
 
@@ -275,17 +268,11 @@ public class FileEditManager
     final List<ICodeMining> minings;
     final int shiftedLine;
     final VerifyListener verifyListener;
-    final StyleRange range;
 
-    FileEditUi(
-        List<ICodeMining> minings,
-        int shiftedLine,
-        VerifyListener verifyListener,
-        StyleRange range) {
+    FileEditUi(List<ICodeMining> minings, int shiftedLine, VerifyListener verifyListener) {
       this.minings = minings;
       this.shiftedLine = shiftedLine;
       this.verifyListener = verifyListener;
-      this.range = range;
     }
   }
 }
