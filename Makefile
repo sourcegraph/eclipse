@@ -12,4 +12,5 @@ clean:
 	./scripts/clean.sh
 prepare-ci:
 	git clone https://github.com/sourcegraph/cody ../cody
+	cd ../cody && git checkout $(cat ./plugins/cody-chat/cody-commit.txt)
 	python scripts/download-eclipse.py
