@@ -1,4 +1,5 @@
 CODY_COMMIT := $(shell cat ./plugins/cody-chat/cody-commit.txt)
+CWD := $(shell pwd)
 
 all:
 	./scripts/build-agent.sh
@@ -14,5 +15,5 @@ clean:
 	./scripts/clean.sh
 prepare-ci:
 	git clone https://github.com/sourcegraph/cody ../cody
-	pushd ../cody && git checkout "$(CODY_COMMIT)" && popd 
+	cd ../cody && git checkout "$(CODY_COMMIT)" && cd $(CWD) 
 	python scripts/download-eclipse.py
