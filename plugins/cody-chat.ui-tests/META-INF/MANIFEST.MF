@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ui-tests
+Bundle-SymbolicName: cody-chat.ui-tests
+Bundle-Version: 0.100.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.swtbot.eclipse.finder,
+ org.eclipse.swtbot.junit4_x,
+ org.hamcrest.core,
+ org.junit,
+ cody-chat
+Automatic-Module-Name: cody.chat.ui.tests
+Bundle-RequiredExecutionEnvironment: JavaSE-17
