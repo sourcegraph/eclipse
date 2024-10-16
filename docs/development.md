@@ -7,6 +7,10 @@
 - Eclipse IDE for Eclipse Committers The project was created with version
   2024-03. It can be downloaded from
   [here](https://www.eclipse.org/downloads/packages/release/2024-03/r/eclipse-ide-eclipse-committers).
+- SWTBot plugin for Eclipse. It can be installed in Eclipse `Help > Install New
+  Software...` or from the update site: `https://download.eclipse.org/technology/swtbot/releases/latest/`.
+
+![SWTBot installation](img/swtbot.png)
 
 ## Importing cloned repository into a lokal workspace
 
