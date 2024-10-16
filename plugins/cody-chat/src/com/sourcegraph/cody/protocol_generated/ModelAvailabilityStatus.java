@@ -4,4 +4,3 @@ public final class ModelAvailabilityStatus {
   public Model model;
   public Boolean isModelAvailable;
 }
-

@@ -5,4 +5,3 @@ public final class ParametersParams {
   public java.util.Map<String, Object> privateMetadata;
   public BillingMetadataParams billingMetadata;
 }
-

@@ -5,4 +5,3 @@ public final class Testing_Autocomplete_ProviderConfigResult {
   public String legacyModel;
   public String configSource;
 }
-

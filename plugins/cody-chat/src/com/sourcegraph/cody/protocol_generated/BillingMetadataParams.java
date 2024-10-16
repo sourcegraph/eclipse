@@ -4,4 +4,3 @@ public final class BillingMetadataParams {
   public String product;
   public String category;
 }
-

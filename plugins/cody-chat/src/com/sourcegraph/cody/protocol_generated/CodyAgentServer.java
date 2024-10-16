@@ -211,6 +211,9 @@ public interface CodyAgentServer {
   @JsonRequest("testing/ignore/overridePolicy")
   CompletableFuture<Void> testing_ignore_overridePolicy(ContextFilters params);
 
+  @JsonRequest("extension/reset")
+  CompletableFuture<Void> extension_reset(Void params);
+
   // =============
   // Notifications
   // =============

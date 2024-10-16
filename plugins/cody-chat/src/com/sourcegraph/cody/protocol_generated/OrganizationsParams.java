@@ -4,4 +4,3 @@ public final class OrganizationsParams {
   public String name;
   public String id;
 }
-
