@@ -2,6 +2,7 @@ package com.sourcegraph.cody;
 
 import dev.dirs.ProjectDirectories;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -38,6 +39,11 @@ public class CodyPaths {
 
   public static Path dataDir() {
     return Paths.get(projectDirectories().dataDir);
+  }
+
+  public static Path tempDir() throws IOException {
+    // create a new temporary directory
+    return Files.createTempDirectory("temp-");
   }
 
   public static Path agentScript(CodyResources resources) throws IOException {

@@ -160,18 +160,18 @@ public class StartAgentJob extends Job {
     server.initialized(null);
   }
 
-  private Path getWorkspaceRoot() throws URISyntaxException {
+  private Path getWorkspaceRoot() throws URISyntaxException, IOException {
     // Pick the first open project as the workspace root.
     for (var project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
       if (project.isOpen()) {
-        return project.getLocation().toFile().toPath();
+        var path = project.getLocation();
+        if (path != null) {
+          return path.toFile().toPath();
+        }
       }
     }
 
-    // This path is 100% wrong. The main problem with workspace root in Eclipse is that
-    // it's common to have multiple projects with different workspace roots. The agent server
-    // doesn't support multi-root workspaces at this time.
-    return Paths.get(Platform.getInstanceLocation().getURL().toURI());
+    return CodyPaths.tempDir();
   }
 
   private void configureGson(GsonBuilder builder) {
