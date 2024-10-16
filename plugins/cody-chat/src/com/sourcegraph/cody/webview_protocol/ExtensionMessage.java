@@ -46,7 +46,7 @@ public abstract class ExtensionMessage {
   public static final class ConfigExtensionMessage extends ExtensionMessage {
     public TypeEnum type; // Oneof: config
     public ConfigParams config;
-    public AuthStatus authStatus;
+    public ProtocolAuthStatus authStatus;
     public java.util.List<String> workspaceFolderUris;
 
     public enum TypeEnum {

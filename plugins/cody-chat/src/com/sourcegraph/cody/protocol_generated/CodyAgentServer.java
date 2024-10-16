@@ -27,9 +27,6 @@ public interface CodyAgentServer {
   @JsonRequest("chat/delete")
   CompletableFuture<java.util.List<ChatExportResult>> chat_delete(Chat_DeleteParams params);
 
-  @JsonRequest("chat/restore")
-  CompletableFuture<String> chat_restore(Chat_RestoreParams params);
-
   @JsonRequest("chat/models")
   CompletableFuture<Chat_ModelsResult> chat_models(Chat_ModelsParams params);
 
@@ -44,9 +41,6 @@ public interface CodyAgentServer {
 
   @JsonRequest("commands/explain")
   CompletableFuture<String> commands_explain(Void params);
-
-  @JsonRequest("commands/test")
-  CompletableFuture<String> commands_test(Void params);
 
   @JsonRequest("commands/smell")
   CompletableFuture<String> commands_smell(Void params);
@@ -183,11 +177,24 @@ public interface CodyAgentServer {
   CompletableFuture<CompletionBookkeepingEvent> testing_autocomplete_completionEvent(
       CompletionItemParams params);
 
+  @JsonRequest("testing/autocomplete/awaitPendingVisibilityTimeout")
+  CompletableFuture<CompletionItemID> testing_autocomplete_awaitPendingVisibilityTimeout(
+      Void params);
+
+  @JsonRequest("testing/autocomplete/setCompletionVisibilityDelay")
+  CompletableFuture<Void> testing_autocomplete_setCompletionVisibilityDelay(
+      Testing_Autocomplete_SetCompletionVisibilityDelayParams params);
+
+  @JsonRequest("testing/autocomplete/providerConfig")
+  CompletableFuture<Testing_Autocomplete_ProviderConfigResult> testing_autocomplete_providerConfig(
+      Void params);
+
   @JsonRequest("extensionConfiguration/change")
-  CompletableFuture<AuthStatus> extensionConfiguration_change(ExtensionConfiguration params);
+  CompletableFuture<ProtocolAuthStatus> extensionConfiguration_change(
+      ExtensionConfiguration params);
 
   @JsonRequest("extensionConfiguration/status")
-  CompletableFuture<AuthStatus> extensionConfiguration_status(Void params);
+  CompletableFuture<ProtocolAuthStatus> extensionConfiguration_status(Void params);
 
   @JsonRequest("extensionConfiguration/getSettingsSchema")
   CompletableFuture<String> extensionConfiguration_getSettingsSchema(Void params);

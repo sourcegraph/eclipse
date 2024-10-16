@@ -31,8 +31,8 @@ public abstract class ContextItem {
     public String title;
     public String description;
     public ContextItemSource
-        source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // history
+        source; // Oneof: user, editor, search, initial, priority, unified, selection, terminal,
+    // history, agentic
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -42,6 +42,7 @@ public abstract class ContextItem {
     public java.util.List<String> metadata;
     public TypeEnum type; // Oneof: file
     public String remoteRepositoryName;
+    public java.util.List<Range> ranges;
 
     public enum TypeEnum {
       @com.google.gson.annotations.SerializedName("file")
@@ -58,8 +59,8 @@ public abstract class ContextItem {
     public String title;
     public String description;
     public ContextItemSource
-        source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // history
+        source; // Oneof: user, editor, search, initial, priority, unified, selection, terminal,
+    // history, agentic
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -85,8 +86,8 @@ public abstract class ContextItem {
     public String title;
     public String description;
     public ContextItemSource
-        source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // history
+        source; // Oneof: user, editor, search, initial, priority, unified, selection, terminal,
+    // history, agentic
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -113,8 +114,8 @@ public abstract class ContextItem {
     public String title;
     public String description;
     public ContextItemSource
-        source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // history
+        source; // Oneof: user, editor, search, initial, priority, unified, selection, terminal,
+    // history, agentic
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;
@@ -142,8 +143,8 @@ public abstract class ContextItem {
     public String title;
     public String description;
     public ContextItemSource
-        source; // Oneof: embeddings, user, editor, search, initial, unified, selection, terminal,
-    // history
+        source; // Oneof: user, editor, search, initial, priority, unified, selection, terminal,
+    // history, agentic
     public Long size;
     public Boolean isIgnored;
     public Boolean isTooLarge;

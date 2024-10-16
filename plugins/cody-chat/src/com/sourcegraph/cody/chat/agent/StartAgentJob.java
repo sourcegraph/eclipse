@@ -152,7 +152,11 @@ public class StartAgentJob extends Job {
     clientInfo.capabilities = capabilities;
 
     var serverInfo = server.initialize(clientInfo).get(20, TimeUnit.SECONDS);
-    CodyLogger.onEndpointChange(serverInfo.authStatus.endpoint);
+
+    if (serverInfo.authStatus instanceof ProtocolAuthStatus.ProtocolAuthenticatedAuthStatus) {
+      var auth = (ProtocolAuthStatus.ProtocolAuthenticatedAuthStatus) serverInfo.authStatus;
+      CodyLogger.onEndpointChange(auth.endpoint);
+    }
     server.initialized(null);
   }
 

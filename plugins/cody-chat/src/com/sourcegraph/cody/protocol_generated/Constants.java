@@ -15,6 +15,7 @@ public final class Constants {
   public static final String agentic = "agentic";
   public static final String ask = "ask";
   public static final String assistant = "assistant";
+  public static final String authenticated = "authenticated";
   public static final String autocomplete = "autocomplete";
   public static final String balanced = "balanced";
   public static final String byok = "byok";
@@ -27,10 +28,10 @@ public final class Constants {
   public static final String delete_file = "delete-file";
   public static final String deprecated = "deprecated";
   public static final String dev = "dev";
+  public static final String early_access = "early-access";
   public static final String edit = "edit";
   public static final String edit_file = "edit-file";
   public static final String editor = "editor";
-  public static final String embeddings = "embeddings";
   public static final String enabled = "enabled";
   public static final String enterprise = "enterprise";
   public static final String error = "error";
@@ -47,6 +48,7 @@ public final class Constants {
   public static final String information = "information";
   public static final String initial = "initial";
   public static final String insert = "insert";
+  public static final String internal = "internal";
   public static final String isChatErrorGuard = "isChatErrorGuard";
   public static final String local = "local";
   public static final String method = "method";
@@ -56,8 +58,11 @@ public final class Constants {
   public static final String notification = "notification";
   public static final String object_encoded = "object-encoded";
   public static final String ollama = "ollama";
+  public static final String on_waitlist = "on-waitlist";
   public static final String openctx = "openctx";
+  public static final String other = "other";
   public static final String power = "power";
+  public static final String priority = "priority";
   public static final String pro = "pro";
   public static final String recently_used = "recently used";
   public static final String recommended = "recommended";
@@ -71,6 +76,7 @@ public final class Constants {
   public static final String single = "single";
   public static final String speed = "speed";
   public static final String stateless = "stateless";
+  public static final String stream_disabled = "stream-disabled";
   public static final String streaming = "streaming";
   public static final String string_encoded = "string-encoded";
   public static final String suggestion = "suggestion";
@@ -79,9 +85,12 @@ public final class Constants {
   public static final String terminal = "terminal";
   public static final String tree = "tree";
   public static final String tree_sitter = "tree-sitter";
+  public static final String unauthenticated = "unauthenticated";
   public static final String unified = "unified";
   public static final String use = "use";
   public static final String user = "user";
+  public static final String vision = "vision";
+  public static final String waitlist = "waitlist";
   public static final String warning = "warning";
   public static final String workspace = "workspace";
 }

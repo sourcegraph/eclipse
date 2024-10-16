@@ -5,5 +5,4 @@ public final class SerializedChatTranscript {
   public String chatTitle;
   public java.util.List<SerializedChatInteraction> interactions;
   public String lastInteractionTimestamp;
-  public EnhancedContextParams enhancedContext;
 }
