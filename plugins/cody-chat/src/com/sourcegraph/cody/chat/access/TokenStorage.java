@@ -29,6 +29,16 @@ public class TokenStorage {
     }
   }
 
+  // cody please many any suggestion of a new method for testing PR changes
+  public void deleteAgentSecret(String key) {
+    try {
+      agentSecureStorage.remove(key);
+      agentSecureStorage.flush();
+    } catch (IOException e) {
+      throw new WrappedRuntimeException(e); // Escalating unlikely exceptions
+    }
+  }
+
   public void setAgentSecret(String key, String value) {
     try {
       agentSecureStorage.put(key, value, true);
