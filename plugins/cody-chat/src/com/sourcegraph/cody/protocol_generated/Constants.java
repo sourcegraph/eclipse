@@ -23,6 +23,7 @@ public final class Constants {
   public static final String class_ = "class";
   public static final String client_managed = "client-managed";
   public static final String create_file = "create-file";
+  public static final String debug = "debug";
   public static final String default_ = "default";
   public static final String delete = "delete";
   public static final String delete_file = "delete-file";
@@ -83,6 +84,7 @@ public final class Constants {
   public static final String symbol = "symbol";
   public static final String system = "system";
   public static final String terminal = "terminal";
+  public static final String trace = "trace";
   public static final String tree = "tree";
   public static final String tree_sitter = "tree-sitter";
   public static final String unauthenticated = "unauthenticated";
@@ -91,6 +93,7 @@ public final class Constants {
   public static final String user = "user";
   public static final String vision = "vision";
   public static final String waitlist = "waitlist";
+  public static final String warn = "warn";
   public static final String warning = "warning";
   public static final String workspace = "workspace";
 }

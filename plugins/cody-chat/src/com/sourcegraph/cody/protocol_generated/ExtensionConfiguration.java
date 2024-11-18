@@ -14,5 +14,6 @@ public final class ExtensionConfiguration {
   public String codebase;
   public EventProperties eventProperties;
   public java.util.Map<String, Object> customConfiguration;
+  public String customConfigurationJson;
   public java.util.Map<String, Object> baseGlobalState;
 }
