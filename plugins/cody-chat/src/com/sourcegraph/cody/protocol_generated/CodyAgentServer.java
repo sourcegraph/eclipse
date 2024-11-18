@@ -273,4 +273,7 @@ public interface CodyAgentServer {
 
   @JsonNotification("secrets/didChange")
   void secrets_didChange(Secrets_DidChangeParams params);
+
+  @JsonNotification("window/didChangeFocus")
+  void window_didChangeFocus(Window_DidChangeFocusParams params);
 }

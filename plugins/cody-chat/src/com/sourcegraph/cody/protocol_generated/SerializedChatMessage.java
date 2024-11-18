@@ -7,7 +7,7 @@ public final class SerializedChatMessage {
   public SpeakerEnum speaker; // Oneof: human, assistant, system
   public String text;
   public String model;
-  public IntentEnum intent; // Oneof: search, chat
+  public IntentEnum intent; // Oneof: search, chat, edit, insert
 
   public enum SpeakerEnum {
     @com.google.gson.annotations.SerializedName("human")
@@ -23,5 +23,9 @@ public final class SerializedChatMessage {
     Search,
     @com.google.gson.annotations.SerializedName("chat")
     Chat,
+    @com.google.gson.annotations.SerializedName("edit")
+    Edit,
+    @com.google.gson.annotations.SerializedName("insert")
+    Insert,
   }
 }
