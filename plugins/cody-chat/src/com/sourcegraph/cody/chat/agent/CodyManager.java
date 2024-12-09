@@ -80,4 +80,11 @@ public class CodyManager {
           "Agent disposed before being started. This should never have happened.");
     }
   }
+
+  // TODO: remove the backdoor
+  public static CodyManager INSTANCE;
+
+  public CodyManager() {
+    INSTANCE = this;
+  }
 }
