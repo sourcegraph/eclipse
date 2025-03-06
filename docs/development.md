@@ -8,7 +8,7 @@
   2024-03. It can be downloaded from
   [here](https://www.eclipse.org/downloads/packages/release/2024-03/r/eclipse-ide-eclipse-committers).
 
-## Importing cloned repository into a lokal workspace
+## Importing cloned repository into a local workspace
 
 - Open Eclipse and select a path to a place you want to create your local
   workspace.
@@ -38,6 +38,18 @@ If you can open the Cody Chat view from `Window > Show view > Other`, the plugin
 is loaded properly.
 
 ![View selection](img/cody-view.png)
+
+## Cutting a release
+
+Once the changes you wish to be release are on the `main` branch, you can cut a release. Simply run
+
+```
+./scripts/push-tag.sh <your-version>
+```
+
+Where your version is for instance 0.4.21. You can follow the status at https://github.com/sourcegraph/eclipse/actions/workflows/release.yml
+
+You can then check the release was successful by following the instructions in the [README](../README.md) to install and ensure that your version is listed as the latest release.
 
 ## Manual build
 
@@ -103,10 +115,10 @@ mv MANIFEST.MF plugins/cody-chat/META-INF/MANIFEST.MF
 # Manually edit the generated manifest to use version 0.100.0.qualifier
 ```
 
-
 ## Fixing secret storage errors on macOS
 
 When running the plugin on macOS, you may hit on this error here
+
 ```
 Secure storage was unable to retrieve the master password from the OS keyring. Make sure that this application has access to the OS keyring. If the error persists, the password recovery feature could be used, or secure storage can be deleted and re-created.
 ```
@@ -114,8 +126,7 @@ Secure storage was unable to retrieve the master password from the OS keyring. M
 Here is [one relevant result](https://www.eclipse.org/forums/index.php/t/1098516/) showing the fix for this problem.
 The short fix:
 
-* Quit Eclipse
-* Run `codesign -f -s - /Applications/Eclipse.app/Contents/MacOS/eclipse`
-* Run `rm -rf ~/.eclipse/org.eclipse.equinox.security/secure_storage`
-* Start Eclipse again
-
+- Quit Eclipse
+- Run `codesign -f -s - /Applications/Eclipse.app/Contents/MacOS/eclipse`
+- Run `rm -rf ~/.eclipse/org.eclipse.equinox.security/secure_storage`
+- Start Eclipse again
