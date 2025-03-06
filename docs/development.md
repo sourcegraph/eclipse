@@ -24,7 +24,17 @@
 
 ## Running and debugging the plugin
 
-To run the project for the first time, right click on `minimal_run.launch` file
+
+To run the project for the first time, first ensure that you have [Cody](https://github.com/sourcegraph/cody) cloned as a sibling directory
+with the commit specified in [./plugins/cody-chat/cody-commit.txt](./plugins/cody-chat/cody-commit.txt) checked out.
+
+Within this directory, run
+```sh
+make all
+```
+This will build the agent and webview assets within the Cody repo and then copy them over to this directory.
+
+Next, in Eclipse with this project open, right click on `minimal_run.launch` file
 in the `Cody Feature` project. From the context menu select `Run as` then
 `1. minimal_run`. You will be asked whether to clear the workspace data. If you
 want to preserve settings and files from the previous run select `Don't clear`.
