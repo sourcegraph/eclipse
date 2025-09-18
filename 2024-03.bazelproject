@@ -1,6 +1,8 @@
 targets:
   //plugins/cody-chat:cody_eclipse_2024_03
+  //plugins/cody-chat.ui-tests:cody_eclipse_tests_2024_03
   //eclipse-platforms:eclipse_2024_03
 directories:
   plugins/cody-chat/src
+  plugins/cody-chat.ui-tests/src
   scripts

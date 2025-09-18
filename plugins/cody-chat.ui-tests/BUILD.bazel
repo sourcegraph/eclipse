@@ -1,0 +1,10 @@
+load("@rules_java//java:defs.bzl", "java_library")
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "cody_eclipse_tests_2024_03",
+    srcs = glob(["src/**/*.java"]),
+    deps = [
+        "//eclipse-platforms:eclipse_2024_03",
+    ],
+)
